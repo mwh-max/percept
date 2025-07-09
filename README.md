@@ -48,7 +48,7 @@ This ensures respectful framing across all profiles:
 - *Screenreader user* highlights interaction method, not ability level  
 - *Low vision* focuses on visual experience, not a fixed threshold  
 
-Percept avoids euphemisms, diagnostic framing, and audit tone. Feedback is shaped by clarity, care, and emotional intent.
+Percept avoids euphemisms, diagnostic framing, and audit tone. Feedback is shaped by clarity, care and emotional intent.
 
 ---
 
