@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percept</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="percept-tool">
+    <header>
+      <h1>Percept</h1>
+      <p>A quiet space to explore emotional accessibility.</p>
+    </header>
+
+    <section class="profile-select">
+      <label for="profile">Choose a user experience profile:</label>
+      <select id="profile">
+        <option value="">--Select--</option>
+        <option value="adhd">ADHD</option>
+        <option value="screenreader">Screenreader User</option>
+        <option value="lowvision">Low Vision</option>
+        <option value="dyslexia">Dyslexia</option>
+        <option value="motor">Motor Disability</option>
+      </select>
+    </section>
+
+    <section class="html-input">
+      <label for="markup">Paste layout HTML here:</label>
+      <textarea id="markup" rows="10" placeholder="Paste your HTML snippet here…"></textarea>
+    </section>
+
+    <button id="analyze">Generate Feedback</button>
+
+    <section class="feedback">
+      <h2>Feedback</h2>
+      <div id="feedback-output"></div>
+    </section>
+  </main>
+
+  <script src="scripts/percept.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+body {
+  font-family: Garamond, Georgia, serif;
+  background-color: #f4f4f4;
+  color: #222;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+section {
+  margin-bottom: 1.5rem;
+}
+
+.percept-tool {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fff;
+}
+
+header h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin: 1.2rem 0 0.4rem;
+}
+
+select, textarea, button {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  background-color: #3a7;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #276;
+}
+
+select:focus, textarea:focus, button:focus {
+  outline: 2px solid #3a7;
+  outline-offset: 2px;
+}
+
+.feedback {
+  margin-top: 2rem;
+}
+
+.feedback h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+#feedback-output {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+  .percept-tool {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  textarea, select, button {
+    font-size: 0.95rem;
+    padding: 0.5rem;
+  }
+
+  .feedback h2 {
+    font-size: 1.2rem;
+  }
+
+  #markup {
+    min-height: 6rem;
+  }
+}

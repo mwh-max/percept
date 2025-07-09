@@ -1,0 +1,5 @@
+{
+  "name": "Blind User",
+  "tone": "sequential, label-dependent, exploratory",
+  "description": "The interface speaks before it is seen. Navigation depends on correct semantics, alt text, and consistent structure. Redundant descriptions can be helpful. Surprises—like unlabeled buttons or nested actions—erode confidence. Every element asks one question: 'Will this make sense when heard?'"
+}
