@@ -36,6 +36,15 @@ document.getElementById('copy-feedback').addEventListener('click', () => {
     .catch(() => alert("Copy failed. Please try again."));
 });
 
+let debounceTimer;
+
+document.getElementById('markup').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    document.getElementById('analyze').click();
+  }, 600);
+});
+
       feedbackBox.textContent = feedbackText;
     })
     .catch(err => {
