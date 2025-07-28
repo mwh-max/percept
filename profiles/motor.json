@@ -1,5 +1,19 @@
 {
   "name": "Motor Disability",
   "tone": "deliberate, effort-aware, access-conscious",
-  "description": "Interaction involves effort. Small buttons, hover-only actions, and drag gestures can demand precision some users may not have. Designers should consider the experience of people with motor disabilities—including those who use adaptive tools or keyboard navigation. Clarity comes from large touch targets, reduced motion demands, and flexible input paths. Design should honor movement—because for many, it carries cost."
+  "description": "Interaction involves effort. Small buttons, hover-only actions, and drag gestures can demand precision some users may not have. Designers should consider the experience of people with motor disabilities\u2014including those who use adaptive tools or keyboard navigation. Clarity comes from large touch targets, reduced motion demands, and flexible input paths. Design should honor movement\u2014because for many, it carries cost.",
+  "checks": [
+    {
+      "keyword": "hover",
+      "message": "Hover-only interactions can block access for users who rely on keyboard or voice input. Ensure all actions are reachable without a mouse."
+    },
+    {
+      "keyword": "button",
+      "message": "Small buttons may be hard to click. Increase target size and spacing to reduce accidental taps."
+    },
+    {
+      "keyword": "drag",
+      "message": "Drag-and-drop interfaces require fine motor control. Offer alternative actions like \u201cMove Up\u201d or \u201cAdd Below\u201d buttons."
+    }
+  ]
 }

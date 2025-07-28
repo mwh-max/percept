@@ -1,5 +1,15 @@
 {
   "name": "Screen Reader User",
   "tone": "linear, anticipatory, moment-to-moment",
-  "description": "Experience unfolds in a stream—one word after the next. Headings are signposts, landmarks in a landscape of text. Confusion comes when elements aren't labeled, or their function isn’t spoken. Every interaction is felt through expectation: 'Will this make sense when heard?'"
+  "description": "Experience unfolds in a stream…",
+  "checks": [
+    {
+      "keyword": "aria-hidden",
+      "message": "Be careful with aria-hidden. It may hide important content from assistive tech. Ensure intent is clear."
+    },
+    {
+      "keyword": "div",
+      "message": "Using too many <div> tags without semantic headings can make navigation unclear. Add meaning where possible."
+    }
+  ]
 }

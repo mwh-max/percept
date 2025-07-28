@@ -1,5 +1,15 @@
 {
   "name": "Low Vision",
   "tone": "blurred, tentative, contrast-seeking",
-  "description": "The page arrives not as a whole—but as fragments in tension. Text floats in a fog of brightness or blends into muted backgrounds. Navigation depends on scale, rhythm, and clear anchors. Every pause is a scan for something readable. Grace lives in contrast, not color."
+  "description": "The page arrives not as a whole\u2014but as fragments in tension. Text floats in a fog of brightness or blends into muted backgrounds. Navigation depends on scale, rhythm, and clear anchors. Every pause is a scan for something readable. Grace lives in contrast, not color.",
+  "checks": [
+    {
+      "keyword": "color:",
+      "message": "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments."
+    },
+    {
+      "keyword": "font-size",
+      "message": "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage."
+    }
+  ]
 }

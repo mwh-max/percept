@@ -1,5 +1,19 @@
 {
   "name": "Dyslexia",
   "tone": "effortful, pattern-sensitive, clarity-seeking",
-  "description": "Text arrives slowly, sometimes out of order. Dense paragraphs and decorative fonts blur meaning. Structure, spacing and semantic clarity offer relief. Simplicity isn’t minimalism—it’s access."
+  "description": "Text arrives slowly, sometimes out of order. Dense paragraphs and decorative fonts blur meaning. Structure, spacing and semantic clarity offer relief. Simplicity isn\u2019t minimalism\u2014it\u2019s access.",
+  "checks": [
+    {
+      "keyword": "font-family",
+      "message": "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces."
+    },
+    {
+      "keyword": "line-height",
+      "message": "Adequate line spacing improves readability. Aim for at least 1.5x the font size."
+    },
+    {
+      "keyword": "justify",
+      "message": "Justified text can create uneven spacing. Left-align for consistent rhythm."
+    }
+  ]
 }
