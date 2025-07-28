@@ -21,7 +21,9 @@ console.log('Trying to load:', `profiles/${profile}.json`);
 
       checks.forEach(check => {
         if (markup.includes(check.keyword)) {
-          feedbackText += `• ${check.message}\n`;
+          const style = document.getElementById('style-toggle').value;
+          const msg = style === 'technical' ? check.technical || check.message : check.message;
+            feedbackText += `• ${msg}\n`;
         }
       });
 
