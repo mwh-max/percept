@@ -18,7 +18,7 @@
       <select id="profile">
         <option value="">--Select--</option>
         <option value="adhd">ADHD</option>
-        <option value="screenreader">Screenreader User</option>
+        <option value="screenreader" lang="en">Screenreader User</option>
         <option value="lowvision">Low Vision</option>
         <option value="dyslexia">Dyslexia</option>
         <option value="motor">Motor Disability</option>
@@ -27,14 +27,14 @@
 
     <section class="html-input">
       <label for="markup">Paste layout HTML here:</label>
-      <textarea id="markup" rows="10" placeholder="Paste your HTML snippet here…"></textarea>
+      <textarea id="markup" rows="10" placeholder="Paste your HTML snippet here…" autocomplete="off"></textarea>
     </section>
 
     <button id="analyze">Generate Feedback</button>
 
     <section class="feedback">
       <h2>Feedback</h2>
-      <div id="feedback-output"></div>
+      <div id="feedback-output" aria-live="polite"></div>
     </section>
   </main>
 
