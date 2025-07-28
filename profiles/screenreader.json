@@ -3,13 +3,21 @@
   "tone": "linear, anticipatory, moment-to-moment",
   "description": "Experience unfolds in a stream…",
   "checks": [
-    {
-      "keyword": "aria-hidden",
-      "message": "Be careful with aria-hidden. It may hide important content from assistive tech. Ensure intent is clear."
-    },
-    {
-      "keyword": "div",
-      "message": "Using too many <div> tags without semantic headings can make navigation unclear. Add meaning where possible."
-    }
+{
+  "keyword": "img",
+  "message": "Images should include alt text. Screenreader users rely on alt to understand meaning."
+},
+{
+  "keyword": "role=",
+  "message": "Custom roles should be used carefully. Native semantics are preferred when possible."
+},
+{
+  "keyword": "tabindex",
+  "message": "Tab order changes can confuse screenreader flow. Use tabindex intentionally and test focus behavior."
+},
+{
+  "keyword": "<h1",
+  "message": "Headings create a map. Be sure to use them in a logical order (h1 to h6) without skipping levels."
+}
   ]
 }

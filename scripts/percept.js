@@ -7,6 +7,7 @@ document.getElementById('analyze').addEventListener('click', () => {
     feedbackBox.textContent = "Please select a profile and paste HTML to continue.";
     return;
   }
+
 console.log('Trying to load:', `profiles/${profile}.json`);
 
   fetch(`profiles/${profile}.json`)
@@ -27,6 +28,13 @@ console.log('Trying to load:', `profiles/${profile}.json`);
       if (!feedbackText) {
         feedbackText = "No profile-specific traits detected in this layout. Try pasting more HTML or explore a different profile.";
       }
+
+document.getElementById('copy-feedback').addEventListener('click', () => {
+  const feedbackText = document.getElementById('feedback-output').textContent;
+  navigator.clipboard.writeText(feedbackText)
+    .then(() => alert("Feedback copied to clipboard."))
+    .catch(() => alert("Copy failed. Please try again."));
+});
 
       feedbackBox.textContent = feedbackText;
     })
