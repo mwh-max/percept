@@ -15,14 +15,15 @@
 
     <section class="profile-select">
       <label for="profile">Choose a user experience profile:</label>
-      <select id="profile">
-        <option value="">--Select--</option>
-          <option value="adhd" data-tone="scattered, effortful, alert">ADHD</option>
-          <option value="screenreader" data-tone="linear, anticipatory, moment-to-moment">Screenreader User</option>
-          <option value="lowvision" data-tone="blurred, tentative, contrast-seeking">Low Vision</option>
-          <option value="dyslexia" data-tone="effortful, pattern-sensitive, clarity-seeking">Dyslexia</option>
-          <option value="motor" data-tone="deliberate, effort-aware, access-conscious">Motor Disability</option>
-      </select>
+<select id="profile">
+  <option value="">--Select--</option>
+  <option value="adhd" data-tone="scattered, effortful, alert">ADHD</option>
+  <option value="screenreader" data-tone="linear, anticipatory, moment-to-moment">Screenreader User</option>
+  <option value="lowvision" data-tone="blurred, tentative, contrast-seeking">Low Vision</option>
+  <option value="dyslexia" data-tone="effortful, pattern-sensitive, clarity-seeking">Dyslexia</option>
+  <option value="motor" data-tone="deliberate, effort-aware, access-conscious">Motor Disability</option>
+</select>
+<div id="tone-preview" aria-live="polite"></div>
     </section>
 
     <section class="html-input">
@@ -35,7 +36,6 @@
     <section class="feedback">
       <h2>Feedback</h2>
       <div id="feedback-output" aria-live="polite"></div>
-      <div id="tone-preview" aria-live="polite"></div>
     </section>
 
     <button id="copy-feedback" style="margin-top: 1rem;">Copy Feedback</button>

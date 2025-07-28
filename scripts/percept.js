@@ -45,15 +45,6 @@ document.getElementById('markup').addEventListener('input', () => {
   }, 600);
 });
 
-const profileSelect = document.getElementById('profile');
-const tonePreview = document.getElementById('tone-preview');
-
-profileSelect.addEventListener('mouseover', (e) => {
-  if (e.target.tagName === 'OPTION' && e.target.dataset.tone) {
-    tonePreview.textContent = `Tone preview: ${e.target.dataset.tone}`;
-  }
-});
-
 profileSelect.addEventListener('mouseout', () => {
   tonePreview.textContent = '';
 });
@@ -64,4 +55,13 @@ profileSelect.addEventListener('mouseout', () => {
       feedbackBox.textContent = "Error loading profile data. Please check the profile name or file.";
       console.error(err);
     });
+});
+
+const profileSelect = document.getElementById('profile');
+const tonePreview = document.getElementById('tone-preview');
+
+profileSelect.addEventListener('change', () => {
+  const selectedOption = profileSelect.options[profileSelect.selectedIndex];
+  const tone = selectedOption.dataset.tone || '';
+  tonePreview.textContent = tone ? `Tone preview: ${tone}` : '';
 });
