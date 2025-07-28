@@ -45,6 +45,19 @@ document.getElementById('markup').addEventListener('input', () => {
   }, 600);
 });
 
+const profileSelect = document.getElementById('profile');
+const tonePreview = document.getElementById('tone-preview');
+
+profileSelect.addEventListener('mouseover', (e) => {
+  if (e.target.tagName === 'OPTION' && e.target.dataset.tone) {
+    tonePreview.textContent = `Tone preview: ${e.target.dataset.tone}`;
+  }
+});
+
+profileSelect.addEventListener('mouseout', () => {
+  tonePreview.textContent = '';
+});
+
       feedbackBox.textContent = feedbackText;
     })
     .catch(err => {
