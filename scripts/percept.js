@@ -37,8 +37,34 @@ function generateFeedback(profile, markup) {
 
 // Function to analyze markup based on profile
 function analyzeMarkup(markup, profile) {
-  // Placeholder logic for analyzing HTML markup
-  return `Feedback for profile: ${profile.value} with markup: ${markup}`;
+  const profileChecks = getProfileChecks(profile.value); // Get checks for the selected profile
+  let feedback = "";
+
+  // Loop through each check for the profile and see if it appears in the markup
+  profileChecks.forEach((check) => {
+    if (markup.includes(check.keyword)) {
+      feedback += `Tip: ${check.message}\n`; // Add feedback for the matching check
+    }
+  });
+
+  if (!feedback) {
+    feedback = `No issues found for the selected profile.`;
+  }
+
+  return feedback;
+}
+
+// Function to get checks for a selected profile
+function getProfileChecks(profile) {
+  const profileData = {
+    adhd: adhdJson, // You will need to load the actual JSON data (like adhd.json)
+    screenreader: screenreaderJson,
+    lowvision: lowvisionJson,
+    dyslexia: dyslexiaJson,
+    motor: motorJson,
+  };
+
+  return profileData[profile]?.checks || []; // Get the checks array for the selected profile
 }
 
 // Function to display the generated feedback
