@@ -1,55 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Percept</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main class="percept-tool">
-    <header>
-      <h1>Percept</h1>
-      <p>A quiet space to explore emotional accessibility.</p>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Percept – Accessibility Prompt Feedback Tool</title>
+    <meta
+      name="description"
+      content="Percept helps users with disabilities refine AI prompts for clarity, tone and accessibility. Built for inclusivity and usability."
+    />
+    <link rel="stylesheet" href="style.css" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Percept",
+  "alternateName": "Percept – Accessibility Prompt Feedback Tool",
+  "applicationCategory": "Accessibility tool",
+  "operatingSystem": "Web",
+  "description": "Percept helps people with disabilities and neurodivergent users refine AI prompts for clarity, tone and accessibility.",
+  "url": "https://www.sleepingbear.us/projects/percept.html",
+  "creator": {
+    "@type": "Person",
+    "name": "Matthew Herron"
+  },
+  "inLanguage": "en",
+  "keywords": ["accessibility", "prompt feedback", "AI prompts", "neurodivergent", "disability"]
+}
+</script>
+  </head>
+  <body>
+    <main class="percept-tool">
+      <header>
+        <h1>Percept – Accessibility Prompt Feedback Tool</h1>
+        <p>
+          Percept is built to help people with disabilities and neurodivergent
+          users get clearer, more accurate responses from AI. It looks at the
+          words you use in a prompt, points out where tone or structure might
+          cause confusion and suggests ways to make the request easier for the
+          AI to understand. The goal is to make sure the technology works for you,
+          not against you.
+        </p>
+      </header>
 
-    <section class="profile-select">
-      <label for="profile">Choose a user experience profile:</label>
-<select id="profile">
-  <option value="">--Select--</option>
-  <option value="adhd" data-tone="scattered, effortful, alert">ADHD</option>
-  <option value="screenreader" data-tone="linear, anticipatory, moment-to-moment">Screenreader User</option>
-  <option value="lowvision" data-tone="blurred, tentative, contrast-seeking">Low Vision</option>
-  <option value="dyslexia" data-tone="effortful, pattern-sensitive, clarity-seeking">Dyslexia</option>
-  <option value="motor" data-tone="deliberate, effort-aware, access-conscious">Motor Disability</option>
-</select>
-<div id="tone-preview" aria-live="polite"></div>
-    </section>
+      <section class="profile-select">
+        <label for="profile">Choose a user experience profile:</label>
+        <select id="profile">
+          <option value="">--Select--</option>
+          <option value="adhd" data-tone="scattered, effortful, alert">
+            ADHD
+          </option>
+          <option
+            value="screenreader"
+            data-tone="linear, anticipatory, moment-to-moment"
+          >
+            Screenreader User
+          </option>
+          <option
+            value="lowvision"
+            data-tone="blurred, tentative, contrast-seeking"
+          >
+            Low Vision
+          </option>
+          <option
+            value="dyslexia"
+            data-tone="effortful, pattern-sensitive, clarity-seeking"
+          >
+            Dyslexia
+          </option>
+          <option
+            value="motor"
+            data-tone="deliberate, effort-aware, access-conscious"
+          >
+            Motor Disability
+          </option>
+        </select>
+        <div id="tone-preview" aria-live="polite"></div>
+      </section>
 
-    <section class="html-input">
-      <label for="markup">Paste layout HTML here:</label>
-      <textarea id="markup" rows="10" placeholder="Paste your HTML snippet here…" autocomplete="off"></textarea>
-    </section>
+      <section class="html-input">
+        <label for="markup">Paste layout HTML here:</label>
+        <textarea
+          id="markup"
+          rows="10"
+          placeholder="Paste your HTML snippet here…"
+          autocomplete="off"
+        ></textarea>
+      </section>
 
-    <button id="analyze">Generate Feedback</button>
-    
-    <section class="feedback-style-toggle">
-      <label for="style-toggle">Feedback style:</label>
-      <select id="style-toggle">
-      <option value="tone" selected>Emotional Tone</option>
-      <option value="technical">Technical Feedback</option>
-      </select>
-    </section>
+      <button id="analyze">Generate Feedback</button>
 
-    <section class="feedback">
-      <h2>Feedback</h2>
-      <div id="feedback-output" aria-live="polite"></div>
-    </section>
+      <section class="feedback-style-toggle">
+        <label for="style-toggle">Feedback style:</label>
+        <select id="style-toggle">
+          <option value="tone" selected>Emotional Tone</option>
+          <option value="technical">Technical Feedback</option>
+        </select>
+      </section>
 
-    <button id="copy-feedback" style="margin-top: 1rem;">Copy Feedback</button>
+      <section class="feedback">
+        <h2>Feedback</h2>
+        <div id="feedback-output" aria-live="polite"></div>
+      </section>
 
-  </main>
+      <button id="copy-feedback" style="margin-top: 1rem">Copy Feedback</button>
+    </main>
 
-  <script src="scripts/percept.js" defer></script>
-</body>
+    <script src="scripts/percept.js" defer></script>
+  </body>
 </html>
