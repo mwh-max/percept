@@ -1,10 +1,22 @@
 {
   "name": "ADHD",
   "tone": "scattered, effortful, alert",
-  "description": "Layout feels like chasing thoughts across a busy room. Visual noise, unclear pacing and overlapping stimuli demand executive function at every scroll. Simplicity becomes permission to stay."
+  "description": "Layout feels like chasing thoughts across a busy room. Visual noise, unclear pacing, and overlapping stimuli demand executive function at every scroll. Simplicity becomes permission to stay.",
   "checks": [
     {
-      
+      "keyword": "carousel",
+      "message": "Auto‑advancing carousels split attention. Provide play/pause and let users control motion.",
+      "technical": "Avoid autoplay. Use prefers-reduced-motion and provide manual controls."
+    },
+    {
+      "keyword": "<marquee",
+      "message": "Moving text increases cognitive load. Prefer static text with clear hierarchy.",
+      "technical": "Remove marquee. Use headings, spacing, and lists for structure."
+    },
+    {
+      "keyword": "modal",
+      "message": "Stacked modals and popups create context switching. Reduce interruptions.",
+      "technical": "Avoid nested modals. Ensure focus trapping and Escape to close."
     }
   ]
 }
