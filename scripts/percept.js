@@ -11,11 +11,11 @@ async function loadProfiles() {
 
   // Fetch each JSON; if one fails, keep going and log the error
   const files = [
-    ["adhd", "adhd.json"],
-    ["screenreader", "screenreader.json"],
-    ["lowvision", "lowvision.json"],
-    ["dyslexia", "dyslexia.json"],
-    ["motor", "motor.json"],
+    ["adhd", "profiles/adhd.json"],
+    ["screenreader", "profiles/screenreader.json"],
+    ["lowvision", "profiles/lowvision.json"],
+    ["dyslexia", "profiles/dyslexia.json"],
+    ["motor", "profiles/motor.json"],
   ];
 
   const entries = await Promise.all(
