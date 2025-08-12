@@ -9,6 +9,9 @@ const profileStore = {
 const PROFILE_KEY = "percept.profileId";
 const STYLE_KEY = "percept.style";
 
+const MARKUP_KEY = "percept.markup";
+const FEEDBACK_KEY = "percept.feedback";
+
 async function loadProfiles() {
   if (profileStore.loaded) return profileStore.data;
 
@@ -48,13 +51,17 @@ function updateTonePreview(tone) {
 
 // Validate inputs before feedback generation
 function validateInputs(profileEl, markup) {
+  const out = document.getElementById("feedback-output");
   const profile = profileEl?.value?.trim();
+
   if (!profile) {
-    alert("Please select a profile.");
+    out.textContent = "Please select a profile before generating feedback.";
+    profileEl.focus();
     return false;
   }
   if (!markup || !markup.trim()) {
-    alert("Please paste some HTML to analyze.");
+    out.textContent = "Please paste some HTML to analyze.";
+    document.getElementById("markup").focus();
     return false;
   }
   return true;
@@ -127,6 +134,21 @@ async function main() {
     saveStyle(styleToggle.value);
   });
 
+  // Restore session data
+  const savedMarkup = loadMarkup();
+  if (savedMarkup) {
+    markupEl.value = savedMarkup;
+  }
+  const savedFeedback = loadFeedback();
+  if (savedFeedback) {
+    displayFeedback(savedFeedback);
+  }
+
+  // Save textarea on input (lightweight autosave)
+  markupEl.addEventListener("input", () => {
+    saveMarkup(markupEl.value);
+  });
+
   // Update tone preview on profile change
   profileEl.addEventListener("change", (e) => {
     const opt = e.target.options[e.target.selectedIndex];
@@ -148,8 +170,22 @@ async function main() {
       const key = profileEl.value;
       const checks = profiles[key]?.checks || [];
 
+      if (!checks.length) {
+        const selfTest = [
+          { keyword: "<img", message: "Image tag detected - add alt text." },
+        ];
+        const feedback = analyzeMarkup(markup, selfTest, style);
+        displayFeedback(
+          feedback +
+            "\n\n(Using temporary self-test rule: JSON may not be loading.)"
+        );
+        saveFeedback(feedback);
+        return;
+      }
+
       const feedback = analyzeMarkup(markup, checks, style);
       displayFeedback(feedback);
+      saveFeedback(feedback);
     } catch (err) {
       console.error("Error generating feedback:", err);
       alert(
@@ -194,6 +230,31 @@ function loadStyle() {
     return localStorage.getItem(STYLE_KEY) || "tone";
   } catch {
     return "tone";
+  }
+}
+
+function saveMarkup(text) {
+  try {
+    localStorage.setItem(MARKUP_KEY, text || "");
+  } catch {}
+}
+function loadMarkup() {
+  try {
+    return localStorage.getItem(MARKUP_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+function saveFeedback(text) {
+  try {
+    localStorage.setItem(FEEDBACK_KEY, text || "");
+  } catch {}
+}
+function loadFeedback() {
+  try {
+    return localStorage.getItem(FEEDBACK_KEY) || "";
+  } catch {
+    return "";
   }
 }
 
