@@ -6,6 +6,9 @@ const profileStore = {
   data: {},
 };
 
+const PROFILE_KEY = "percept.profileId";
+const STYLE_KEY = "percept.style";
+
 async function loadProfiles() {
   if (profileStore.loaded) return profileStore.data;
 
@@ -101,11 +104,37 @@ async function main() {
   const styleToggle = document.getElementById("style-toggle");
   const copyBtn = document.getElementById("copy-feedback");
 
+  // Restore previous selections
+  const savedProfile = loadProfileId();
+  if (savedProfile) {
+    const hasOption = [...profileEl.options].some(
+      (o) => o.value === savedProfile
+    );
+    if (hasOption) {
+      profileEl.value = savedProfile;
+      const opt = profileEl.options[profileEl.selectedIndex];
+      updateTonePreview(opt?.dataset?.tone || "");
+    } else {
+      saveProfileId("");
+      updateTonePreview();
+    }
+  }
+
+  const savedStyle = loadStyle();
+  styleToggle.value = savedStyle;
+
+  styleToggle.addEventListener("change", () => {
+    saveStyle(styleToggle.value);
+  });
+
   // Update tone preview on profile change
   profileEl.addEventListener("change", (e) => {
     const opt = e.target.options[e.target.selectedIndex];
     const tone = opt?.dataset?.tone || "";
     updateTonePreview(tone);
+
+    // NEW: save selection
+    saveProfileId(e.target.value);
   });
 
   // Generate feedback on click
@@ -127,6 +156,7 @@ async function main() {
         "An error occurred while generating feedback. Check the console for details."
       );
     }
+    styleToggle.dispatchEvent(new Event("change"));
   });
 
   // Copy feedback
@@ -140,6 +170,31 @@ async function main() {
       alert("Could not copy to clipboard.");
     }
   });
+}
+
+function saveProfileId(id) {
+  try {
+    localStorage.setItem(PROFILE_KEY, id);
+  } catch {}
+}
+function loadProfileId() {
+  try {
+    return localStorage.getItem(PROFILE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+function saveStyle(val) {
+  try {
+    localStorage.setItem(STYLE_KEY, val);
+  } catch {}
+}
+function loadStyle() {
+  try {
+    return localStorage.getItem(STYLE_KEY) || "tone";
+  } catch {
+    return "tone";
+  }
 }
 
 // Kick off
