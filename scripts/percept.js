@@ -184,8 +184,25 @@ async function main() {
       }
 
       const feedback = analyzeMarkup(markup, checks, style);
-      displayFeedback(feedback);
-      saveFeedback(feedback);
+
+      const matched = checks
+        .filter((c) => c?.keyword && markup.includes(c.keyword))
+        .map((c) => c.keyword);
+
+      const footer = matched.length
+        ? "\n\nMatched: " +
+          (matched.length > 10
+            ? matched.slice(0, 10).join(", ") + " ..."
+            : matched.join(", "))
+        : "";
+
+      const feedbackWithMeta = feedback + footer;
+
+      document
+        .getElementById("feedback-output")
+        .scrollIntoView({ behavior: "smooth", block: "start" });
+      displayFeedback(feedbackWithMeta);
+      saveFeedback(feedbackWithMeta);
     } catch (err) {
       console.error("Error generating feedback:", err);
       alert(
