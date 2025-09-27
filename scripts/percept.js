@@ -1,279 +1,128 @@
-// percept.js
-
-// Caches profile data after first load
-const profileStore = {
-  loaded: false,
-  data: {},
+// -------- Profile data loader (cached) --------
+const PROFILE_FILES = {
+  adhd: "adhd.json",
+  screenreader: "screenreader.json",
+  lowvision: "lowvision.json",
+  dyslexia: "dyslexia.json",
+  motor: "motor.json",
+  // blinduser exists but has no checks yet; you can add it later if you add rules:
+  // blinduser: 'blinduser.json',
 };
 
-const PROFILE_KEY = "percept.profileId";
-const STYLE_KEY = "percept.style";
+const profileCache = new Map();
 
-const MARKUP_KEY = "percept.markup";
-const FEEDBACK_KEY = "percept.feedback";
+async function loadProfileData(profileKey) {
+  if (!PROFILE_FILES[profileKey]) return null;
+  if (profileCache.has(profileKey)) return profileCache.get(profileKey);
 
-async function loadProfiles() {
-  if (profileStore.loaded) return profileStore.data;
-
-  // Fetch each JSON; if one fails, keep going and log the error
-  const files = [
-    ["adhd", "profiles/adhd.json"],
-    ["screenreader", "profiles/screenreader.json"],
-    ["lowvision", "profiles/lowvision.json"],
-    ["dyslexia", "profiles/dyslexia.json"],
-    ["motor", "profiles/motor.json"],
-  ];
-
-  const entries = await Promise.all(
-    files.map(async ([key, path]) => {
-      try {
-        const res = await fetch(path, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        return [key, json];
-      } catch (e) {
-        console.error(`Failed to load ${path}:`, e);
-        return [key, { name: key, checks: [] }]; // graceful fallback
-      }
-    })
-  );
-
-  profileStore.data = Object.fromEntries(entries);
-  profileStore.loaded = true;
-  return profileStore.data;
-}
-
-// Tone preview
-function updateTonePreview(tone) {
-  const tonePreview = document.getElementById("tone-preview");
-  tonePreview.textContent = tone ? `Tone: ${tone}` : "";
-}
-
-// Validate inputs before feedback generation
-function validateInputs(profileEl, markup) {
-  const out = document.getElementById("feedback-output");
-  const profile = profileEl?.value?.trim();
-
-  if (!profile) {
-    out.textContent = "Please select a profile before generating feedback.";
-    profileEl.focus();
-    return false;
-  }
-  if (!markup || !markup.trim()) {
-    out.textContent = "Please paste some HTML to analyze.";
-    document.getElementById("markup").focus();
-    return false;
-  }
-  return true;
-}
-
-// Analyze markup using selected profile + style (tone vs technical)
-function analyzeMarkup(markup, checks, style) {
-  const hits = [];
-
-  // Simple keyword matching; can be upgraded to regex per check later
-  for (const check of checks) {
-    if (!check?.keyword) continue;
-    if (markup.includes(check.keyword)) {
-      const piece =
-        style === "technical" && check.technical
-          ? `• ${check.technical}`
-          : `• ${
-              check.message ||
-              check.technical ||
-              "Consider revising this pattern."
-            }`;
-      hits.push(piece);
-    }
-  }
-
-  if (hits.length === 0) {
-    return "No issues found for the selected profile.";
-  }
-
-  return hits.join("\n");
-}
-
-// Display feedback
-function displayFeedback(text) {
-  const out = document.getElementById("feedback-output");
-  out.textContent = text;
-}
-
-// MAIN: wire up UI
-async function main() {
-  // Preload profiles
-  await loadProfiles();
-
-  const profileEl = document.getElementById("profile");
-  const markupEl = document.getElementById("markup");
-  const analyzeBtn = document.getElementById("analyze");
-  const styleToggle = document.getElementById("style-toggle");
-  const copyBtn = document.getElementById("copy-feedback");
-
-  // Restore previous selections
-  const savedProfile = loadProfileId();
-  if (savedProfile) {
-    const hasOption = [...profileEl.options].some(
-      (o) => o.value === savedProfile
+  const res = await fetch(PROFILE_FILES[profileKey], { cache: "no-store" });
+  if (!res.ok)
+    throw new Error(
+      `Failed to load ${PROFILE_FILES[profileKey]} (${res.status})`
     );
-    if (hasOption) {
-      profileEl.value = savedProfile;
-      const opt = profileEl.options[profileEl.selectedIndex];
-      updateTonePreview(opt?.dataset?.tone || "");
-    } else {
-      saveProfileId("");
-      updateTonePreview();
+  const json = await res.json();
+  profileCache.set(profileKey, json);
+  return json;
+}
+
+// -------- UI helpers --------
+function $(id) {
+  return document.getElementById(id);
+}
+
+function updateTonePreviewFromSelect(selectEl) {
+  const tone = selectEl.options[selectEl.selectedIndex]?.dataset?.tone || "";
+  $("tone-preview").textContent = tone ? `Tone: ${tone}` : "";
+}
+
+function getSelectedProfileKey() {
+  return $("profile").value || "";
+}
+
+function getFeedbackStyle() {
+  return $("style-toggle").value === "technical" ? "technical" : "tone";
+}
+
+function setFeedback(text) {
+  $("feedback-output").textContent = text;
+}
+
+// -------- Analysis --------
+function analyzeMarkup(markup, profileJson, styleMode) {
+  const checks = Array.isArray(profileJson?.checks) ? profileJson.checks : [];
+  if (!checks.length) return "No issues found for the selected profile.";
+
+  const haystack = (markup || "").toLowerCase().trim();
+  if (!haystack) return "Paste some HTML to analyze.";
+
+  let messages = [];
+  for (const check of checks) {
+    const needle = String(check.keyword || "").toLowerCase();
+    if (!needle) continue;
+    if (haystack.includes(needle)) {
+      const msg =
+        styleMode === "technical"
+          ? check.technical || check.message || ""
+          : check.message || check.technical || "";
+      if (msg) messages.push(`• ${msg}`);
     }
   }
 
-  const savedStyle = loadStyle();
-  styleToggle.value = savedStyle;
+  return messages.length
+    ? messages.join("\n")
+    : "No issues found for the selected profile.";
+}
 
-  styleToggle.addEventListener("change", () => {
-    saveStyle(styleToggle.value);
-  });
+// -------- Event handlers --------
+async function runAnalysis() {
+  const profileKey = getSelectedProfileKey();
+  const markup = $("markup").value;
+  const styleMode = getFeedbackStyle();
 
-  // Restore session data
-  const savedMarkup = loadMarkup();
-  if (savedMarkup) {
-    markupEl.value = savedMarkup;
+  if (!profileKey) {
+    setFeedback("Choose a profile first.");
+    return;
   }
-  const savedFeedback = loadFeedback();
-  if (savedFeedback) {
-    displayFeedback(savedFeedback);
-  }
 
-  // Save textarea on input (lightweight autosave)
-  markupEl.addEventListener("input", () => {
-    saveMarkup(markupEl.value);
-  });
-
-  // Update tone preview on profile change
-  profileEl.addEventListener("change", (e) => {
-    const opt = e.target.options[e.target.selectedIndex];
-    const tone = opt?.dataset?.tone || "";
-    updateTonePreview(tone);
-
-    // NEW: save selection
-    saveProfileId(e.target.value);
-  });
-
-  // Generate feedback on click
-  analyzeBtn.addEventListener("click", async () => {
-    const markup = markupEl.value;
-    if (!validateInputs(profileEl, markup)) return;
-
-    try {
-      const style = styleToggle.value; // "tone" or "technical"
-      const profiles = await loadProfiles();
-      const key = profileEl.value;
-      const checks = profiles[key]?.checks || [];
-
-      if (!checks.length) {
-        const selfTest = [
-          { keyword: "<img", message: "Image tag detected - add alt text." },
-        ];
-        const feedback = analyzeMarkup(markup, selfTest, style);
-        displayFeedback(
-          feedback +
-            "\n\n(Using temporary self-test rule: JSON may not be loading.)"
-        );
-        saveFeedback(feedback);
-        return;
-      }
-
-      const feedback = analyzeMarkup(markup, checks, style);
-
-      const matched = checks
-        .filter((c) => c?.keyword && markup.includes(c.keyword))
-        .map((c) => c.keyword);
-
-      const footer = matched.length
-        ? "\n\nMatched: " +
-          (matched.length > 10
-            ? matched.slice(0, 10).join(", ") + " ..."
-            : matched.join(", "))
-        : "";
-
-      const feedbackWithMeta = feedback + footer;
-
-      document
-        .getElementById("feedback-output")
-        .scrollIntoView({ behavior: "smooth", block: "start" });
-      displayFeedback(feedbackWithMeta);
-      saveFeedback(feedbackWithMeta);
-    } catch (err) {
-      console.error("Error generating feedback:", err);
-      alert(
-        "An error occurred while generating feedback. Check the console for details."
-      );
+  try {
+    const profileJson = await loadProfileData(profileKey);
+    if (!profileJson) {
+      setFeedback("No rules found for this profile.");
+      return;
     }
-    styleToggle.dispatchEvent(new Event("change"));
+    const result = analyzeMarkup(markup, profileJson, styleMode);
+    setFeedback(result);
+  } catch (err) {
+    console.error(err);
+    setFeedback("There was a problem loading profile rules. Please try again.");
+  }
+}
+
+function copyFeedbackToClipboard() {
+  const text = $("feedback-output").textContent || "";
+  if (!text.trim()) return;
+  navigator.clipboard.writeText(text).then(() => {
+    // lightweight “toast” without extra HTML
+    const btn = $("copy-feedback");
+    const original = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => (btn.textContent = original), 900);
+  });
+}
+
+// -------- Wire up --------
+window.addEventListener("DOMContentLoaded", () => {
+  // Keep existing behavior: update tone preview on profile change, and run analysis if there is input
+  $("profile").addEventListener("change", (e) => {
+    updateTonePreviewFromSelect(e.target);
+    // If user already pasted markup, auto-run to show updated guidance
+    if ($("markup").value.trim()) runAnalysis();
   });
 
-  // Copy feedback
-  copyBtn.addEventListener("click", async () => {
-    const text = document.getElementById("feedback-output").textContent || "";
-    try {
-      await navigator.clipboard.writeText(text);
-      copyBtn.textContent = "Copied!";
-      setTimeout(() => (copyBtn.textContent = "Copy Feedback"), 1200);
-    } catch {
-      alert("Could not copy to clipboard.");
-    }
-  });
-}
+  $("style-toggle").addEventListener("change", runAnalysis);
+  $("analyze").addEventListener("click", runAnalysis);
+  $("copy-feedback").addEventListener("click", copyFeedbackToClipboard);
 
-function saveProfileId(id) {
-  try {
-    localStorage.setItem(PROFILE_KEY, id);
-  } catch {}
-}
-function loadProfileId() {
-  try {
-    return localStorage.getItem(PROFILE_KEY) || "";
-  } catch {
-    return "";
-  }
-}
-function saveStyle(val) {
-  try {
-    localStorage.setItem(STYLE_KEY, val);
-  } catch {}
-}
-function loadStyle() {
-  try {
-    return localStorage.getItem(STYLE_KEY) || "tone";
-  } catch {
-    return "tone";
-  }
-}
-
-function saveMarkup(text) {
-  try {
-    localStorage.setItem(MARKUP_KEY, text || "");
-  } catch {}
-}
-function loadMarkup() {
-  try {
-    return localStorage.getItem(MARKUP_KEY) || "";
-  } catch {
-    return "";
-  }
-}
-function saveFeedback(text) {
-  try {
-    localStorage.setItem(FEEDBACK_KEY, text || "");
-  } catch {}
-}
-function loadFeedback() {
-  try {
-    return localStorage.getItem(FEEDBACK_KEY) || "";
-  } catch {
-    return "";
-  }
-}
-
-// Kick off
-document.addEventListener("DOMContentLoaded", main);
+  // Initialize tone preview if a profile is preselected
+  updateTonePreviewFromSelect($("profile"));
+});
