@@ -1,134 +1,199 @@
-body {
-  font-family: Garamond, Georgia, serif;
-  background-color: #f4f4f4;
-  color: #222;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
+/* ===== Theme tokens ===== */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #2563eb;
+  --accent-600: #1d4ed8;
+  --accent-700: #1e40af;
+  --ring: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1220;
+    --surface: #0f172a;
+    --text: #e5e7eb;
+    --muted: #94a3b8;
+    --border: #23314f;
+    --accent: #60a5fa;
+    --accent-600: #3b82f6;
+    --accent-700: #2563eb;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ===== Base ===== */
 * {
   box-sizing: border-box;
 }
-
-section {
-  margin-bottom: 1.5rem;
+html,
+body {
+  height: 100%;
 }
 
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(
+      1200px 600px at 10% -10%,
+      rgba(99, 102, 241, 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 500px at 110% 10%,
+      rgba(59, 130, 246, 0.1),
+      transparent 60%
+    ),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ===== Layout card ===== */
 .percept-tool {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #fff;
+  max-width: 880px;
+  margin: clamp(16px, 4vw, 48px) auto;
+  padding: clamp(16px, 4vw, 40px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
+/* ===== Header ===== */
 header h1 {
-  font-size: 2.4rem;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 header p {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 2rem;
+  margin: 0.25rem 0 1.5rem;
+  font-size: clamp(1rem, 1.6vw, 1.075rem);
+  color: var(--muted);
 }
 
+/* ===== Sections ===== */
+section {
+  margin-bottom: 1.25rem;
+}
+.feedback {
+  margin-top: 1.5rem;
+}
+.feedback h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+/* ===== Forms ===== */
 label {
   display: block;
-  font-weight: bold;
-  margin: 1.2rem 0 0.4rem;
+  font-weight: 600;
+  margin: 0.6rem 0 0.35rem;
 }
 
-select, textarea, button {
+select,
+textarea,
+button {
   width: 100%;
   font-size: 1rem;
-  padding: 0.6rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.02s ease;
 }
 
+textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+/* Native-like select arrow */
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+    linear-gradient(to right, transparent, transparent);
+  background-position: calc(100% - 20px) calc(50% - 3px),
+    calc(100% - 14px) calc(50% - 3px), calc(100% - 2.4rem) 0;
+  background-size: 6px 6px, 6px 6px, 1px 100%;
+  background-repeat: no-repeat;
+  padding-right: 2.6rem;
+}
+
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+/* ===== Buttons ===== */
 button {
-  background-color: #3a7;
-  color: white;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
 }
 
 button:hover {
-  background-color: #276;
+  background: var(--accent-600);
+}
+button:active {
+  transform: translateY(1px);
+  background: var(--accent-700);
 }
 
-select:focus, textarea:focus, button:focus {
-  outline: 2px solid #3a7;
-  outline-offset: 2px;
+/* Spacing for primary + secondary actions */
+#analyze {
+  margin-top: 0.25rem;
+}
+#copy-feedback {
+  margin-top: 0.5rem;
 }
 
-.feedback {
-  margin-top: 2rem;
+/* ===== Tone preview ===== */
+#tone-preview {
+  margin-top: 0.35rem;
+  font-style: normal;
+  font-size: 0.95rem;
+  color: var(--muted);
+  min-height: 1.25rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.04);
 }
 
-.feedback h2 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-}
-
+/* ===== Feedback surface ===== */
 #feedback-output {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.02), transparent 40%),
+    #fff;
+  border: 1px solid var(--border);
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 10px;
+  min-height: 4rem;
+  white-space: pre-wrap; /* preserve line breaks from JS */
 }
 
-#tone-preview {
-  margin-top: -0.5rem;
-  margin-bottom: 1rem;
-  font-style: italic;
-  font-size: 0.95rem;
-  color: #555;
-  min-height: 1.2rem;
-}
-
-#tone-preview {
-  margin-top: -0.5rem;
-  margin-bottom: 1rem;
-  font-style: italic;
-  font-size: 0.95rem;
-  color: #555;
-  min-height: 1.2rem;
-}
-
-.feedback-style-toggle {
-  margin-bottom: 1rem;
-}
-
-.feedback-style-toggle label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.3rem;
-}
-
-
+/* ===== Mobile tweaks ===== */
 @media (max-width: 600px) {
   .percept-tool {
-    padding: 1rem;
+    padding: 18px;
   }
-
-  header h1 {
-    font-size: 1.8rem;
-  }
-
-  textarea, select, button {
-    font-size: 0.95rem;
-    padding: 0.5rem;
-  }
-
-  .feedback h2 {
-    font-size: 1.2rem;
-  }
-
-  #markup {
-    min-height: 6rem;
+  textarea {
+    min-height: 8rem;
   }
 }
