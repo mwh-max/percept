@@ -1,33 +1,21 @@
-/* ===== Theme tokens ===== */
+/* ========== Percept — Radical Layout Refactor (2-column app) ========== */
+/* Design tokens (teal/mustard on cream) */
 :root {
-  --bg: #f3f5f7;
-  --surface: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #2563eb;
-  --accent-600: #1d4ed8;
-  --accent-700: #1e40af;
-  --ring: 0 0 0 3px rgba(37, 99, 235, 0.25);
-  --radius: 16px;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+  --bg: #f6f1e6; /* page */
+  --card: #fffbf2; /* panels */
+  --ink: #1e2523; /* text */
+  --muted: #5e6b64; /* secondary */
+  --border: #e8e1d4; /* lines */
+  --teal: #2b6b6a; /* primary */
+  --teal-600: #245958;
+  --teal-700: #1f4b4a;
+  --mustard: #cfa736; /* accent */
+  --ring: 0 0 0 3px rgba(43, 107, 106, 0.22);
+  --radius: 14px;
+  --shadow: 0 16px 40px rgba(16, 24, 20, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0b1220;
-    --surface: #0f172a;
-    --text: #e5e7eb;
-    --muted: #94a3b8;
-    --border: #23314f;
-    --accent: #60a5fa;
-    --accent-600: #3b82f6;
-    --accent-700: #2563eb;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* ===== Base ===== */
+/* Base reset-lite */
 * {
   box-sizing: border-box;
 }
@@ -35,70 +23,85 @@ html,
 body {
   height: 100%;
 }
-
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: radial-gradient(
-      1200px 600px at 10% -10%,
-      rgba(99, 102, 241, 0.1),
-      transparent 60%
-    ),
-    radial-gradient(
-      1000px 500px at 110% 10%,
-      rgba(59, 130, 246, 0.1),
-      transparent 60%
-    ),
-    var(--bg);
-  color: var(--text);
+    "Helvetica Neue", Arial;
+  color: var(--ink);
+  background: var(--bg);
   line-height: 1.6;
 }
 
-/* ===== Layout card ===== */
+/* ===== App shell: 2-column grid ===== */
 .percept-tool {
-  max-width: 880px;
-  margin: clamp(16px, 4vw, 48px) auto;
-  padding: clamp(16px, 4vw, 40px);
-  background: var(--surface);
+  max-width: 1120px;
+  margin: 24px auto;
+  padding: 20px;
+  background: transparent; /* we’ll card individual panes */
+  display: grid;
+  grid-template-columns: 380px 1fr; /* left rail / main output */
+  grid-template-rows: auto 1fr auto; /* hero / content / footer btn */
+  grid-template-areas:
+    "hero   hero"
+    "left   right"
+    "footer right";
+  gap: 20px;
+}
+
+/* ===== Hero (full-width headline) ===== */
+header {
+  grid-area: hero;
+}
+header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  color: var(--teal);
+}
+header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* ===== Left rail (controls) ===== */
+.profile-select,
+.html-input,
+.feedback-style-toggle,
+#analyze {
+  grid-area: left; /* stacked with a card container look */
+}
+
+.profile-select,
+.html-input,
+.feedback-style-toggle,
+#analyze {
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  padding: 16px;
 }
 
-/* ===== Header ===== */
-header h1 {
-  margin: 0 0 0.5rem 0;
-  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+/* Stack spacing inside left column */
+.profile-select + .html-input {
+  margin-top: 12px;
+}
+.html-input + .feedback-style-toggle {
+  margin-top: 12px;
+}
+.feedback-style-toggle + #analyze {
+  margin-top: 12px;
 }
 
-header p {
-  margin: 0.25rem 0 1.5rem;
-  font-size: clamp(1rem, 1.6vw, 1.075rem);
-  color: var(--muted);
-}
-
-/* ===== Sections ===== */
-section {
-  margin-bottom: 1.25rem;
-}
-.feedback {
-  margin-top: 1.5rem;
-}
-.feedback h2 {
-  font-size: 1.15rem;
-  margin: 0 0 0.6rem;
-}
-
-/* ===== Forms ===== */
+/* Controls styling */
 label {
   display: block;
-  font-weight: 600;
-  margin: 0.6rem 0 0.35rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: 0.01em;
 }
-
 select,
 textarea,
 button {
@@ -108,92 +111,131 @@ button {
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
-  color: var(--text);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease,
-    transform 0.02s ease;
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.02s;
 }
-
-textarea {
-  min-height: 10rem;
-  resize: vertical;
-}
-
-/* Native-like select arrow */
-select {
-  appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
-    linear-gradient(135deg, var(--muted) 50%, transparent 50%),
-    linear-gradient(to right, transparent, transparent);
-  background-position: calc(100% - 20px) calc(50% - 3px),
-    calc(100% - 14px) calc(50% - 3px), calc(100% - 2.4rem) 0;
-  background-size: 6px 6px, 6px 6px, 1px 100%;
-  background-repeat: no-repeat;
-  padding-right: 2.6rem;
-}
-
 select:focus,
 textarea:focus,
 button:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--teal);
   box-shadow: var(--ring);
 }
 
-/* ===== Buttons ===== */
-button {
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  border: none;
-}
-
-button:hover {
-  background: var(--accent-600);
-}
-button:active {
-  transform: translateY(1px);
-  background: var(--accent-700);
-}
-
-/* Spacing for primary + secondary actions */
-#analyze {
-  margin-top: 0.25rem;
-}
-#copy-feedback {
-  margin-top: 0.5rem;
-}
-
-/* ===== Tone preview ===== */
-#tone-preview {
-  margin-top: 0.35rem;
-  font-style: normal;
-  font-size: 0.95rem;
-  color: var(--muted);
-  min-height: 1.25rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  background: rgba(99, 102, 241, 0.04);
-}
-
-/* ===== Feedback surface ===== */
-#feedback-output {
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.02), transparent 40%),
+/* Code-like input area */
+textarea#markup {
+  min-height: 280px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  line-height: 1.5;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), transparent 35%),
     #fff;
-  border: 1px solid var(--border);
-  padding: 1rem;
-  border-radius: 10px;
-  min-height: 4rem;
-  white-space: pre-wrap; /* preserve line breaks from JS */
 }
 
-/* ===== Mobile tweaks ===== */
-@media (max-width: 600px) {
+/* Analyze button = prominent call-to-action */
+#analyze {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+}
+#analyze::before {
+  content: "▶";
+  font-weight: 900;
+  color: #fff;
+  background: var(--teal-700);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+}
+#analyze {
+  background: var(--teal);
+  border: 1px solid var(--teal-700);
+}
+#analyze:hover {
+  background: var(--teal-600);
+}
+#analyze:active {
+  transform: translateY(1px);
+}
+
+/* Tone preview chip inside profile-select */
+#tone-preview {
+  margin-top: 8px;
+  font-size: 0.925rem;
+  color: var(--ink);
+  background: #fffdf7;
+  padding: 0.45rem 0.6rem;
+  border: 1px dashed color-mix(in oklab, var(--teal) 35%, var(--border));
+  border-radius: 8px;
+  min-height: 1.25rem;
+}
+
+/* ===== Right pane (sticky feedback) ===== */
+.feedback {
+  grid-area: right;
+  position: sticky; /* stays visible while editing */
+  top: 16px;
+  align-self: start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  min-height: 200px;
+}
+.feedback h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  color: var(--teal);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Feedback output surface */
+#feedback-output {
+  background: #fffdf7;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 120px;
+  white-space: pre-wrap;
+}
+
+/* ===== Footer action (Copy Feedback) pinned under left rail) ===== */
+#copy-feedback {
+  grid-area: footer;
+  background: #fff;
+  border: 1px solid var(--mustard);
+  color: var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  font-weight: 700;
+}
+#copy-feedback:hover {
+  box-shadow: 0 0 0 3px rgba(207, 167, 54, 0.25);
+}
+
+/* ===== Small-screen single column ===== */
+@media (max-width: 860px) {
   .percept-tool {
-    padding: 18px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "hero"
+      "left"
+      "footer"
+      "right"
+      ".";
   }
-  textarea {
-    min-height: 8rem;
+  .feedback {
+    position: relative;
+    top: 0;
+  }
+}
+
+/* ===== Reduced motion respect ===== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
   }
 }
