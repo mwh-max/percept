@@ -3,117 +3,82 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="./favicon.ico" />
-
     <title>Percept – Accessibility Prompt Feedback Tool</title>
-    <meta
-      name="description"
-      content="Percept helps users with disabilities refine AI prompts for clarity, tone and accessibility. Built for inclusivity and usability."
-    />
     <link rel="stylesheet" href="style.css" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Percept",
-        "alternateName": "Percept – Accessibility Prompt Feedback Tool",
-        "applicationCategory": "Accessibility tool",
-        "operatingSystem": "Web",
-        "description": "Percept helps people with disabilities and neurodivergent users refine AI prompts for clarity, tone and accessibility.",
-        "url": "https://www.sleepingbear.us/projects/percept.html",
-        "creator": {
-          "@type": "Person",
-          "name": "Matthew Herron"
-        },
-        "inLanguage": "en",
-        "keywords": [
-          "accessibility",
-          "prompt feedback",
-          "AI prompts",
-          "neurodivergent",
-          "disability"
-        ]
-      }
-    </script>
   </head>
   <body>
-    <main class="percept-tool">
-      <header>
-        <h1>Percept – Accessibility Prompt Feedback Tool</h1>
-        <p>
-          Percept is built to help people with disabilities and neurodivergent
-          users get clearer, more accurate responses from AI. It looks at the
-          words you use in a prompt, points out where tone or structure might
-          cause confusion and suggests ways to make the request easier for the
-          AI to understand. The goal is to make sure the technology works for
-          you, not against you.
-        </p>
-      </header>
+    <header>
+      <h1>Percept – Accessibility Prompt Feedback Tool</h1>
+      <p>
+        Percept is built to help people with disabilities and neurodivergent
+        users get clearer, more accurate responses from AI. It looks at the
+        words you use in a prompt, points out where tone or structure might
+        cause confusion and suggests ways to make the request easier for the AI
+        to understand. The goal is to make sure the technology works for you,
+        not against you.
+      </p>
+    </header>
 
-      <section class="profile-select">
-        <label for="profile">Choose a user experience profile:</label>
-        <select id="profile">
-          <option value="">--Select--</option>
-          <option value="adhd" data-tone="scattered, effortful, alert">
-            ADHD
-          </option>
-          <option
-            value="screenreader"
-            data-tone="linear, anticipatory, moment-to-moment"
+    <main class="grid">
+      <!-- Left column -->
+      <section class="left-column">
+        <!-- Feedback style dropdown (first) -->
+        <div class="feedback-style-toggle">
+          <label for="profile"><strong>Feedback style:</strong></label>
+          <select id="profile">
+            <option value="">Select profile</option>
+            <option value="adhd" data-tone="scattered, effortful, alert">
+              ADHD
+            </option>
+            <option value="dyslexia" data-tone="hesitant, decoding, searching">
+              Dyslexia
+            </option>
+            <option value="screenreader" data-tone="linear, auditory, patient">
+              Screenreader
+            </option>
+            <option
+              value="lowvision"
+              data-tone="zoomed, high-contrast, careful"
+            >
+              Low Vision
+            </option>
+            <option value="motor" data-tone="deliberate, single-step, precise">
+              Motor
+            </option>
+          </select>
+        </div>
+
+        <!-- HTML/prompt textarea (second) -->
+        <div class="input-block">
+          <label for="markup"
+            ><strong>Paste your HTML or prompt:</strong></label
           >
-            Screenreader User
-          </option>
-          <option
-            value="lowvision"
-            data-tone="blurred, tentative, contrast-seeking"
-          >
-            Low Vision
-          </option>
-          <option
-            value="dyslexia"
-            data-tone="effortful, pattern-sensitive, clarity-seeking"
-          >
-            Dyslexia
-          </option>
-          <option
-            value="motor"
-            data-tone="deliberate, effort-aware, access-conscious"
-          >
-            Motor Disability
-          </option>
-        </select>
-        <div id="tone-preview" aria-live="polite"></div>
+          <textarea
+            id="markup"
+            name="markup"
+            rows="10"
+            placeholder="Paste HTML or write your prompt here…"
+            aria-describedby="markup-help"
+          ></textarea>
+          <p id="markup-help" class="help-text">
+            Tip: You can paste raw HTML. The checker just looks for keywords
+            mentioned in the selected profile.
+          </p>
+        </div>
       </section>
 
-      <section class="html-input">
-        <label for="markup">Paste layout HTML here:</label>
-        <textarea
-          id="markup"
-          rows="10"
-          placeholder="Paste your HTML snippet here…"
-          autocomplete="off"
-        ></textarea>
-      </section>
-
-      <button id="analyze">Generate Feedback</button>
-
-      <section class="feedback-style-toggle">
-        <label for="style-toggle">Feedback style:</label>
-        <select id="style-toggle">
-          <option value="tone" selected>Emotional Tone</option>
-          <option value="technical">Technical Feedback</option>
-        </select>
-      </section>
-
+      <!-- Right column -->
       <section class="feedback">
         <h2>Feedback</h2>
-        <div id="feedback-output" aria-live="polite"></div>
+        <div id="tone-preview"></div>
+        <pre id="feedback-output" aria-live="polite"></pre>
       </section>
-
-      <button id="copy-feedback" style="margin-top: 1rem">Copy Feedback</button>
     </main>
 
-    <script src="/scripts/percept.js" defer></script>
+    <footer>
+      <button id="copy-feedback">Copy Feedback</button>
+    </footer>
+
+    <script src="scripts/percept.js" defer></script>
   </body>
 </html>

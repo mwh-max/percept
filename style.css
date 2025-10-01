@@ -1,241 +1,208 @@
-/* ========== Percept — Radical Layout Refactor (2-column app) ========== */
-/* Design tokens (teal/mustard on cream) */
+/* ==========================================================================
+   Percept – clean, conflict-safe stylesheet
+   - Scope with variables and conservative selectors
+   - Solid spacing + readable cards
+   - Responsive: 1 col (mobile) → 2 cols (>= 960px)
+   ========================================================================== */
+
 :root {
-  --bg: #f6f1e6; /* page */
-  --card: #fffbf2; /* panels */
-  --ink: #1e2523; /* text */
-  --muted: #5e6b64; /* secondary */
-  --border: #e8e1d4; /* lines */
-  --teal: #2b6b6a; /* primary */
-  --teal-600: #245958;
-  --teal-700: #1f4b4a;
-  --mustard: #cfa736; /* accent */
-  --ring: 0 0 0 3px rgba(43, 107, 106, 0.22);
-  --radius: 14px;
-  --shadow: 0 16px 40px rgba(16, 24, 20, 0.1);
+  --bg: #f3efe6; /* page background */
+  --card: #fcfbf7; /* card background */
+  --ink: #22333b; /* body text */
+  --muted: #5b6b72;
+  --teal: #1f7a6d; /* heading accent */
+  --accent: #e9d7a4; /* soft divider */
+  --radius: 12px;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
+  --border: 1px solid rgba(0, 0, 0, 0.12);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", "Liberation Sans", sans-serif;
 }
 
-/* Base reset-lite */
-* {
-  box-sizing: border-box;
-}
+/* Base layout (no aggressive resets) */
 html,
 body {
   height: 100%;
 }
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  font-family: var(--sans);
   color: var(--ink);
-  background: var(--bg);
-  line-height: 1.6;
+  background: linear-gradient(180deg, var(--bg), #f7f4ec);
+  line-height: 1.55;
 }
 
-/* ===== App shell: 2-column grid ===== */
-.percept-tool {
-  max-width: 1120px;
-  margin: 24px auto;
-  padding: 20px;
-  background: transparent; /* we’ll card individual panes */
-  display: grid;
-  grid-template-columns: 380px 1fr; /* left rail / main output */
-  grid-template-rows: auto 1fr auto; /* hero / content / footer btn */
-  grid-template-areas:
-    "hero   hero"
-    "left   right"
-    "footer right";
-  gap: 20px;
-}
-
-/* ===== Hero (full-width headline) ===== */
+/* Header */
 header {
-  grid-area: hero;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) var(--space-3);
 }
-header h1 {
-  margin: 0;
-  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-  letter-spacing: -0.015em;
-  line-height: 1.1;
+h1 {
+  margin: 0 0 var(--space-2);
+  font-size: clamp(1.75rem, 2.8vw + 1rem, 2.6rem);
   color: var(--teal);
+  letter-spacing: 0.2px;
 }
 header p {
-  margin: 8px 0 0;
+  margin: 0;
   color: var(--muted);
-  font-size: 1.05rem;
+  max-width: 70ch;
 }
 
-/* ===== Left rail (controls) ===== */
-.profile-select,
-.html-input,
-.feedback-style-toggle,
-#analyze {
-  grid-area: left; /* stacked with a card container look */
+/* Main grid */
+main.grid {
+  max-width: 1100px;
+  margin: var(--space-4) auto var(--space-5);
+  padding: 0 var(--space-3);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+@media (min-width: 960px) {
+  main.grid {
+    grid-template-columns: 1fr 1fr; /* left / right */
+    align-items: start;
+  }
 }
 
-.profile-select,
-.html-input,
+/* Left column stack */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Cards / panels */
 .feedback-style-toggle,
-#analyze {
+.input-block,
+.feedback {
   background: var(--card);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Stack spacing inside left column */
-.profile-select + .html-input {
-  margin-top: 12px;
+/* Feedback style (dropdown) */
+.feedback-style-toggle {
+  padding: var(--space-3);
 }
-.html-input + .feedback-style-toggle {
-  margin-top: 12px;
-}
-.feedback-style-toggle + #analyze {
-  margin-top: 12px;
-}
-
-/* Controls styling */
-label {
+.feedback-style-toggle label {
   display: block;
   font-weight: 700;
-  margin: 0 0 8px;
-  letter-spacing: 0.01em;
+  margin-bottom: var(--space-2);
 }
-select,
-textarea,
-button {
+.feedback-style-toggle select {
   width: 100%;
-  font-size: 1rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  appearance: none;
+  padding: var(--space-3);
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid rgba(0, 0, 0, 0.18);
   background: #fff;
-  color: var(--ink);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.02s;
+  font: inherit;
 }
-select:focus,
-textarea:focus,
-button:focus {
+
+/* Input block (textarea) */
+.input-block {
+  padding: var(--space-3);
+}
+.input-block label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+.input-block textarea {
+  width: 100%;
+  min-height: 12rem;
+  padding: var(--space-3);
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: #fff;
+  font-family: var(--mono);
+  line-height: 1.45;
+  resize: vertical;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.input-block textarea:focus {
   outline: none;
-  border-color: var(--teal);
-  box-shadow: var(--ring);
+  border-color: color-mix(in srgb, var(--teal) 65%, #ffffff);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--teal) 28%, transparent);
+}
+.help-text {
+  margin: var(--space-2) 0 0;
+  font-size: 0.92rem;
+  color: var(--muted);
 }
 
-/* Code-like input area */
-textarea#markup {
-  min-height: 280px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
-    monospace;
-  line-height: 1.5;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), transparent 35%),
-    #fff;
+/* Right column (feedback output) */
+.feedback {
+  padding: var(--space-3) var(--space-3) var(--space-4);
+}
+.feedback h2 {
+  margin: 0 0 var(--space-2);
+  color: var(--teal);
+  font-size: 1.25rem;
+}
+#tone-preview {
+  margin: 0 0 var(--space-2);
+  color: var(--muted);
+  font-weight: 600;
+}
+#feedback-output {
+  margin: 0;
+  padding: var(--space-3);
+  min-height: 10rem;
+  background: #fff;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: var(--mono);
 }
 
-/* Analyze button = prominent call-to-action */
-#analyze {
+/* Footer: copy button */
+footer {
+  max-width: 1100px;
+  margin: 0 auto var(--space-5);
+  padding: 0 var(--space-3);
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0;
+  justify-content: flex-start;
 }
-#analyze::before {
-  content: "▶";
-  font-weight: 900;
-  color: #fff;
-  background: var(--teal-700);
-  border-radius: 8px;
-  padding: 0.5rem 0.6rem;
+#copy-feedback {
+  padding: 0.8rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--teal) 30%, #0000);
+  background: linear-gradient(180deg, #fff, #f4fbf9);
+  color: var(--teal);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
-#analyze {
-  background: var(--teal);
-  border: 1px solid var(--teal-700);
+#copy-feedback:hover {
+  box-shadow: var(--shadow-lg);
 }
-#analyze:hover {
-  background: var(--teal-600);
-}
-#analyze:active {
+#copy-feedback:active {
   transform: translateY(1px);
 }
 
-/* Tone preview chip inside profile-select */
-#tone-preview {
-  margin-top: 8px;
-  font-size: 0.925rem;
-  color: var(--ink);
-  background: #fffdf7;
-  padding: 0.45rem 0.6rem;
-  border: 1px dashed color-mix(in oklab, var(--teal) 35%, var(--border));
-  border-radius: 8px;
-  min-height: 1.25rem;
+/* Subtle dividers (optional) */
+hr,
+.section-divider {
+  border: 0;
+  border-top: 1px dashed var(--accent);
+  margin: var(--space-4) 0;
 }
 
-/* ===== Right pane (sticky feedback) ===== */
-.feedback {
-  grid-area: right;
-  position: sticky; /* stays visible while editing */
-  top: 16px;
-  align-self: start;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
-  min-height: 200px;
-}
-.feedback h2 {
-  margin: 0 0 12px;
-  font-size: 1.05rem;
-  color: var(--teal);
-  font-weight: 800;
-  letter-spacing: 0.01em;
-}
-
-/* Feedback output surface */
-#feedback-output {
-  background: #fffdf7;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  min-height: 120px;
-  white-space: pre-wrap;
-}
-
-/* ===== Footer action (Copy Feedback) pinned under left rail) ===== */
-#copy-feedback {
-  grid-area: footer;
-  background: #fff;
-  border: 1px solid var(--mustard);
-  color: var(--ink);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  font-weight: 700;
-}
-#copy-feedback:hover {
-  box-shadow: 0 0 0 3px rgba(207, 167, 54, 0.25);
-}
-
-/* ===== Small-screen single column ===== */
-@media (max-width: 860px) {
-  .percept-tool {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-areas:
-      "hero"
-      "left"
-      "footer"
-      "right"
-      ".";
-  }
-  .feedback {
-    position: relative;
-    top: 0;
-  }
-}
-
-/* ===== Reduced motion respect ===== */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
+/* Accessibility helpers */
+[aria-live="polite"] {
+  outline: none;
 }

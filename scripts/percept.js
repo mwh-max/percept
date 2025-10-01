@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyButton = document.getElementById("copy-feedback");
 
   const profiles = {
-    adhd: "adhd.json",
-    screenreader: "screenreader.json",
-    lowvision: "lowvision.json",
-    dyslexia: "dyslexia.json",
-    motor: "motor.json",
-    // blinduser: "blinduser.json", // planned, not yet wired
+    adhd: "profiles/adhd.json",
+    screenreader: "profiles/screenreader.json",
+    lowvision: "profiles/lowvision.json",
+    dyslexia: "profiles/dyslexia.json",
+    motor: "profiles/motor.json",
+    // blinduser: "profiles/blinduser.json", // planned, not yet wired
   };
 
   let profileCache = {};
@@ -131,4 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
     feedbackOutput.textContent = "";
   });
   copyButton.addEventListener("click", copyFeedbackToClipboard);
+  const analyzeBtn = document.getElementById("analyze");
+  if (analyzeBtn) analyzeBtn.addEventListener("click", runAnalysis);
 });
