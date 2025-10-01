@@ -1,90 +1,82 @@
 /**
- * Percept — cleaned core logic (no duplicate listeners; robust JSON loading)
- * - Wires: #profile, #markup, #feedback-output, #copy-feedback
- * - Lazy-loads profile JSON once (with cache + in-flight request dedupe)
- * - Validates inputs; graceful errors; ARIA-friendly updates
+ * Percept core
+ * - Elements: #profile, #tone-preview, #markup, #feedback-output, #copy-feedback
+ * - Loads profile JSON (adhd.json, dyslexia.json, screenreader.json, lowvision.json, motor.json)
+ * - Runs simple keyword checks against the user's text
+ * - Debounced analysis on typing; auto-runs on profile change if text exists
  */
 
 (() => {
-  /** @type {Record<string, string>} */
+  // Map of profile key -> json file
   const PROFILE_FILES = {
     adhd: "adhd.json",
+    dyslexia: "dyslexia.json",
     screenreader: "screenreader.json",
     lowvision: "lowvision.json",
-    dyslexia: "dyslexia.json",
     motor: "motor.json",
-    // blinduser: "blinduser.json", // add when you have checks ready
+    // blinduser: "blinduser.json", // add when ready
   };
 
-  /** Cache loaded JSON once fetched */
-  const profileCache = new Map();
-  /** Track in-flight fetches to prevent duplicate requests */
-  const inflight = new Map();
-
-  // ------- DOM lookups (single pass) -------
+  // ---- DOM ----
   const $profile = document.getElementById("profile");
-  const $markup = document.getElementById("markup");
-  const $feedback = document.getElementById("feedback-output");
   const $tone = document.getElementById("tone-preview");
-  const $copyBtn = document.getElementById("copy-feedback");
+  const $markup = document.getElementById("markup");
+  const $out = document.getElementById("feedback-output");
+  const $copy = document.getElementById("copy-feedback");
 
-  // ------- Utilities -------
-  const setTone = (tone) => {
+  // Guard if markup isn’t present in the page yet
+  if (!$profile || !$markup || !$out) {
+    console.warn("Percept: required elements not found.");
+    return;
+  }
+
+  // ---- Cache & inflight fetch dedupe ----
+  const cache = new Map(); // key -> checks[]
+  const inflight = new Map(); // key -> Promise<checks[]>
+
+  // ---- Helpers ----
+  const setTone = () => {
     if (!$tone) return;
+    const opt = $profile.options[$profile.selectedIndex];
+    const tone = opt?.dataset?.tone || "";
     $tone.textContent = tone ? `Tone: ${tone}` : "";
   };
 
-  const setFeedback = (text) => {
-    if (!$feedback) return;
-    $feedback.textContent = text;
+  const setOutput = (text) => {
+    $out.textContent = text;
   };
 
-  const getSelectedTone = () => {
-    if (!$profile) return "";
-    const opt = $profile.options[$profile.selectedIndex];
-    return opt?.dataset?.tone || "";
-  };
-
-  const validateInputs = () => {
-    if (!$profile || !$markup) return false;
-    const val = $profile.value?.trim();
-    const txt = $markup.value?.trim();
-    let problems = [];
-    if (!val) problems.push("Choose a profile.");
-    if (!txt) problems.push("Paste or type your prompt/markup.");
+  const validate = () => {
+    const problems = [];
+    if (!$profile.value?.trim()) problems.push("Choose a profile.");
+    if (!$markup.value?.trim())
+      problems.push("Paste or type your prompt/markup.");
     if (problems.length) {
-      setFeedback(problems.join(" "));
+      setOutput(problems.join(" "));
       return false;
     }
     return true;
   };
 
-  /**
-   * Fetch and cache checks for a profile key.
-   * @param {string} key
-   * @returns {Promise<Array<{keyword:string,message:string,technical?:string}>>}
-   */
-  const loadProfileChecks = async (key) => {
+  const loadChecks = async (key) => {
     const path = PROFILE_FILES[key];
     if (!path) return [];
 
-    if (profileCache.has(key)) return profileCache.get(key);
-
-    // prevent duplicate fetches
+    if (cache.has(key)) return cache.get(key);
     if (inflight.has(key)) return inflight.get(key);
 
     const p = fetch(path, { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status}`);
         const json = await res.json();
-        const arr = Array.isArray(json?.checks) ? json.checks : [];
-        profileCache.set(key, arr);
+        const checks = Array.isArray(json?.checks) ? json.checks : [];
+        cache.set(key, checks);
         inflight.delete(key);
-        return arr;
+        return checks;
       })
       .catch((err) => {
-        inflight.delete(key);
         console.error(err);
+        inflight.delete(key);
         return [];
       });
 
@@ -92,23 +84,16 @@
     return p;
   };
 
-  /**
-   * Run simple keyword checks against the user's text.
-   * @param {string} text
-   * @param {Array<{keyword:string,message:string,technical?:string}>} checks
-   * @returns {string}
-   */
   const analyze = (text, checks) => {
-    if (!checks.length) {
-      return "No profile-specific checks available yet.";
-    }
-
+    if (!checks?.length) return "No profile-specific checks available yet.";
+    const lower = text.toLowerCase();
     const hits = [];
-    for (const chk of checks) {
-      if (!chk?.keyword || !chk?.message) continue;
-      if (text.toLowerCase().includes(chk.keyword.toLowerCase())) {
-        const tech = chk.technical ? `\n  • ${chk.technical}` : "";
-        hits.push(`Tip: ${chk.message}${tech}`);
+
+    for (const c of checks) {
+      if (!c?.keyword || !c?.message) continue;
+      if (lower.includes(String(c.keyword).toLowerCase())) {
+        const tech = c.technical ? `\n  • ${c.technical}` : "";
+        hits.push(`Tip: ${c.message}${tech}`);
       }
     }
 
@@ -116,40 +101,41 @@
     return hits.join("\n\n");
   };
 
-  // ------- Event handlers -------
-  const handleProfileChange = async () => {
-    if (!$profile) return;
-    setTone(getSelectedTone());
-
-    if (!$markup?.value?.trim()) {
-      // Don’t force-run analysis if user hasn’t entered text yet.
-      return;
-    }
-    await runAnalysis();
+  // ---- Debounce for typing ----
+  let t = null;
+  const debounce = (fn, ms = 300) => {
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), ms);
+    };
   };
 
-  const runAnalysis = async () => {
-    if (!validateInputs()) return;
-
+  const run = async () => {
+    if (!validate()) return;
+    setOutput("Analyzing…");
     const key = $profile.value.trim();
     const text = $markup.value.trim();
-
-    setFeedback("Analyzing…");
-    const checks = await loadProfileChecks(key);
-    const result = analyze(text, checks);
-    setFeedback(result);
+    const checks = await loadChecks(key);
+    setOutput(analyze(text, checks));
   };
 
-  const copyFeedbackToClipboard = async () => {
-    if (!$feedback) return;
-    const txt = $feedback.textContent || "";
-    if (!txt.trim()) return;
+  const onProfileChange = async () => {
+    setTone();
+    if ($markup.value.trim()) {
+      await run();
+    } else {
+      setOutput(""); // nothing to analyze yet
+    }
+  };
 
+  const onCopy = async () => {
+    const txt = $out.textContent || "";
+    if (!txt.trim()) return;
     try {
       await navigator.clipboard.writeText(txt);
-      flashCopyState("Copied!");
+      flashCopy("Copied!");
     } catch {
-      // Fallback: select a hidden textarea and copy
+      // Fallback
       const ta = document.createElement("textarea");
       ta.value = txt;
       ta.setAttribute("readonly", "");
@@ -159,35 +145,37 @@
       ta.select();
       try {
         document.execCommand("copy");
-        flashCopyState("Copied!");
+        flashCopy("Copied!");
       } catch (e) {
         console.error("Copy failed:", e);
-        flashCopyState("Copy failed");
+        flashCopy("Copy failed");
       } finally {
         document.body.removeChild(ta);
       }
     }
   };
 
-  const flashCopyState = (label) => {
-    if (!$copyBtn) return;
-    const prev = $copyBtn.textContent;
-    $copyBtn.textContent = label;
-    $copyBtn.setAttribute("aria-live", "polite");
+  const flashCopy = (label) => {
+    if (!$copy) return;
+    const prev = $copy.textContent;
+    $copy.textContent = label || "Copied!";
+    $copy.setAttribute("aria-live", "polite");
     setTimeout(() => {
-      $copyBtn.textContent = prev || "Copy Feedback";
+      $copy.textContent = prev || "Copy Feedback";
     }, 1200);
   };
 
-  // ------- Wire up once DOM is ready -------
-  window.addEventListener("DOMContentLoaded", () => {
-    if ($profile) $profile.addEventListener("change", handleProfileChange);
-    if ($markup) $markup.addEventListener("input", () => setFeedback("")); // clear stale output as user types
-    const analyzeBtn = document.getElementById("analyze"); // optional button, if you add one later
-    if (analyzeBtn) analyzeBtn.addEventListener("click", runAnalysis);
-    if ($copyBtn) $copyBtn.addEventListener("click", copyFeedbackToClipboard);
+  // ---- Wire up ----
+  $profile.addEventListener("change", onProfileChange);
+  $markup.addEventListener(
+    "input",
+    debounce(() => {
+      setOutput(""); // clear stale results while typing
+      if ($profile.value.trim() && $markup.value.trim()) run();
+    }, 350)
+  );
+  if ($copy) $copy.addEventListener("click", onCopy);
 
-    // Initialize tone preview if a profile is preselected
-    setTone(getSelectedTone());
-  });
+  // Init on load (in case a default profile is selected)
+  setTone();
 })();
