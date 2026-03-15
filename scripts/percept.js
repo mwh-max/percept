@@ -43,9 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "Analyzing…";
     feedbackOutput.textContent = "Analyzing…";
 
     const profileData = await loadProfile(profileKey);
+
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = "Analyze";
+
     if (!profileData || !Array.isArray(profileData.checks)) {
       feedbackOutput.textContent =
         "No checks available for this profile or failed to load.";
@@ -126,11 +132,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const analyzeBtn = document.getElementById("analyze");
+
   profileSelect.addEventListener("change", handleProfileChange);
   markupInput.addEventListener("input", () => {
     feedbackOutput.textContent = "";
   });
+  markupInput.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      runAnalysis();
+    }
+  });
   copyButton.addEventListener("click", copyFeedbackToClipboard);
-  const analyzeBtn = document.getElementById("analyze");
   if (analyzeBtn) analyzeBtn.addEventListener("click", runAnalysis);
 });

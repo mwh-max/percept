@@ -2,6 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Sora:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Percept – Accessibility Prompt Feedback Tool</title>
     <link rel="stylesheet" href="style.css" />
@@ -26,7 +32,7 @@
         <div class="feedback-style-toggle">
           <label for="profile"><strong>Feedback style:</strong></label>
           <select id="profile">
-            <option value="">Select profile</option>
+            <option value="" disabled selected>Select profile</option>
             <option value="adhd" data-tone="scattered, effortful, alert">
               ADHD
             </option>
