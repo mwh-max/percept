@@ -6,17 +6,20 @@
     {
       "keyword": "carousel",
       "message": "Auto‑advancing carousels split attention. Provide play/pause and let users control motion.",
-      "technical": "Avoid autoplay. Use prefers-reduced-motion and provide manual controls."
+      "technical": "Avoid autoplay. Use prefers-reduced-motion and provide manual controls.",
+      "severity": "warn"
     },
     {
       "keyword": "<marquee",
       "message": "Moving text increases cognitive load. Prefer static text with clear hierarchy.",
-      "technical": "Remove marquee. Use headings, spacing, and lists for structure."
+      "technical": "Remove marquee. Use headings, spacing, and lists for structure.",
+      "severity": "warn"
     },
     {
       "keyword": "modal",
       "message": "Stacked modals and popups create context switching. Reduce interruptions.",
-      "technical": "Avoid nested modals. Ensure focus trapping and Escape to close."
+      "technical": "Avoid nested modals. Ensure focus trapping and Escape to close.",
+      "severity": "info"
     }
   ]
 }

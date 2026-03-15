@@ -5,15 +5,18 @@
   "checks": [
     {
       "keyword": "font-family",
-      "message": "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces."
+      "message": "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces.",
+      "severity": "warn"
     },
     {
       "keyword": "line-height",
-      "message": "Adequate line spacing improves readability. Aim for at least 1.5x the font size."
+      "message": "Adequate line spacing improves readability. Aim for at least 1.5x the font size.",
+      "severity": "info"
     },
     {
       "keyword": "justify",
-      "message": "Justified text can create uneven spacing. Left-align for consistent rhythm."
+      "message": "Justified text can create uneven spacing. Left-align for consistent rhythm.",
+      "severity": "warn"
     }
   ]
 }

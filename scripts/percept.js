@@ -64,18 +64,22 @@ document.addEventListener("DOMContentLoaded", () => {
         check.keyword &&
         userText.toLowerCase().includes(check.keyword.toLowerCase())
       ) {
-        let msg = `Tip: ${check.message}`;
-        if (check.technical) {
-          msg += `\n  • ${check.technical}`;
+        let severityLabel;
+        if (check.severity === "warn") {
+          severityLabel = "Warning: ";
+        } else {
+          severityLabel = "Note: ";
         }
-        results.push(msg);
+        results.push(
+          `<div class="result-${check.severity}">${severityLabel}${check.message}</div>`,
+        );
       }
     }
 
     if (results.length === 0) {
-      feedbackOutput.textContent = "No issues found for the selected profile.";
+      feedbackOutput.innerHTML = "No issues found for the selected profile.";
     } else {
-      feedbackOutput.textContent = results.join("\n\n");
+      feedbackOutput.innerHTML = results.join("");
     }
   }
 

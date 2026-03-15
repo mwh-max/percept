@@ -5,11 +5,13 @@
   "checks": [
     {
       "keyword": "color:",
-      "message": "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments."
+      "message": "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments.",
+      "severity": "warn"
     },
     {
       "keyword": "font-size",
-      "message": "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage."
+      "message": "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage.",
+      "severity": "warn"
     }
   ]
 }
