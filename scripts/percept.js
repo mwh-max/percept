@@ -35,6 +35,10 @@ copyBtn.addEventListener("click", () => {
 });
 
 // ─── Render feedback as structured HTML cards ───────────────────────────────
+// Card class is determined by two signals in priority order:
+//   1. If style toggle is "technical" and a technical field exists → result-warn
+//   2. Otherwise → the check's own severity field ("warn" → result-warn,
+//      "info" or absent → result-info)
 function renderFeedback(checks, markup, style) {
   feedbackBox.innerHTML = "";
 
@@ -53,10 +57,16 @@ function renderFeedback(checks, markup, style) {
 
   matched.forEach((check) => {
     const card = document.createElement("p");
-    // Checks with a 'technical' field are treated as warnings; others are informational
     const isTechnical = style === "technical" && check.technical;
-    card.className = isTechnical ? "result-warn" : "result-info";
-    card.textContent = isTechnical ? check.technical : check.message;
+
+    if (isTechnical) {
+      card.className = "result-warn";
+      card.textContent = check.technical;
+    } else {
+      card.className = check.severity === "warn" ? "result-warn" : "result-info";
+      card.textContent = check.message;
+    }
+
     feedbackBox.appendChild(card);
   });
 }
@@ -73,9 +83,9 @@ analyzeBtn.addEventListener("click", () => {
     return;
   }
 
-  fetch(`${profile}.json`)
+  fetch(`profiles/${profile}.json`)
     .then((res) => {
-      if (!res.ok) throw new Error(`Profile file not found: ${profile}.json`);
+      if (!res.ok) throw new Error(`Profile file not found: profiles/${profile}.json`);
       return res.json();
     })
     .then((profileData) => {

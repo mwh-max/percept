@@ -6,42 +6,50 @@
     {
       "keyword": "alt=",
       "message": "Alt text is the image for someone who cannot see it. Make sure every alt value describes the content or purpose of the image, not just its appearance.",
-      "technical": "Every <img> must have an alt attribute. Decorative images should use alt=\"\". Informative images need a description of meaning, not appearance."
+      "technical": "Every <img> must have an alt attribute. Decorative images should use alt=\"\". Informative images need a description of meaning, not appearance.",
+      "severity": "warn"
     },
     {
       "keyword": "<table",
       "message": "Tables are navigated cell by cell. Without clear headers, every cell arrives without context. A blind user may not know what column they're in until they've gone too far.",
-      "technical": "Use <th scope='col'> and <th scope='row'> to associate headers. Add a <caption> to describe the table's purpose."
+      "technical": "Use <th scope='col'> and <th scope='row'> to associate headers. Add a <caption> to describe the table's purpose.",
+      "severity": "warn"
     },
     {
       "keyword": "<form",
       "message": "Form fields need labels that are programmatically associated, not just visually nearby. A blind user hears the label before typing—if it's missing, they're guessing.",
-      "technical": "Every form input must have an associated <label for='...'> or aria-label. Do not rely on placeholder text as a label substitute."
+      "technical": "Every form input must have an associated <label for='...'> or aria-label. Do not rely on placeholder text as a label substitute.",
+      "severity": "warn"
     },
     {
       "keyword": "onclick",
       "message": "If a click event is attached to a non-interactive element like a div or span, it won't be reachable by keyboard or announced correctly by a screen reader.",
-      "technical": "Attach click handlers to native interactive elements (<button>, <a>). If a custom element must be used, add role='button' and tabindex='0' and handle keyboard events."
+      "technical": "Attach click handlers to native interactive elements (<button>, <a>). If a custom element must be used, add role='button' and tabindex='0' and handle keyboard events.",
+      "severity": "warn"
     },
     {
       "keyword": "display:none",
       "message": "Content hidden with display:none is invisible to screen readers too. If you're hiding decorative content, that's fine. If it carries meaning, it needs a different approach.",
-      "technical": "Use display:none only for content that should be completely hidden from all users. For visually hidden but screen-reader-accessible content, use a visually-hidden utility class instead."
+      "technical": "Use display:none only for content that should be completely hidden from all users. For visually hidden but screen-reader-accessible content, use a visually-hidden utility class instead.",
+      "severity": "info"
     },
     {
       "keyword": "aria-hidden",
       "message": "aria-hidden removes content from the accessibility tree entirely. Use it carefully—applied to the wrong element, it can hide navigation, labels or critical context from a blind user.",
-      "technical": "Never apply aria-hidden='true' to focusable elements. Audit all aria-hidden usage to confirm it is applied only to decorative or redundant content."
+      "technical": "Never apply aria-hidden='true' to focusable elements. Audit all aria-hidden usage to confirm it is applied only to decorative or redundant content.",
+      "severity": "warn"
     },
     {
       "keyword": "svg",
       "message": "SVG icons and illustrations are often invisible to screen readers unless described. A decorative icon is fine unlabelled—but a meaningful one needs a title or aria-label.",
-      "technical": "Add a <title> inside meaningful SVGs and reference it with aria-labelledby. For decorative SVGs, use aria-hidden='true'."
+      "technical": "Add a <title> inside meaningful SVGs and reference it with aria-labelledby. For decorative SVGs, use aria-hidden='true'.",
+      "severity": "info"
     },
     {
       "keyword": "iframe",
       "message": "Iframes are announced by their title, not their contents. Without a descriptive title attribute, a blind user lands inside an unlabelled frame with no way to orient themselves.",
-      "technical": "Every <iframe> must have a title attribute that describes its purpose. For embeds that are purely decorative, use aria-hidden='true' on the iframe."
+      "technical": "Every <iframe> must have a title attribute that describes its purpose. For embeds that are purely decorative, use aria-hidden='true' on the iframe.",
+      "severity": "warn"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "Screen Reader User",
   "tone": "linear, anticipatory, moment-to-moment",
-  "description": "Experience unfolds in a stream …",
+  "description": "The page arrives as a stream, not a surface. There is no glancing around, no skipping ahead, no sense of the whole before the parts. Each element is announced in sequence — heading, link, button, image — and meaning accumulates one moment at a time. A well-structured page feels like a clear path. A poorly structured one feels like a room where the furniture has been moved in the dark. Confidence comes from consistency. When the heading order holds, when every image has a name, when focus never disappears — the interface becomes navigable. When any of those things break, the stream breaks with them.",
   "checks": [
     {
       "keyword": "img",
