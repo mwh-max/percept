@@ -6,17 +6,39 @@
    ========================================================================== */
 
 :root {
-  --bg: #f2f2f8; /* page background */
-  --card: #fafaff; /* card background — cool tinted */
-  --ink: #1a1840; /* body text */
-  --muted: #64668a;
-  --forest: #1e1654; /* deep indigo — title / heading */
-  --teal: #4338ca; /* indigo accent — UI elements */
-  --teal-light: color-mix(in srgb, var(--teal) 12%, transparent);
-  --teal-mid: color-mix(in srgb, var(--teal) 30%, #0000);
-  --teal-focus: color-mix(in srgb, var(--teal) 28%, transparent);
-  --teal-border: color-mix(in srgb, var(--teal) 55%, #ffffff);
-  --accent: #c7d2fe; /* soft indigo divider */
+  /* ── Core palette ─────────────────────────────────────────────────────────
+     All text/background pairs verified against WCAG 2.1 AA (4.5:1 normal
+     text, 3:1 large text) and Section 508. Ratios recorded beside each pair.
+     ──────────────────────────────────────────────────────────────────────── */
+  --bg:           #f5f5f5;   /* page background — true neutral                */
+  --card:         #ffffff;   /* card / panel surface                           */
+  --ink:          #1a1840;   /* body text       — 15.43:1 on bg, 16.82 on card */
+  --muted:        #4a4a6a;   /* secondary text  —  7.77:1 on bg,  8.47 on card */
+  --forest:       #1e1654;   /* headings        — 14.84:1 on bg, 16.18 on card */
+
+  /* Amber accent replaces indigo teal — warm counterpoint to cool primaries  */
+  --amber:        #b45309;   /* links, focus rings —  4.61:1 on bg, 5.02 on card */
+  --amber-dark:   #92400e;   /* hover states, warn border — 7.09:1 on white    */
+
+  /* Interaction states (derived) */
+  --focus-ring:   color-mix(in srgb, var(--amber) 35%, transparent);
+  --amber-border: color-mix(in srgb, var(--amber) 60%, #ffffff);
+
+  /* Warning cards — verified 8.75:1 (text on bg), 7.09:1 (white on border)  */
+  --warn-bg:      #fffbeb;
+  --warn-text:    #78350f;
+  --warn-border:  #92400e;
+
+  /* Info cards — verified 10.57:1 (text on bg), 6.70:1 (white on border)    */
+  --info-bg:      #eff6ff;
+  --info-text:    #1e3a5f;
+  --info-border:  #1d4ed8;
+
+  /* Tone preview pill — 8.15:1                                               */
+  --tone-bg:      #fef3c7;
+  --tone-text:    #78350f;
+
+  --accent:       #d4b896;   /* warm divider — complements amber accent        */
   --radius: 12px;
   --space-1: 0.5rem;
   --space-2: 0.75rem;
@@ -127,7 +149,7 @@ main.grid {
   border-radius: calc(var(--radius) - 2px);
   border: 1px solid rgba(0, 0, 0, 0.18);
   background: #fff
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235b6b72' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a4a6a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
     no-repeat right var(--space-3) center;
   font: inherit;
   cursor: pointer;
@@ -137,14 +159,14 @@ main.grid {
 }
 .feedback-style-toggle select:focus {
   outline: none;
-  border-color: var(--teal-border);
-  box-shadow: 0 0 0 2px var(--teal-focus);
+  border-color: var(--amber-border);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .result-warn {
-  background: #fff4ec;
-  border-left: 4px solid #c45c00;
-  color: #7a3800;
+  background: var(--warn-bg);
+  border-left: 4px solid var(--warn-border);
+  color: var(--warn-text);
   padding: 10px 14px;
   margin-bottom: 8px;
   border-radius: 6px;
@@ -152,9 +174,9 @@ main.grid {
 }
 
 .result-info {
-  background: #eef4fb;
-  border-left: 4px solid #1a5fa8;
-  color: #0d3d6e;
+  background: var(--info-bg);
+  border-left: 4px solid var(--info-border);
+  color: var(--info-text);
   padding: 10px 14px;
   margin-bottom: 8px;
   border-radius: 6px;
@@ -187,8 +209,8 @@ main.grid {
 }
 .input-block textarea:focus {
   outline: none;
-  border-color: var(--teal-border);
-  box-shadow: 0 0 0 2px var(--teal-focus);
+  border-color: var(--amber-border);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .help-text {
   margin: var(--space-2) 0 0;
@@ -205,7 +227,7 @@ main.grid {
   padding: 0.65rem 1.4rem;
   border-radius: var(--radius);
   border: none;
-  background: var(--forest);
+  background: var(--amber);
   color: #fff;
   font: 600 1rem var(--sans);
   letter-spacing: 0.02em;
@@ -214,11 +236,15 @@ main.grid {
     background 0.15s,
     box-shadow 0.15s,
     transform 0.1s;
-  box-shadow: 0 2px 8px rgba(30, 22, 84, 0.28);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.30);
 }
 #analyze:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--forest) 85%, #000);
-  box-shadow: 0 4px 14px rgba(30, 22, 84, 0.38);
+  background: var(--amber-dark);
+  box-shadow: 0 4px 14px rgba(146, 64, 14, 0.40);
+}
+#analyze:focus-visible {
+  outline: 3px solid var(--amber-border);
+  outline-offset: 3px;
 }
 #analyze:active:not(:disabled) {
   transform: translateY(1px);
@@ -249,9 +275,9 @@ main.grid {
   display: inline-block;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--forest) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--forest) 25%, transparent);
-  color: var(--forest);
+  background: var(--tone-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--tone-text);
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -287,9 +313,9 @@ main.grid {
 #copy-feedback {
   padding: 0.65rem 1.25rem;
   border-radius: var(--radius);
-  border: 1px solid rgba(30, 22, 84, 0.2);
+  border: 1px solid var(--amber-border);
   background: var(--card);
-  color: var(--forest);
+  color: var(--amber-dark);
   font: 700 1rem var(--sans);
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -301,11 +327,15 @@ main.grid {
 #copy-feedback:hover {
   box-shadow: var(--shadow-lg);
 }
+#copy-feedback:focus-visible {
+  outline: 3px solid var(--amber-border);
+  outline-offset: 3px;
+}
 #copy-feedback:active {
   transform: translateY(1px);
 }
 
-/* Subtle dividers (optional) */
+/* Subtle dividers */
 hr,
 .section-divider {
   border: 0;
