@@ -2,5 +2,46 @@
   "name": "Blind User",
   "tone": "sequential, label-dependent, exploratory",
   "description": "The interface speaks before it is seen. Navigation depends on correct semantics, alt text, and consistent structure. Redundant descriptions can be helpful. Surprises\u2014like unlabeled buttons or nested actions\u2014erode confidence. Every element asks one question: 'Will this make sense when heard?'",
-  "checks": []
+  "checks": [
+    {
+      "keyword": "alt=",
+      "message": "Check that alt text describes the image's meaning, not just its appearance.",
+      "severity": "info"
+    },
+    {
+      "keyword": "alt=\"\"",
+      "message": "Empty alt text marks an image as decorative. Make sure this is intentional.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "<button",
+      "message": "Buttons must have a visible or accessible label. Icon-only buttons are a common failure point.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "aria-label",
+      "message": "aria-label overrides visible text. Make sure the label is accurate and meaningful when read aloud.",
+      "severity": "info"
+    },
+    {
+      "keyword": "aria-hidden",
+      "message": "aria-hidden removes elements from the accessibility tree. Verify nothing important is being hidden.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "<a",
+      "message": "Link text should describe the destination. Avoid 'click here' or 'read more' without context.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "tabindex",
+      "message": "Custom tab order can break predictable navigation. Prefer natural document order where possible.",
+      "severity": "info"
+    },
+    {
+      "keyword": "onclick",
+      "message": "Click-only interactions exclude keyboard and switch users. Pair with onkeydown or use a native element.",
+      "severity": "warn"
+    }
+  ]
 }

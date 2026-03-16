@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lowvision: "profiles/lowvision.json",
     dyslexia: "profiles/dyslexia.json",
     motor: "profiles/motor.json",
-    // blinduser: "profiles/blinduser.json", // planned, not yet wired
+    blinduser: "profiles/blinduser.json",
   };
 
   let profileCache = {};
