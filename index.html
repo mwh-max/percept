@@ -28,40 +28,33 @@
     <main class="grid">
       <!-- Left column -->
       <section class="left-column">
-        <!-- Feedback style dropdown (first) -->
+
+        <!-- Profile selector -->
         <div class="feedback-style-toggle">
-          <label for="profile"><strong>Feedback style:</strong></label>
+          <label for="profile"><strong>User experience profile:</strong></label>
           <select id="profile">
             <option value="" disabled selected>Select profile</option>
-            <option value="adhd" data-tone="scattered, effortful, alert">
-              ADHD
-            </option>
-            <option value="dyslexia" data-tone="hesitant, decoding, searching">
-              Dyslexia
-            </option>
-            <option value="screenreader" data-tone="linear, auditory, patient">
-              Screenreader
-            </option>
-            <option
-              value="lowvision"
-              data-tone="zoomed, high-contrast, careful"
-            >
-              Low Vision
-            </option>
-            <option value="motor" data-tone="deliberate, single-step, precise">
-              Motor
-            </option>
-            <option value="blinduser" data-tone="sequential, label-dependent, exploratory">
-              Blind User
-            </option>
+            <option value="adhd" data-tone="scattered, effortful, alert">ADHD</option>
+            <option value="dyslexia" data-tone="hesitant, decoding, searching">Dyslexia</option>
+            <option value="screenreader" data-tone="linear, auditory, patient">Screenreader</option>
+            <option value="lowvision" data-tone="zoomed, high-contrast, careful">Low Vision</option>
+            <option value="motor" data-tone="deliberate, single-step, precise">Motor</option>
+            <option value="blinduser" data-tone="sequential, label-dependent, exploratory">Blind User</option>
           </select>
         </div>
 
-        <!-- HTML/prompt textarea (second) -->
+        <!-- Feedback style toggle (restored) -->
+        <div class="feedback-style-toggle">
+          <label for="style-toggle"><strong>Feedback style:</strong></label>
+          <select id="style-toggle">
+            <option value="tone" selected>Emotional Tone</option>
+            <option value="technical">Technical</option>
+          </select>
+        </div>
+
+        <!-- HTML/prompt textarea -->
         <div class="input-block">
-          <label for="markup"
-            ><strong>Paste your HTML or prompt:</strong></label
-          >
+          <label for="markup"><strong>Paste your HTML or prompt:</strong></label>
           <textarea
             id="markup"
             name="markup"
@@ -70,8 +63,8 @@
             aria-describedby="markup-help"
           ></textarea>
           <p id="markup-help" class="help-text">
-            Tip: You can paste raw HTML. The checker just looks for keywords
-            mentioned in the selected profile.
+            Tip: You can paste raw HTML. The checker looks for keywords
+            matched to the selected profile.
           </p>
           <button id="analyze">Analyze</button>
         </div>
@@ -80,15 +73,16 @@
       <!-- Right column -->
       <section class="feedback">
         <h2>Feedback</h2>
-        <div id="tone-preview"></div>
-        <pre id="feedback-output" aria-live="polite"></pre>
+        <div id="tone-preview" aria-live="polite"></div>
+        <div id="feedback-output" aria-live="polite" role="region" aria-label="Feedback results"></div>
       </section>
     </main>
 
-    <footer>
+    <div class="footer-actions">
       <button id="copy-feedback">Copy Feedback</button>
-    </footer>
+    </div>
 
-    <script src="scripts/percept.js" defer></script>
+    <!-- Fixed: path matches actual file location -->
+    <script src="percept.js" defer></script>
   </body>
 </html>

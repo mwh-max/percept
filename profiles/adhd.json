@@ -1,25 +1,47 @@
 {
   "name": "ADHD",
   "tone": "scattered, effortful, alert",
-  "description": "Layout feels like chasing thoughts across a busy room. Visual noise, unclear pacing, and overlapping stimuli demand executive function at every scroll. Simplicity becomes permission to stay.",
+  "description": "Layout feels like chasing thoughts across a busy room. Visual noise, unclear pacing and overlapping stimuli demand executive function at every scroll. Simplicity becomes permission to stay.",
   "checks": [
     {
-      "keyword": "carousel",
-      "message": "Auto‑advancing carousels split attention. Provide play/pause and let users control motion.",
-      "technical": "Avoid autoplay. Use prefers-reduced-motion and provide manual controls.",
-      "severity": "warn"
+      "keyword": "marquee",
+      "message": "Moving or scrolling text pulls focus involuntarily. For someone with ADHD, it can make the rest of the page disappear. Remove or replace with static content.",
+      "technical": "Avoid <marquee> or CSS scroll animations on text. These create involuntary attention capture and disrupt reading flow."
     },
     {
-      "keyword": "<marquee",
-      "message": "Moving text increases cognitive load. Prefer static text with clear hierarchy.",
-      "technical": "Remove marquee. Use headings, spacing, and lists for structure.",
-      "severity": "warn"
+      "keyword": "autoplay",
+      "message": "Autoplaying media hijacks attention before the user chooses to engage. This can derail the entire session. Add a play button instead.",
+      "technical": "Do not use autoplay on video or audio elements. Require explicit user interaction to start media."
+    },
+    {
+      "keyword": "animation",
+      "message": "Decorative animation competes with content for attention. For someone with ADHD, motion on the periphery is hard to ignore. Reserve animation for meaningful transitions.",
+      "technical": "Limit animation to purposeful state changes. Wrap decorative animations in a prefers-reduced-motion media query."
+    },
+    {
+      "keyword": "placeholder",
+      "message": "Placeholder text disappears when typing begins. For someone with ADHD, losing the instruction mid-task can cause confusion or a restart. Use a visible label instead.",
+      "technical": "Do not rely on placeholder as the sole label for an input. Use a persistent <label> element above or beside the field."
+    },
+    {
+      "keyword": "infinite",
+      "message": "Infinite scroll removes natural stopping points. Without them, it becomes hard to disengage. Consider pagination or a clear 'load more' boundary.",
+      "technical": "Avoid infinite scroll patterns. Use paginated navigation or an explicit load trigger to create cognitive rest points."
     },
     {
       "keyword": "modal",
-      "message": "Stacked modals and popups create context switching. Reduce interruptions.",
-      "technical": "Avoid nested modals. Ensure focus trapping and Escape to close.",
-      "severity": "info"
+      "message": "Modals interrupt flow without warning. If the user wasn't expecting a new layer, it can feel disorienting. Keep modal use minimal and always provide a clear close action.",
+      "technical": "Ensure modals have a visible close button, trap focus correctly, and return focus to the trigger element on close."
+    },
+    {
+      "keyword": "countdown",
+      "message": "Timed countdowns or session expiry warnings create urgency that can spike anxiety and derail concentration. Give users control over their own pace.",
+      "technical": "Avoid time-limited interactions where possible. If a timeout is required, give at least 20 seconds of warning and an option to extend."
+    },
+    {
+      "keyword": "tooltip",
+      "message": "Tooltips that appear only on hover can vanish before the user has finished reading. Consider inline help text that stays visible.",
+      "technical": "Supplement hover tooltips with persistent help text or aria-describedby references that do not disappear on focus loss."
     }
   ]
 }
