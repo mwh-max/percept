@@ -68,9 +68,9 @@ analyzeBtn.addEventListener('click', () => {
     return;
   }
 
-  fetch(`${profile}.json`)
+  fetch(`profiles/${profile}.json`)
     .then(res => {
-      if (!res.ok) throw new Error(`Profile file not found: ${profile}.json`);
+      if (!res.ok) throw new Error(`Profile file not found: profiles/${profile}.json`);
       return res.json();
     })
     .then(profileData => {
