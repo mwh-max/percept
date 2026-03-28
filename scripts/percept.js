@@ -280,6 +280,74 @@ const inlineProfiles = {
       },
     ],
   },
+  hearing: {
+    name: "Deaf or Hard of Hearing User",
+    tone: "visual, text-dependent, caption-seeking",
+    description:
+      "Sound carries information that may not be visible on the page. Videos play without captions, audio-only instructions assume hearing, and sound-based alerts have no visual backup. For deaf and hard of hearing users, equal access means every audio moment is also text. Captions aren't optional—they're navigation.",
+    checks: [
+      {
+        keyword: "video",
+        message:
+          "Videos require captions or a transcript. Without them, deaf and hard of hearing users miss dialogue, context, and meaning. Captions should be synchronized with audio and include speaker identification and sound descriptions.",
+        technical:
+          "Add <track kind='captions'> inside <video>, or embed captions directly. Captions should include dialogue, speaker names, and descriptions of significant sounds (e.g., [door slams], [music plays]).",
+        severity: "warn",
+      },
+      {
+        keyword: "audio",
+        message:
+          "Audio-only content (podcasts, recordings, sound effects) must have a transcript or visual alternative. Deaf users cannot access audio without text.",
+        technical:
+          "Provide a transcript alongside all <audio> elements. For audio embeds, link to a text transcript. Describe sound events that convey meaning.",
+        severity: "warn",
+      },
+      {
+        keyword: "caption",
+        message:
+          "Captions are present. Ensure they are accurate, synchronized, and include speaker identification and sound descriptions.",
+        severity: "info",
+      },
+      {
+        keyword: "transcript",
+        message:
+          "A transcript is available. Ensure it is complete, includes speaker names, and describes significant sounds or music.",
+        severity: "info",
+      },
+      {
+        keyword: "sound",
+        message:
+          "If the page uses sound to convey information (alerts, notifications, status changes), provide a visual or text alternative. No hearing user should be required to hear the page.",
+        technical:
+          "Never rely on sound alone. Pair audio cues with visual indicators, text messages, or aria-live announcements.",
+        severity: "warn",
+      },
+      {
+        keyword: "alert",
+        message:
+          "Alerts that rely on sound (beeps, chimes, sirens) must also have a visual indicator (color change, animation, icon) and accessible text. Hard of hearing users need to see alerts, not just hear them.",
+        technical:
+          "Use aria-live regions for alerts. Pair audible alerts with visual feedback and text announcements.",
+        severity: "warn",
+      },
+      {
+        keyword: "notification",
+        message:
+          "Notifications delivered only through sound are inaccessible to deaf users. Use visual + text alternatives.",
+        technical:
+          "Display notifications visually (toast, banner) with text content. Do not rely on sound alone.",
+        severity: "warn",
+      },
+      {
+        keyword: "podcast",
+        message:
+          "Podcasts and audio content require transcripts. Deaf listeners should be able to read every word.",
+        technical:
+          "Provide a full written transcript alongside every podcast episode. Format clearly and link obviously.",
+        severity: "warn",
+      },
+    ],
+  },
 };
 
 function normalizeMarkup(text) {
