@@ -11,6 +11,263 @@ const copyBtn = document.getElementById("copy-feedback");
 // ─── Shared helpers ────────────────────────────────────────────────────────
 const profileCache = new Map();
 
+const inlineProfiles = {
+  adhd: {
+    name: "ADHD",
+    tone: "scattered, effortful, alert",
+    description:
+      "Layout feels like chasing thoughts across a busy room. Visual noise, unclear pacing and overlapping stimuli demand executive function at every scroll. Simplicity becomes permission to stay.",
+    checks: [
+      {
+        keyword: "marquee",
+        message:
+          "Moving or scrolling text pulls focus involuntarily. For someone with ADHD, it can make the rest of the page disappear. Remove or replace with static content.",
+        technical:
+          "Avoid <marquee> or CSS scroll animations on text. These create involuntary attention capture and disrupt reading flow.",
+        severity: "warn",
+      },
+      {
+        keyword: "autoplay",
+        message:
+          "Autoplaying media hijacks attention before the user chooses to engage. This can derail the entire session. Add a play button instead.",
+        technical:
+          "Do not use autoplay on video or audio elements. Require explicit user interaction to start media.",
+        severity: "warn",
+      },
+      {
+        keyword: "animation",
+        message:
+          "Decorative animation competes with content for attention. For someone with ADHD, motion on the periphery is hard to ignore. Reserve animation for meaningful transitions.",
+        technical:
+          "Limit animation to purposeful state changes. Wrap decorative animations in a prefers-reduced-motion media query.",
+        severity: "warn",
+      },
+      {
+        keyword: "placeholder",
+        message:
+          "Placeholder text disappears when typing begins. For someone with ADHD, losing the instruction mid-task can cause confusion or a restart. Use a visible label instead.",
+        technical:
+          "Do not rely on placeholder as the sole label for an input. Use a persistent <label> element above or beside the field.",
+        severity: "warn",
+      },
+      {
+        keyword: "infinite",
+        message:
+          "Infinite scroll removes natural stopping points. Without them, it becomes hard to disengage. Consider pagination or a clear 'load more' boundary.",
+        technical:
+          "Avoid infinite scroll patterns. Use paginated navigation or an explicit load trigger to create cognitive rest points.",
+        severity: "warn",
+      },
+      {
+        keyword: "modal",
+        message:
+          "Modals interrupt flow without warning. If the user wasn't expecting a new layer, it can feel disorienting. Keep modal use minimal and always provide a clear close action.",
+        technical:
+          "Ensure modals have a visible close button, trap focus correctly, and return focus to the trigger element on close.",
+        severity: "info",
+      },
+      {
+        keyword: "countdown",
+        message:
+          "Timed countdowns or session expiry warnings create urgency that can spike anxiety and derail concentration. Give users control over their own pace.",
+        technical:
+          "Avoid time-limited interactions where possible. If a timeout is required, give at least 20 seconds of warning and an option to extend.",
+        severity: "warn",
+      },
+      {
+        keyword: "tooltip",
+        message:
+          "Tooltips that appear only on hover can vanish before the user has finished reading. Consider inline help text that stays visible.",
+        technical:
+          "Supplement hover tooltips with persistent help text or aria-describedby references that do not disappear on focus loss.",
+        severity: "info",
+      },
+    ],
+  },
+  dyslexia: {
+    name: "Dyslexia",
+    tone: "effortful, pattern-sensitive, clarity-seeking",
+    description:
+      "Text arrives slowly, sometimes out of order. Dense paragraphs and decorative fonts blur meaning. Structure, spacing and semantic clarity offer relief. Simplicity isn't minimalism—it's access.",
+    checks: [
+      {
+        keyword: "font-family",
+        message:
+          "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces.",
+        severity: "warn",
+      },
+      {
+        keyword: "line-height",
+        message:
+          "Adequate line spacing improves readability. Aim for at least 1.5x the font size.",
+        severity: "info",
+      },
+      {
+        keyword: "justify",
+        message:
+          "Justified text can create uneven spacing. Left-align for consistent rhythm.",
+        severity: "warn",
+      },
+    ],
+  },
+  screenreader: {
+    name: "Screen Reader User",
+    tone: "linear, anticipatory, moment-to-moment",
+    description:
+      "The page arrives as a stream, not a surface. There is no glancing around, no skipping ahead, no sense of the whole before the parts. Each element is announced in sequence — heading, link, button, image — and meaning accumulates one moment at a time. A well-structured page feels like a clear path. A poorly structured one feels like a room where the furniture has been moved in the dark. Confidence comes from consistency. When the heading order holds, when every image has a name, when focus never disappears — the interface becomes navigable. When any of those things break, the stream breaks with them.",
+    checks: [
+      {
+        keyword: "img",
+        message:
+          "Images should include alt text. Screenreader users rely on alt to understand meaning.",
+        severity: "warn",
+      },
+      {
+        keyword: "role=",
+        message:
+          "Custom roles should be used carefully. Native semantics are preferred when possible.",
+        severity: "info",
+      },
+      {
+        keyword: "tabindex",
+        message:
+          "Tab order changes can confuse screenreader flow. Use tabindex intentionally and test focus behavior.",
+        severity: "info",
+      },
+      {
+        keyword: "<h1",
+        message:
+          "Headings create a map. Be sure to use them in a logical order (h1 to h6) without skipping levels.",
+        severity: "warn",
+      },
+    ],
+  },
+  lowvision: {
+    name: "Low Vision",
+    tone: "blurred, tentative, contrast-seeking",
+    description:
+      "The page arrives not as a whole—but as fragments in tension. Text floats in a fog of brightness or blends into muted backgrounds. Navigation depends on scale, rhythm, and clear anchors. Every pause is a scan for something readable. Grace lives in contrast, not color.",
+    checks: [
+      {
+        keyword: "color:",
+        message:
+          "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments.",
+        severity: "warn",
+      },
+      {
+        keyword: "font-size",
+        message:
+          "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage.",
+        severity: "warn",
+      },
+    ],
+  },
+  motor: {
+    name: "Motor Disability",
+    tone: "deliberate, effort-aware, access-conscious",
+    description:
+      "Interaction involves effort. Small buttons, hover-only actions, and drag gestures can demand precision some users may not have. Designers should consider the experience of people with motor disabilities—including those who use adaptive tools or keyboard navigation. Clarity comes from large touch targets, reduced motion demands, and flexible input paths. Design should honor movement—because for many, it carries cost.",
+    checks: [
+      {
+        keyword: "hover",
+        message:
+          "Hover-only interactions can block access for users who rely on keyboard or voice input. Ensure all actions are reachable without a mouse.",
+        technical:
+          "Avoid hover-only interactions. Ensure all interactive elements are operable with keyboard or voice input.",
+        severity: "info",
+      },
+      {
+        keyword: "button",
+        message:
+          "Small buttons may be hard to click. Increase target size and spacing to reduce accidental taps.",
+        technical:
+          "Ensure buttons are at least 44x44px and spaced to reduce touch errors.",
+        severity: "warn",
+      },
+      {
+        keyword: "drag",
+        message:
+          "Drag-and-drop interfaces require fine motor control. Offer alternative actions like “Move Up” or “Add Below” buttons.",
+        technical:
+          "Avoid requiring drag-and-drop. Provide buttons or keyboard-accessible alternatives for reordering or inserting elements.",
+        severity: "warn",
+      },
+    ],
+  },
+  blinduser: {
+    name: "Blind User",
+    tone: "sequential, label-dependent, exploratory",
+    description:
+      "The interface speaks before it is seen. Navigation depends on correct semantics, alt text, and consistent structure. Redundant descriptions can be helpful. Surprises—like unlabeled buttons or nested actions—erode confidence. Every element asks one question: 'Will this make sense when heard?'",
+    checks: [
+      {
+        keyword: "alt=",
+        message:
+          "Alt text is the image for someone who cannot see it. Make sure every alt value describes the content or purpose of the image, not just its appearance.",
+        technical:
+          "Every <img> must have an alt attribute. Decorative images should use alt=\"\". Informative images need a description of meaning, not appearance.",
+        severity: "warn",
+      },
+      {
+        keyword: "<table",
+        message:
+          "Tables are navigated cell by cell. Without clear headers, every cell arrives without context. A blind user may not know what column they're in until they've gone too far.",
+        technical:
+          "Use <th scope='col'> and <th scope='row'> to associate headers. Add a <caption> to describe the table's purpose.",
+        severity: "warn",
+      },
+      {
+        keyword: "<form",
+        message:
+          "Form fields need labels that are programmatically associated, not just visually nearby. A blind user hears the label before typing—if it's missing, they're guessing.",
+        technical:
+          "Every form input must have an associated <label for='...'> or aria-label. Do not rely on placeholder text as a label substitute.",
+        severity: "warn",
+      },
+      {
+        keyword: "onclick",
+        message:
+          "If a click event is attached to a non-interactive element like a div or span, it won't be reachable by keyboard or announced correctly by a screen reader.",
+        technical:
+          "Attach click handlers to native interactive elements (<button>, <a>). If a custom element must be used, add role='button' and tabindex='0' and handle keyboard events.",
+        severity: "warn",
+      },
+      {
+        keyword: "display:none",
+        message:
+          "Content hidden with display:none is invisible to screen readers too. If you're hiding decorative content, that's fine. If it carries meaning, it needs a different approach.",
+        technical:
+          "Use display:none only for content that should be completely hidden from all users. For visually hidden but screen-reader-accessible content, use a visually-hidden utility class instead.",
+        severity: "info",
+      },
+      {
+        keyword: "aria-hidden",
+        message:
+          "aria-hidden removes content from the accessibility tree entirely. Use it carefully—applied to the wrong element, it can hide navigation, labels or critical context from a blind user.",
+        technical:
+          "Never apply aria-hidden='true' to focusable elements. Audit all aria-hidden usage to confirm it is applied only to decorative or redundant content.",
+        severity: "warn",
+      },
+      {
+        keyword: "svg",
+        message:
+          "SVG icons and illustrations are often invisible to screen readers unless described. A decorative icon is fine unlabelled—but a meaningful one needs a title or aria-label.",
+        technical:
+          "Add a <title> inside meaningful SVGs and reference it with aria-labelledby. For decorative SVGs, use aria-hidden='true'.",
+        severity: "info",
+      },
+      {
+        keyword: "iframe",
+        message:
+          "Iframes are announced by their title, not their contents. Without a descriptive title attribute, a blind user lands inside an unlabelled frame with no way to orient themselves.",
+        technical:
+          "Every <iframe> must have a title attribute that describes its purpose. For embeds that are purely decorative, use aria-hidden='true' on the iframe.",
+        severity: "warn",
+      },
+    ],
+  },
+};
+
 function normalizeMarkup(text) {
   return text.trim().toLowerCase().replace(/\s+/g, " ");
 }
@@ -198,6 +455,15 @@ function loadProfile(profile) {
     .then((data) => {
       profileCache.set(profile, data);
       return data;
+    })
+    .catch((err) => {
+      console.warn(`Failed to load profile from disk: ${profile}. Using inline fallback if available.`, err);
+      const fallback = inlineProfiles[profile];
+      if (fallback) {
+        profileCache.set(profile, fallback);
+        return fallback;
+      }
+      throw err;
     });
 }
 
