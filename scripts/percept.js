@@ -1122,7 +1122,7 @@ function restoreSessionState() {
   setToneHintForSelectedProfile();
 }
 
-markupInput.addEventListener("change", saveSessionState);
+markupInput.addEventListener("input", saveSessionState);
 profileSelect.addEventListener("change", saveSessionState);
 styleToggle.addEventListener("change", saveSessionState);
 
