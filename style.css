@@ -366,3 +366,32 @@ hr,
 [aria-live="polite"] {
   outline: none;
 }
+
+/* Footer */
+.site-footer {
+  max-width: 1100px;
+  margin: var(--space-5) auto 0;
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-top: 1px dashed var(--accent);
+  line-height: 1.6;
+}
+
+.site-footer a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px solid var(--amber);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.site-footer a:hover {
+  color: var(--amber-dark);
+  border-bottom-color: var(--amber-dark);
+}
+
+.site-footer a:focus {
+  outline: 3px solid var(--amber-border);
+  outline-offset: 2px;
+}

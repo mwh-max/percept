@@ -62,10 +62,19 @@
 
         <!-- Custom profile upload -->
         <div class="input-block">
-          <label for="profile-upload"><strong>Upload custom profile (JSON):</strong></label>
-          <input type="file" id="profile-upload" accept="application/json" aria-describedby="upload-help" />
+          <label for="profile-upload"
+            ><strong>Upload custom profile (JSON):</strong></label
+          >
+          <input
+            type="file"
+            id="profile-upload"
+            accept="application/json"
+            aria-describedby="upload-help"
+          />
           <p id="upload-help" class="help-text">
-            Optional: upload a profile JSON file in the same shape as profiles/*.json. This creates a temporary custom profile for the current session.
+            Optional: upload a profile JSON file in the same shape as
+            profiles/*.json. This creates a temporary custom profile for the
+            current session.
           </p>
         </div>
 
@@ -123,6 +132,10 @@
     <div class="footer-actions">
       <button id="copy-feedback">Copy Feedback</button>
     </div>
+
+    <footer class="site-footer">
+      <p>Percept focuses on lived experience for ADHD, dyslexia, blindness, low vision, motor disabilities, and screenreader users. <a href="README.md" target="_blank">Complementary tools</a> are available for comprehensive 508/WCAG audits. <a href="https://github.com/mwh-max/percept/issues" target="_blank">Contribute a profile</a> for communities currently not represented.</p>
+    </footer>
 
     <script src="scripts/percept.js" defer></script>
   </body>
