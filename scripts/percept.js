@@ -4,6 +4,7 @@ const styleToggle = document.getElementById("style-toggle");
 const markupInput = document.getElementById("markup");
 const feedbackBox = document.getElementById("feedback-output");
 const tonePreview = document.getElementById("tone-preview");
+const profileUpload = document.getElementById("profile-upload");
 const loadingIndicator = document.getElementById("loading-indicator");
 const analyzeBtn = document.getElementById("analyze");
 const copyBtn = document.getElementById("copy-feedback");
@@ -205,7 +206,7 @@ const inlineProfiles = {
         message:
           "Alt text is the image for someone who cannot see it. Make sure every alt value describes the content or purpose of the image, not just its appearance.",
         technical:
-          "Every <img> must have an alt attribute. Decorative images should use alt=\"\". Informative images need a description of meaning, not appearance.",
+          'Every <img> must have an alt attribute. Decorative images should use alt="". Informative images need a description of meaning, not appearance.',
         severity: "warn",
       },
       {
@@ -283,6 +284,25 @@ function setToneHintForSelectedProfile() {
     : "";
 }
 
+function addCustomProfile(profileData) {
+  const id = `custom-${Date.now()}`;
+  const option = document.createElement("option");
+
+  option.value = id;
+  option.textContent = profileData.name
+    ? `Custom: ${profileData.name}`
+    : "Custom profile";
+  if (profileData.tone) {
+    option.dataset.tone = profileData.tone;
+  }
+
+  profileSelect.appendChild(option);
+  profileCache.set(id, profileData);
+
+  profileSelect.value = id;
+  setToneHintForSelectedProfile();
+}
+
 function renderMessage(message, severity = "info") {
   feedbackBox.innerHTML = `<p class="result-${severity}">${message}</p>`;
 }
@@ -325,6 +345,36 @@ function checkKeywordMatch(keyword, markup) {
 
 // ─── Tone preview on profile change ────────────────────────────────────────
 profileSelect.addEventListener("change", setToneHintForSelectedProfile);
+
+profileUpload.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (loadEvent) => {
+    try {
+      const data = JSON.parse(loadEvent.target.result);
+      if (!data || !data.checks || !Array.isArray(data.checks)) {
+        throw new Error("Invalid profile format: missing checks array.");
+      }
+      addCustomProfile(data);
+      renderMessage("Custom profile loaded and selected.", "info");
+    } catch (err) {
+      console.error(err);
+      renderMessage("Failed to parse profile JSON. Please upload a valid profile.", "warn");
+      profileUpload.value = "";
+    }
+  };
+  reader.onerror = (err) => {
+    console.error(err);
+    renderMessage("Error reading profile file. Please try another file.", "warn");
+    profileUpload.value = "";
+  };
+
+  reader.readAsText(file);
+});
 
 // Set initial tone for cases where profile is preselected
 setToneHintForSelectedProfile();
@@ -457,7 +507,10 @@ function loadProfile(profile) {
       return data;
     })
     .catch((err) => {
-      console.warn(`Failed to load profile from disk: ${profile}. Using inline fallback if available.`, err);
+      console.warn(
+        `Failed to load profile from disk: ${profile}. Using inline fallback if available.`,
+        err,
+      );
       const fallback = inlineProfiles[profile];
       if (fallback) {
         profileCache.set(profile, fallback);

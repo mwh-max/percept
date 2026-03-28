@@ -28,19 +28,45 @@
     <main class="grid">
       <!-- Left column -->
       <section class="left-column">
-
         <!-- Profile selector -->
         <div class="feedback-style-toggle">
           <label for="profile"><strong>User experience profile:</strong></label>
           <select id="profile">
             <option value="" disabled selected>Select profile</option>
-            <option value="adhd" data-tone="scattered, effortful, alert">ADHD</option>
-            <option value="dyslexia" data-tone="hesitant, decoding, searching">Dyslexia</option>
-            <option value="screenreader" data-tone="linear, auditory, patient">Screenreader</option>
-            <option value="lowvision" data-tone="zoomed, high-contrast, careful">Low Vision</option>
-            <option value="motor" data-tone="deliberate, single-step, precise">Motor</option>
-            <option value="blinduser" data-tone="sequential, label-dependent, exploratory">Blind User</option>
+            <option value="adhd" data-tone="scattered, effortful, alert">
+              ADHD
+            </option>
+            <option value="dyslexia" data-tone="hesitant, decoding, searching">
+              Dyslexia
+            </option>
+            <option value="screenreader" data-tone="linear, auditory, patient">
+              Screenreader
+            </option>
+            <option
+              value="lowvision"
+              data-tone="zoomed, high-contrast, careful"
+            >
+              Low Vision
+            </option>
+            <option value="motor" data-tone="deliberate, single-step, precise">
+              Motor
+            </option>
+            <option
+              value="blinduser"
+              data-tone="sequential, label-dependent, exploratory"
+            >
+              Blind User
+            </option>
           </select>
+        </div>
+
+        <!-- Custom profile upload -->
+        <div class="input-block">
+          <label for="profile-upload"><strong>Upload custom profile (JSON):</strong></label>
+          <input type="file" id="profile-upload" accept="application/json" aria-describedby="upload-help" />
+          <p id="upload-help" class="help-text">
+            Optional: upload a profile JSON file in the same shape as profiles/*.json. This creates a temporary custom profile for the current session.
+          </p>
         </div>
 
         <!-- Feedback style toggle (restored) -->
@@ -54,7 +80,9 @@
 
         <!-- HTML/prompt textarea -->
         <div class="input-block">
-          <label for="markup"><strong>Paste your HTML or prompt:</strong></label>
+          <label for="markup"
+            ><strong>Paste your HTML or prompt:</strong></label
+          >
           <textarea
             id="markup"
             name="markup"
@@ -63,8 +91,8 @@
             aria-describedby="markup-help"
           ></textarea>
           <p id="markup-help" class="help-text">
-            Tip: You can paste raw HTML. The checker looks for keywords
-            matched to the selected profile.
+            Tip: You can paste raw HTML. The checker looks for keywords matched
+            to the selected profile.
           </p>
           <button id="analyze">Analyze</button>
         </div>
@@ -74,8 +102,21 @@
       <section class="feedback">
         <h2>Feedback</h2>
         <div id="tone-preview" aria-live="polite"></div>
-        <div id="loading-indicator" class="loading" role="status" aria-live="polite" hidden>Analyzing…</div>
-        <div id="feedback-output" aria-live="polite" role="region" aria-label="Feedback results"></div>
+        <div
+          id="loading-indicator"
+          class="loading"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          Analyzing…
+        </div>
+        <div
+          id="feedback-output"
+          aria-live="polite"
+          role="region"
+          aria-label="Feedback results"
+        ></div>
       </section>
     </main>
 
