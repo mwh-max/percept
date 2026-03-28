@@ -59,7 +59,9 @@ function checkKeywordMatch(keyword, markup) {
     const plainWord = new RegExp(`\\b${escapeRegex(variant)}\\b`, "i");
     const htmlAttr = new RegExp(`\\b${escapeRegex(variant)}\\s*=`, "i");
     const htmlTag = new RegExp(`<\\s*${escapeRegex(variant)}\\b`, "i");
-    return plainWord.test(markup) || htmlAttr.test(markup) || htmlTag.test(markup);
+    return (
+      plainWord.test(markup) || htmlAttr.test(markup) || htmlTag.test(markup)
+    );
   });
 }
 
@@ -96,13 +98,53 @@ copyBtn.addEventListener("click", () => {
 //   1. If style toggle is "technical" and a technical field exists → result-warn
 //   2. Otherwise → the check's own severity field ("warn" → result-warn,
 //      "info" or absent → result-info)
+function getMatchDetails(keyword, markup) {
+  const variants = getKeywordVariants(keyword);
+
+  for (const variant of variants) {
+    const snippetRegex = new RegExp(`(.{0,30})(${escapeRegex(variant)})(.{0,30})`, "i");
+    const attrRegex = new RegExp(`\\b${escapeRegex(variant)}\\s*=`, "i");
+    const tagRegex = new RegExp(`<\\s*${escapeRegex(variant)}\\b`, "i");
+
+    const plainMatch = markup.match(snippetRegex);
+    if (plainMatch) {
+      const snippet = `${plainMatch[1]}${plainMatch[2]}${plainMatch[3]}`.trim();
+      return { type: "text", variant, snippet };
+    }
+
+    if (attrRegex.test(markup)) {
+      const start = markup.search(attrRegex);
+      const snippet = markup.slice(Math.max(0, start - 24), start + 40);
+      return { type: "attribute", variant, snippet: snippet.trim() };
+    }
+
+    if (tagRegex.test(markup)) {
+      const start = markup.search(tagRegex);
+      const snippet = markup.slice(Math.max(0, start - 24), start + 40);
+      return { type: "tag", variant, snippet: snippet.trim() };
+    }
+  }
+
+  return null;
+}
+
 function renderFeedback(checks, markup, style) {
   feedbackBox.innerHTML = "";
 
-  const matched = checks.filter((check) => {
-    if (!check.keyword) return false;
-    return checkKeywordMatch(check.keyword, markup);
-  });
+  const matched = checks
+    .map((check) => {
+      if (!check.keyword) return null;
+      if (!checkKeywordMatch(check.keyword, markup)) return null;
+      const details = getMatchDetails(check.keyword, markup);
+      return { check, details };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      const severityOrder = { warn: 0, info: 1 };
+      const sa = a.check.severity === "warn" ? "warn" : "info";
+      const sb = b.check.severity === "warn" ? "warn" : "info";
+      return severityOrder[sa] - severityOrder[sb];
+    });
 
   if (matched.length === 0) {
     renderMessage(
@@ -112,19 +154,27 @@ function renderFeedback(checks, markup, style) {
     return;
   }
 
-  matched.forEach((check) => {
-    const card = document.createElement("p");
+  matched.forEach(({ check, details }) => {
+    const card = document.createElement("article");
     const isTechnical = style === "technical" && check.technical;
+    const severity = isTechnical || check.severity === "warn" ? "warn" : "info";
 
-    if (isTechnical) {
-      card.className = "result-warn";
-      card.textContent = check.technical;
+    card.className = `result-${severity}`;
+
+    const main = document.createElement("p");
+    main.textContent = isTechnical ? check.technical : check.message;
+
+    const meta = document.createElement("p");
+    meta.className = "result-meta";
+
+    if (details) {
+      meta.textContent = `Matched keyword: ${details.variant}. Context: ${details.snippet}`;
     } else {
-      card.className =
-        check.severity === "warn" ? "result-warn" : "result-info";
-      card.textContent = check.message;
+      meta.textContent = `Matched keyword: ${check.keyword}.`;
     }
 
+    card.appendChild(main);
+    card.appendChild(meta);
     feedbackBox.appendChild(card);
   });
 }

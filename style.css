@@ -183,6 +183,13 @@ main.grid {
   font-family: var(--sans);
 }
 
+.result-meta {
+  margin-top: 0.35rem;
+  font-size: 0.87rem;
+  color: var(--muted);
+  opacity: 0.9;
+}
+
 /* Input block (textarea) */
 .input-block {
   padding: var(--space-3);
