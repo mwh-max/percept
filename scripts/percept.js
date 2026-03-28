@@ -4,6 +4,7 @@ const styleToggle = document.getElementById("style-toggle");
 const markupInput = document.getElementById("markup");
 const feedbackBox = document.getElementById("feedback-output");
 const tonePreview = document.getElementById("tone-preview");
+const loadingIndicator = document.getElementById("loading-indicator");
 const analyzeBtn = document.getElementById("analyze");
 const copyBtn = document.getElementById("copy-feedback");
 
@@ -102,7 +103,10 @@ function getMatchDetails(keyword, markup) {
   const variants = getKeywordVariants(keyword);
 
   for (const variant of variants) {
-    const snippetRegex = new RegExp(`(.{0,30})(${escapeRegex(variant)})(.{0,30})`, "i");
+    const snippetRegex = new RegExp(
+      `(.{0,30})(${escapeRegex(variant)})(.{0,30})`,
+      "i",
+    );
     const attrRegex = new RegExp(`\\b${escapeRegex(variant)}\\s*=`, "i");
     const tagRegex = new RegExp(`<\\s*${escapeRegex(variant)}\\b`, "i");
 
@@ -197,6 +201,18 @@ function loadProfile(profile) {
     });
 }
 
+function setAnalyzing(isBusy) {
+  analyzeBtn.disabled = isBusy;
+  if (isBusy) {
+    loadingIndicator.hidden = false;
+    analyzeBtn.dataset.originalText = analyzeBtn.textContent;
+    analyzeBtn.textContent = "Analyzing…";
+  } else {
+    loadingIndicator.hidden = true;
+    analyzeBtn.textContent = analyzeBtn.dataset.originalText || "Analyze";
+  }
+}
+
 // ─── Main analyze handler ───────────────────────────────────────────────────
 analyzeBtn.addEventListener("click", () => {
   const profile = profileSelect.value;
@@ -211,6 +227,8 @@ analyzeBtn.addEventListener("click", () => {
     return;
   }
 
+  setAnalyzing(true);
+
   loadProfile(profile)
     .then((profileData) => {
       const checks = profileData.checks || [];
@@ -222,5 +240,8 @@ analyzeBtn.addEventListener("click", () => {
         "Error loading profile data. Please check the file path or profile name.",
         "warn",
       );
+    })
+    .finally(() => {
+      setAnalyzing(false);
     });
 });

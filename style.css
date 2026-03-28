@@ -10,35 +10,35 @@
      All text/background pairs verified against WCAG 2.1 AA (4.5:1 normal
      text, 3:1 large text) and Section 508. Ratios recorded beside each pair.
      ──────────────────────────────────────────────────────────────────────── */
-  --bg:           #f5f5f5;   /* page background — true neutral                */
-  --card:         #ffffff;   /* card / panel surface                           */
-  --ink:          #1a1840;   /* body text       — 15.43:1 on bg, 16.82 on card */
-  --muted:        #4a4a6a;   /* secondary text  —  7.77:1 on bg,  8.47 on card */
-  --forest:       #1e1654;   /* headings        — 14.84:1 on bg, 16.18 on card */
+  --bg: #f5f5f5; /* page background — true neutral                */
+  --card: #ffffff; /* card / panel surface                           */
+  --ink: #1a1840; /* body text       — 15.43:1 on bg, 16.82 on card */
+  --muted: #4a4a6a; /* secondary text  —  7.77:1 on bg,  8.47 on card */
+  --forest: #1e1654; /* headings        — 14.84:1 on bg, 16.18 on card */
 
   /* Amber accent replaces indigo teal — warm counterpoint to cool primaries  */
-  --amber:        #b45309;   /* links, focus rings —  4.61:1 on bg, 5.02 on card */
-  --amber-dark:   #92400e;   /* hover states, warn border — 7.09:1 on white    */
+  --amber: #b45309; /* links, focus rings —  4.61:1 on bg, 5.02 on card */
+  --amber-dark: #92400e; /* hover states, warn border — 7.09:1 on white    */
 
   /* Interaction states (derived) */
-  --focus-ring:   color-mix(in srgb, var(--amber) 35%, transparent);
+  --focus-ring: color-mix(in srgb, var(--amber) 35%, transparent);
   --amber-border: color-mix(in srgb, var(--amber) 60%, #ffffff);
 
   /* Warning cards — verified 8.75:1 (text on bg), 7.09:1 (white on border)  */
-  --warn-bg:      #fffbeb;
-  --warn-text:    #78350f;
-  --warn-border:  #92400e;
+  --warn-bg: #fffbeb;
+  --warn-text: #78350f;
+  --warn-border: #92400e;
 
   /* Info cards — verified 10.57:1 (text on bg), 6.70:1 (white on border)    */
-  --info-bg:      #eff6ff;
-  --info-text:    #1e3a5f;
-  --info-border:  #1d4ed8;
+  --info-bg: #eff6ff;
+  --info-text: #1e3a5f;
+  --info-border: #1d4ed8;
 
   /* Tone preview pill — 8.15:1                                               */
-  --tone-bg:      #fef3c7;
-  --tone-text:    #78350f;
+  --tone-bg: #fef3c7;
+  --tone-text: #78350f;
 
-  --accent:       #d4b896;   /* warm divider — complements amber accent        */
+  --accent: #d4b896; /* warm divider — complements amber accent        */
   --radius: 12px;
   --space-1: 0.5rem;
   --space-2: 0.75rem;
@@ -190,6 +190,18 @@ main.grid {
   opacity: 0.9;
 }
 
+.loading {
+  margin-top: 0.65rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--forest);
+  background: #fff6db;
+  border: 1px solid #f2c189;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 /* Input block (textarea) */
 .input-block {
   padding: var(--space-3);
@@ -243,11 +255,11 @@ main.grid {
     background 0.15s,
     box-shadow 0.15s,
     transform 0.1s;
-  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.30);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
 }
 #analyze:hover:not(:disabled) {
   background: var(--amber-dark);
-  box-shadow: 0 4px 14px rgba(146, 64, 14, 0.40);
+  box-shadow: 0 4px 14px rgba(146, 64, 14, 0.4);
 }
 #analyze:focus-visible {
   outline: 3px solid var(--amber-border);
