@@ -29,6 +29,40 @@ function renderMessage(message, severity = "info") {
   feedbackBox.innerHTML = `<p class="result-${severity}">${message}</p>`;
 }
 
+const keywordAliases = {
+  modal: ["dialog", "popup", "overlay"],
+  autoplay: ["auto-play"],
+  animation: ["animate", "transition"],
+  marquee: ["ticker", "scroll"],
+  infinite: ["infinite-scroll", "infinitescroll"],
+  tooltip: ["hint", "help", "aria-describedby"],
+  countdown: ["timer", "timeout"],
+};
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getKeywordVariants(keyword) {
+  const normalized = keyword.toLowerCase().trim();
+  const baseVariants = [normalized];
+  if (keywordAliases[normalized]) {
+    baseVariants.push(...keywordAliases[normalized]);
+  }
+  return [...new Set(baseVariants)];
+}
+
+function checkKeywordMatch(keyword, markup) {
+  const variants = getKeywordVariants(keyword);
+
+  return variants.some((variant) => {
+    const plainWord = new RegExp(`\\b${escapeRegex(variant)}\\b`, "i");
+    const htmlAttr = new RegExp(`\\b${escapeRegex(variant)}\\s*=`, "i");
+    const htmlTag = new RegExp(`<\\s*${escapeRegex(variant)}\\b`, "i");
+    return plainWord.test(markup) || htmlAttr.test(markup) || htmlTag.test(markup);
+  });
+}
+
 // ─── Tone preview on profile change ────────────────────────────────────────
 profileSelect.addEventListener("change", setToneHintForSelectedProfile);
 
@@ -67,12 +101,7 @@ function renderFeedback(checks, markup, style) {
 
   const matched = checks.filter((check) => {
     if (!check.keyword) return false;
-    const keyword = check.keyword.toLowerCase().trim();
-    const regex = new RegExp(
-      `\\b${keyword.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`,
-      "i",
-    );
-    return regex.test(markup);
+    return checkKeywordMatch(check.keyword, markup);
   });
 
   if (matched.length === 0) {
