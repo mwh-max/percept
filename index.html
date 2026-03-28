@@ -16,12 +16,11 @@
     <header>
       <h1>Percept – Accessibility Prompt Feedback Tool</h1>
       <p>
-        Percept is built to help people with disabilities and neurodivergent
-        users get clearer, more accurate responses from AI. It looks at the
-        words you use in a prompt, points out where tone or structure might
-        cause confusion and suggests ways to make the request easier for the AI
-        to understand. The goal is to make sure the technology works for you,
-        not against you.
+        Percept helps designers and developers understand how websites feel to
+        people with disabilities and neurodivergent users. Select a profile,
+        paste your HTML, and get feedback shaped by lived experience—not
+        compliance checklists. Feedback comes in two flavors: emotional tone
+        (how it feels) and technical guidance (how to fix it).
       </p>
     </header>
 
@@ -89,19 +88,18 @@
 
         <!-- HTML/prompt textarea -->
         <div class="input-block">
-          <label for="markup"
-            ><strong>Paste your HTML or prompt:</strong></label
-          >
+          <label for="markup"><strong>Paste your HTML or code:</strong></label>
           <textarea
             id="markup"
             name="markup"
             rows="10"
-            placeholder="Paste HTML or write your prompt here…"
+            placeholder="Paste HTML, component code, or website excerpt…"
             aria-describedby="markup-help"
           ></textarea>
           <p id="markup-help" class="help-text">
-            Tip: You can paste raw HTML. The checker looks for keywords matched
-            to the selected profile.
+            Paste HTML code (or plain text). The checker detects patterns that
+            may cause barriers for the selected profile. Feedback tells you how
+            it feels and how to improve it.
           </p>
           <button id="analyze">Analyze</button>
         </div>
@@ -134,7 +132,16 @@
     </div>
 
     <footer class="site-footer">
-      <p>Percept focuses on lived experience for ADHD, dyslexia, blindness, low vision, motor disabilities, and screenreader users. <a href="README.md" target="_blank">Complementary tools</a> are available for comprehensive 508/WCAG audits. <a href="https://github.com/mwh-max/percept/issues" target="_blank">Contribute a profile</a> for communities currently not represented.</p>
+      <p>
+        Percept focuses on lived experience for ADHD, dyslexia, blindness, low
+        vision, motor disabilities, and screenreader users.
+        <a href="README.md" target="_blank">Complementary tools</a> are
+        available for comprehensive 508/WCAG audits.
+        <a href="https://github.com/mwh-max/percept/issues" target="_blank"
+          >Contribute a profile</a
+        >
+        for communities currently not represented.
+      </p>
     </footer>
 
     <script src="scripts/percept.js" defer></script>
