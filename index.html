@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div
+      id="toast-container"
+      class="toast-container"
+      role="region"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
     <header>
       <h1>Percept – Accessibility Prompt Feedback Tool</h1>
       <p>
@@ -99,7 +107,8 @@
           <p id="markup-help" class="help-text">
             Paste HTML code (or plain text). The checker detects patterns that
             may cause barriers for the selected profile. Feedback tells you how
-            it feels and how to improve it.
+            it feels and how to improve it. <strong>Keyboard shortcuts:</strong>
+            Ctrl/Cmd+Enter to analyze, Ctrl/Cmd+Shift+C to copy, Esc to clear.
           </p>
           <button id="analyze">Analyze</button>
         </div>

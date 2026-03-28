@@ -8,9 +8,22 @@ const profileUpload = document.getElementById("profile-upload");
 const loadingIndicator = document.getElementById("loading-indicator");
 const analyzeBtn = document.getElementById("analyze");
 const copyBtn = document.getElementById("copy-feedback");
+const toastContainer = document.getElementById("toast-container");
 
 // ─── Shared helpers ────────────────────────────────────────────────────────
 const profileCache = new Map();
+
+function showToast(message, type = "info", duration = 3000) {
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = "slideOut 0.3s ease-in forwards";
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
 
 const inlineProfiles = {
   adhd: {
@@ -363,13 +376,19 @@ profileUpload.addEventListener("change", (event) => {
       renderMessage("Custom profile loaded and selected.", "info");
     } catch (err) {
       console.error(err);
-      renderMessage("Failed to parse profile JSON. Please upload a valid profile.", "warn");
+      renderMessage(
+        "Failed to parse profile JSON. Please upload a valid profile.",
+        "warn",
+      );
       profileUpload.value = "";
     }
   };
   reader.onerror = (err) => {
     console.error(err);
-    renderMessage("Error reading profile file. Please try another file.", "warn");
+    renderMessage(
+      "Error reading profile file. Please try another file.",
+      "warn",
+    );
     profileUpload.value = "";
   };
 
@@ -391,14 +410,14 @@ copyBtn.addEventListener("click", () => {
   const text = feedbackBox.innerText;
 
   if (!text.trim()) {
-    alert("No feedback to copy yet.");
+    showToast("No feedback to copy yet.", "info");
     return;
   }
 
   navigator.clipboard
     .writeText(text)
-    .then(() => alert("Feedback copied to clipboard."))
-    .catch(() => alert("Copy failed. Please try again."));
+    .then(() => showToast("Feedback copied to clipboard.", "success"))
+    .catch(() => showToast("Copy failed. Please try again.", "error"));
 });
 
 // ─── Render feedback as structured HTML cards ───────────────────────────────
@@ -552,6 +571,7 @@ analyzeBtn.addEventListener("click", () => {
     .then((profileData) => {
       const checks = profileData.checks || [];
       renderFeedback(checks, markup, style);
+      feedbackBox.focus();
     })
     .catch((err) => {
       console.error(err);
@@ -564,3 +584,49 @@ analyzeBtn.addEventListener("click", () => {
       setAnalyzing(false);
     });
 });
+
+// ─── Keyboard shortcuts ────────────────────────────────────────────────────
+document.addEventListener("keydown", (event) => {
+  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+  const modKey = isMac ? event.metaKey : event.ctrlKey;
+
+  if (modKey && event.key === "Enter") {
+    event.preventDefault();
+    analyzeBtn.click();
+  }
+
+  if (modKey && event.shiftKey && event.key === "C") {
+    event.preventDefault();
+    copyBtn.click();
+  }
+
+  if (event.key === "Escape") {
+    feedbackBox.innerHTML = "";
+    markupInput.focus();
+  }
+});
+
+// ─── Session persistence ───────────────────────────────────────────────────
+function saveSessionState() {
+  localStorage.setItem("percept-markup", markupInput.value);
+  localStorage.setItem("percept-profile", profileSelect.value);
+  localStorage.setItem("percept-style", styleToggle.value);
+}
+
+function restoreSessionState() {
+  const savedMarkup = localStorage.getItem("percept-markup");
+  const savedProfile = localStorage.getItem("percept-profile");
+  const savedStyle = localStorage.getItem("percept-style");
+
+  if (savedMarkup) markupInput.value = savedMarkup;
+  if (savedProfile) profileSelect.value = savedProfile;
+  if (savedStyle) styleToggle.value = savedStyle;
+
+  setToneHintForSelectedProfile();
+}
+
+markupInput.addEventListener("change", saveSessionState);
+profileSelect.addEventListener("change", saveSessionState);
+styleToggle.addEventListener("change", saveSessionState);
+
+restoreSessionState();
