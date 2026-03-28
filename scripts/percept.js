@@ -7,12 +7,33 @@ const tonePreview = document.getElementById("tone-preview");
 const analyzeBtn = document.getElementById("analyze");
 const copyBtn = document.getElementById("copy-feedback");
 
-// ─── Tone preview on profile change ────────────────────────────────────────
-profileSelect.addEventListener("change", () => {
+// ─── Shared helpers ────────────────────────────────────────────────────────
+const profileCache = new Map();
+
+function normalizeMarkup(text) {
+  return text.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function getProfileURL(profile) {
+  return new URL(`profiles/${profile}.json`, window.location.href).href;
+}
+
+function setToneHintForSelectedProfile() {
   const selected = profileSelect.options[profileSelect.selectedIndex];
-  const tone = selected.dataset.tone || "";
-  tonePreview.textContent = tone ? `Tone: ${tone}` : "";
-});
+  tonePreview.textContent = selected?.dataset?.tone
+    ? `Tone: ${selected.dataset.tone}`
+    : "";
+}
+
+function renderMessage(message, severity = "info") {
+  feedbackBox.innerHTML = `<p class="result-${severity}">${message}</p>`;
+}
+
+// ─── Tone preview on profile change ────────────────────────────────────────
+profileSelect.addEventListener("change", setToneHintForSelectedProfile);
+
+// Set initial tone for cases where profile is preselected
+setToneHintForSelectedProfile();
 
 // ─── Debounced live analysis as user types ──────────────────────────────────
 let debounceTimer;
@@ -24,10 +45,12 @@ markupInput.addEventListener("input", () => {
 // ─── Copy feedback to clipboard ────────────────────────────────────────────
 copyBtn.addEventListener("click", () => {
   const text = feedbackBox.innerText;
+
   if (!text.trim()) {
     alert("No feedback to copy yet.");
     return;
   }
+
   navigator.clipboard
     .writeText(text)
     .then(() => alert("Feedback copied to clipboard."))
@@ -42,16 +65,21 @@ copyBtn.addEventListener("click", () => {
 function renderFeedback(checks, markup, style) {
   feedbackBox.innerHTML = "";
 
-  const matched = checks.filter(
-    (check) => check.keyword && markup.includes(check.keyword),
-  );
+  const matched = checks.filter((check) => {
+    if (!check.keyword) return false;
+    const keyword = check.keyword.toLowerCase().trim();
+    const regex = new RegExp(
+      `\\b${keyword.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`,
+      "i",
+    );
+    return regex.test(markup);
+  });
 
   if (matched.length === 0) {
-    const empty = document.createElement("p");
-    empty.className = "result-info";
-    empty.textContent =
-      "No profile-specific traits detected in this markup. Try pasting more HTML or explore a different profile.";
-    feedbackBox.appendChild(empty);
+    renderMessage(
+      "No profile-specific traits detected in this markup. Try pasting more HTML or explore a different profile.",
+      "info",
+    );
     return;
   }
 
@@ -63,7 +91,8 @@ function renderFeedback(checks, markup, style) {
       card.className = "result-warn";
       card.textContent = check.technical;
     } else {
-      card.className = check.severity === "warn" ? "result-warn" : "result-info";
+      card.className =
+        check.severity === "warn" ? "result-warn" : "result-info";
       card.textContent = check.message;
     }
 
@@ -71,30 +100,48 @@ function renderFeedback(checks, markup, style) {
   });
 }
 
+function loadProfile(profile) {
+  if (profileCache.has(profile)) {
+    return Promise.resolve(profileCache.get(profile));
+  }
+
+  const url = getProfileURL(profile);
+
+  return fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error(`Profile file not found: ${url}`);
+      return res.json();
+    })
+    .then((data) => {
+      profileCache.set(profile, data);
+      return data;
+    });
+}
+
 // ─── Main analyze handler ───────────────────────────────────────────────────
 analyzeBtn.addEventListener("click", () => {
   const profile = profileSelect.value;
-  const markup = markupInput.value.trim().toLowerCase().replace(/\s+/g, " ");
+  const markup = normalizeMarkup(markupInput.value);
   const style = styleToggle.value;
 
   if (!profile || !markup) {
-    feedbackBox.innerHTML =
-      '<p class="result-info">Please select a profile and paste HTML to continue.</p>';
+    renderMessage(
+      "Please select a profile and paste HTML to continue.",
+      "info",
+    );
     return;
   }
 
-  fetch(`profiles/${profile}.json`)
-    .then((res) => {
-      if (!res.ok) throw new Error(`Profile file not found: profiles/${profile}.json`);
-      return res.json();
-    })
+  loadProfile(profile)
     .then((profileData) => {
       const checks = profileData.checks || [];
       renderFeedback(checks, markup, style);
     })
     .catch((err) => {
-      feedbackBox.innerHTML =
-        '<p class="result-warn">Error loading profile data. Please check the file path or profile name.</p>';
       console.error(err);
+      renderMessage(
+        "Error loading profile data. Please check the file path or profile name.",
+        "warn",
+      );
     });
 });
