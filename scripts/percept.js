@@ -14,6 +14,11 @@ const toastContainer = document.getElementById("toast-container");
 
 // ─── Shared helpers ────────────────────────────────────────────────────────
 const profileCache = new Map();
+const MAX_FILE_SIZE = 100 * 1024; // 100KB
+const DEBOUNCE_DELAY = 300; // ms
+let analyzeTimeout = null;
+const feedbackHistory = [];
+let historyIndex = -1;
 
 function showToast(message, type = "info", duration = 3000) {
   const toast = document.createElement("div");
@@ -25,6 +30,69 @@ function showToast(message, type = "info", duration = 3000) {
     toast.style.animation = "slideOut 0.3s ease-in forwards";
     setTimeout(() => toast.remove(), 300);
   }, duration);
+}
+
+// Profile schema validation
+function validateProfileSchema(data) {
+  const errors = [];
+  if (!data || typeof data !== "object") {
+    return ["Profile must be a valid JSON object."];
+  }
+  if (typeof data.name !== "string" || !data.name.trim()) {
+    errors.push('Profile must have a "name" property (non-empty string).');
+  }
+  if (typeof data.tone !== "string" || !data.tone.trim()) {
+    errors.push('Profile must have a "tone" property (non-empty string).');
+  }
+  if (!Array.isArray(data.checks)) {
+    errors.push('Profile must have a "checks" property (array of objects).');
+    return errors;
+  }
+  if (data.checks.length === 0) {
+    errors.push("Profile must have at least one check in the checks array.");
+  }
+  data.checks.forEach((check, idx) => {
+    if (!check || typeof check !== "object") {
+      errors.push(`Check ${idx}: must be an object.`);
+      return;
+    }
+    if (typeof check.keyword !== "string" || !check.keyword.trim()) {
+      errors.push(
+        `Check ${idx}: must have a "keyword" property (non-empty string).`,
+      );
+    }
+    if (typeof check.message !== "string" || !check.message.trim()) {
+      errors.push(
+        `Check ${idx}: must have a "message" property (non-empty string).`,
+      );
+    }
+    if (typeof check.technical !== "string" || !check.technical.trim()) {
+      errors.push(
+        `Check ${idx}: must have a "technical" property (non-empty string).`,
+      );
+    }
+    if (!["warn", "info"].includes(check.severity)) {
+      errors.push(`Check ${idx}: severity must be "warn" or "info".`);
+    }
+  });
+  return errors;
+}
+
+// Debounce helper
+function debounce(fn, delay) {
+  return function (...args) {
+    clearTimeout(analyzeTimeout);
+    analyzeTimeout = setTimeout(() => fn(...args), delay);
+  };
+}
+
+// Add to history
+function addToHistory(feedback) {
+  if (historyIndex < feedbackHistory.length - 1) {
+    feedbackHistory.splice(historyIndex + 1);
+  }
+  feedbackHistory.push(feedback);
+  historyIndex = feedbackHistory.length - 1;
 }
 
 const inlineProfiles = {
@@ -507,21 +575,40 @@ profileUpload.addEventListener("change", (event) => {
     return;
   }
 
+  // Check file size
+  if (file.size > MAX_FILE_SIZE) {
+    renderMessage(
+      `Profile file is too large (${(file.size / 1024).toFixed(1)}KB). Maximum size is ${MAX_FILE_SIZE / 1024}KB.`,
+      "warn",
+    );
+    profileUpload.value = "";
+    return;
+  }
+
+  // Check file type
+  if (!file.type.includes("json") && !file.name.endsWith(".json")) {
+    renderMessage("Please upload a valid JSON file (.json extension).", "warn");
+    profileUpload.value = "";
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = (loadEvent) => {
     try {
       const data = JSON.parse(loadEvent.target.result);
-      if (!data || !data.checks || !Array.isArray(data.checks)) {
-        throw new Error("Invalid profile format: missing checks array.");
+
+      // Validate schema strictly
+      const validationErrors = validateProfileSchema(data);
+      if (validationErrors.length > 0) {
+        const errorMsg = validationErrors.join(" ");
+        throw new Error(`Invalid profile format: ${errorMsg}`);
       }
+
       addCustomProfile(data);
-      renderMessage("Custom profile loaded and selected.", "info");
+      showToast("Custom profile loaded and selected.", "success");
     } catch (err) {
       console.error(err);
-      renderMessage(
-        "Failed to parse profile JSON. Please upload a valid profile.",
-        "warn",
-      );
+      renderMessage(`Failed to load profile: ${err.message}`, "warn");
       profileUpload.value = "";
     }
   };
@@ -633,7 +720,173 @@ ${text}`;
   downloadFile(header + "\n", filename, "text/plain");
 });
 
-// ─── Render feedback as structured HTML cards ───────────────────────────────
+// ─── Copy all feedback to clipboard ────────────────────────────────────────
+const copyAllBtn = document.getElementById("copy-all-feedback");
+if (copyAllBtn) {
+  copyAllBtn.addEventListener("click", () => {
+    const cards = feedbackBox.querySelectorAll("article");
+    if (cards.length === 0) {
+      showToast("No feedback to copy yet.", "info");
+      return;
+    }
+
+    const allText = Array.from(cards)
+      .map((card) => card.innerText)
+      .join("\n\n---\n\n");
+
+    navigator.clipboard
+      .writeText(allText)
+      .then(() => showToast("All feedback copied to clipboard.", "success"))
+      .catch(() => showToast("Copy failed. Please try again.", "error"));
+  });
+}
+
+// ─── CSV export ───────────────────────────────────────────────────────────
+const exportCsvBtn = document.getElementById("export-csv");
+if (exportCsvBtn) {
+  exportCsvBtn.addEventListener("click", () => {
+    const cards = feedbackBox.querySelectorAll("article");
+    if (cards.length === 0) {
+      showToast("No feedback to export yet.", "info");
+      return;
+    }
+
+    const profile = profileSelect.value;
+    const timestamp = new Date().toISOString();
+
+    const rows = [
+      ["Keyword", "Message/Technical", "Severity", "Type"],
+      ...Array.from(cards).map((card) => {
+        const message = card.querySelector("p")?.textContent || "";
+        const meta = card.querySelector(".result-meta")?.textContent || "";
+        const severity = card.classList.contains("result-warn") ? "warn" : "info";
+        return [meta, message, severity, "feedback"];
+      }),
+    ];
+
+    const csv = rows
+      .map((row) =>
+        row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")
+      )
+      .join("\n");
+
+    const header = `Profile,Style,Timestamp\n"${profile}","${styleToggle.value}","${timestamp}"\n\n${csv}`;
+
+    const filename = `percept-feedback-${profile}-${Date.now()}.csv`;
+    downloadFile(header, filename, "text/csv");
+  });
+}
+
+// ─── Settings panel ──────────────────────────────────────────────────────────
+const settingsBtn = document.getElementById("settings-btn");
+const settingsModal = document.getElementById("settings-modal");
+const closeSettingsBtn = document.getElementById("close-settings");
+const tonePreviewToggle = document.getElementById("tone-preview-toggle");
+const autosaveToggle = document.getElementById("autosave-toggle");
+const liveAnalysisToggle = document.getElementById("live-analysis-toggle");
+
+let liveAnalysisEnabled = false;
+
+if (settingsBtn && settingsModal) {
+  settingsBtn.addEventListener("click", () => {
+    settingsModal.hidden = false;
+  });
+
+  if (closeSettingsBtn) {
+    closeSettingsBtn.addEventListener("click", () => {
+      settingsModal.hidden = true;
+    });
+  }
+
+  settingsModal.addEventListener("click", (e) => {
+    if (e.target === settingsModal) {
+      settingsModal.hidden = true;
+    }
+  });
+
+  if (tonePreviewToggle) {
+    tonePreviewToggle.addEventListener("change", (e) => {
+      tonePreview.style.display = e.target.checked ? "block" : "none";
+      localStorage.setItem("percept-tone-preview", e.target.checked);
+    });
+  }
+
+  if (autosaveToggle) {
+    autosaveToggle.addEventListener("change", (e) => {
+      localStorage.setItem("percept-autosave", e.target.checked);
+    });
+  }
+
+  if (liveAnalysisToggle) {
+    liveAnalysisToggle.addEventListener("change", (e) => {
+      liveAnalysisEnabled = e.target.checked;
+      localStorage.setItem("percept-live-analysis", e.target.checked);
+    });
+  }
+
+  const savedTonePreview = localStorage.getItem("percept-tone-preview") !== "false";
+  const savedAutosave = localStorage.getItem("percept-autosave") !== "false";
+  const savedLiveAnalysis = localStorage.getItem("percept-live-analysis") === "true";
+
+  if (tonePreviewToggle) tonePreviewToggle.checked = savedTonePreview;
+  if (autosaveToggle) autosaveToggle.checked = savedAutosave;
+  if (liveAnalysisToggle) liveAnalysisToggle.checked = savedLiveAnalysis;
+
+  tonePreview.style.display = savedTonePreview ? "block" : "none";
+  liveAnalysisEnabled = savedLiveAnalysis;
+}
+
+// ─── Undo/Redo buttons ───────────────────────────────────────────────────────
+const undoBtn = document.getElementById("undo-btn");
+const redoBtn = document.getElementById("redo-btn");
+
+function updateUndoRedoState() {
+  if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+  if (redoBtn) redoBtn.disabled = historyIndex >= feedbackHistory.length - 1;
+}
+
+if (undoBtn) {
+  undoBtn.addEventListener("click", () => {
+    if (historyIndex > 0) {
+      historyIndex--;
+      const state = feedbackHistory[historyIndex];
+      markupInput.value = state.markup;
+      profileSelect.value = state.profile;
+      styleToggle.value = state.style;
+      setToneHintForSelectedProfile();
+      debouncedAnalyze();
+      updateUndoRedoState();
+    }
+  });
+}
+
+if (redoBtn) {
+  redoBtn.addEventListener("click", () => {
+    if (historyIndex < feedbackHistory.length - 1) {
+      historyIndex++;
+      const state = feedbackHistory[historyIndex];
+      markupInput.value = state.markup;
+      profileSelect.value = state.profile;
+      styleToggle.value = state.style;
+      setToneHintForSelectedProfile();
+      debouncedAnalyze();
+      updateUndoRedoState();
+    }
+  });
+}
+
+updateUndoRedoState();
+
+// ─── Live analysis on input (if enabled) ──────────────────────────────────────
+if (markupInput) {
+  const liveAnalysisDebounced = debounce(() => {
+    if (liveAnalysisEnabled && profileSelect.value && markupInput.value.trim()) {
+      debouncedAnalyze();
+    }
+  }, 600);
+
+  markupInput.addEventListener("input", liveAnalysisDebounced);
+}
 // Card class is determined by two signals in priority order:
 //   1. If style toggle is "technical" and a technical field exists → result-warn
 //   2. Otherwise → the check's own severity field ("warn" → result-warn,
@@ -764,8 +1017,8 @@ function setAnalyzing(isBusy) {
   }
 }
 
-// ─── Main analyze handler ───────────────────────────────────────────────────
-analyzeBtn.addEventListener("click", () => {
+// ─── Main analyze handler with debouncing ─────────────────────────────────
+const debouncedAnalyze = debounce(() => {
   const profile = profileSelect.value;
   const markup = normalizeMarkup(markupInput.value);
   const style = styleToggle.value;
@@ -785,6 +1038,14 @@ analyzeBtn.addEventListener("click", () => {
       const checks = profileData.checks || [];
       renderFeedback(checks, markup, style);
       feedbackBox.focus();
+
+      // Store feedback state in history
+      addToHistory({
+        markup,
+        profile,
+        style,
+        timestamp: new Date().toISOString(),
+      });
     })
     .catch((err) => {
       console.error(err);
@@ -796,7 +1057,9 @@ analyzeBtn.addEventListener("click", () => {
     .finally(() => {
       setAnalyzing(false);
     });
-});
+}, DEBOUNCE_DELAY);
+
+analyzeBtn.addEventListener("click", debouncedAnalyze);
 
 // ─── Keyboard shortcuts ────────────────────────────────────────────────────
 document.addEventListener("keydown", (event) => {
@@ -811,6 +1074,16 @@ document.addEventListener("keydown", (event) => {
   if (modKey && event.shiftKey && event.key === "C") {
     event.preventDefault();
     copyBtn.click();
+  }
+
+  if (modKey && event.key === "z") {
+    event.preventDefault();
+    undoBtn?.click();
+  }
+
+  if (modKey && event.key === "y") {
+    event.preventDefault();
+    redoBtn?.click();
   }
 
   if (event.key === "Escape") {

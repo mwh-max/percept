@@ -149,9 +149,42 @@
     </main>
 
     <div class="footer-actions">
-      <button id="copy-feedback">Copy Feedback</button>
-      <button id="export-json">Export as JSON</button>
-      <button id="export-text">Export as Text</button>
+      <div class="button-group">
+        <button id="copy-feedback">Copy Feedback</button>
+        <button id="copy-all-feedback">Copy All</button>
+        <button id="export-json">Export as JSON</button>
+        <button id="export-text">Export as Text</button>
+        <button id="export-csv">Export as CSV</button>
+      </div>
+      <div class="button-group">
+        <button id="undo-btn" title="Undo (Ctrl+Z)">↶ Undo</button>
+        <button id="redo-btn" title="Redo (Ctrl+Y)">↷ Redo</button>
+        <button id="settings-btn" title="Settings">⚙ Settings</button>
+      </div>
+    </div>
+
+    <!-- Settings modal -->
+    <div id="settings-modal" class="settings-modal" hidden>
+      <div class="settings-modal-content">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button id="close-settings" aria-label="Close settings">✕</button>
+        </div>
+        <div class="settings-body">
+          <label class="setting-item">
+            <input type="checkbox" id="tone-preview-toggle" checked />
+            Show tone preview
+          </label>
+          <label class="setting-item">
+            <input type="checkbox" id="autosave-toggle" checked />
+            Auto-save session
+          </label>
+          <label class="setting-item">
+            <input type="checkbox" id="live-analysis-toggle" />
+            Live analysis (analyze as you type)
+          </label>
+        </div>
+      </div>
     </div>
 
     <footer class="site-footer">
