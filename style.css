@@ -328,8 +328,11 @@ main.grid {
   padding: 0 var(--space-3);
   display: flex;
   justify-content: flex-start;
+  gap: var(--space-2);
 }
-#copy-feedback {
+#copy-feedback,
+#export-json,
+#export-text {
   padding: 0.65rem 1.25rem;
   border-radius: var(--radius);
   border: 1px solid var(--amber-border);
@@ -343,14 +346,20 @@ main.grid {
     box-shadow 0.15s,
     transform 0.1s;
 }
-#copy-feedback:hover {
+#copy-feedback:hover,
+#export-json:hover,
+#export-text:hover {
   box-shadow: var(--shadow-lg);
 }
-#copy-feedback:focus-visible {
+#copy-feedback:focus-visible,
+#export-json:focus-visible,
+#export-text:focus-visible {
   outline: 3px solid var(--amber-border);
   outline-offset: 3px;
 }
-#copy-feedback:active {
+#copy-feedback:active,
+#export-json:active,
+#export-text:active {
   transform: translateY(1px);
 }
 

@@ -8,6 +8,8 @@ const profileUpload = document.getElementById("profile-upload");
 const loadingIndicator = document.getElementById("loading-indicator");
 const analyzeBtn = document.getElementById("analyze");
 const copyBtn = document.getElementById("copy-feedback");
+const exportJsonBtn = document.getElementById("export-json");
+const exportTextBtn = document.getElementById("export-text");
 const toastContainer = document.getElementById("toast-container");
 
 // ─── Shared helpers ────────────────────────────────────────────────────────
@@ -486,6 +488,73 @@ copyBtn.addEventListener("click", () => {
     .writeText(text)
     .then(() => showToast("Feedback copied to clipboard.", "success"))
     .catch(() => showToast("Copy failed. Please try again.", "error"));
+});
+
+// ─── Export feedback as JSON or text ───────────────────────────────────────
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast(`Downloaded ${filename}`, "success");
+}
+
+exportJsonBtn.addEventListener("click", () => {
+  const text = feedbackBox.innerText;
+
+  if (!text.trim()) {
+    showToast("No feedback to export yet.", "info");
+    return;
+  }
+
+  const feedback = Array.from(feedbackBox.querySelectorAll("article, p")).map(
+    (card) => ({
+      message: card.textContent,
+      type: card.classList.contains("result-warn") ? "warning" : "info",
+    }),
+  );
+
+  const profile = profileSelect.value;
+  const style = styleToggle.value;
+  const timestamp = new Date().toISOString();
+
+  const exportData = {
+    timestamp,
+    profile,
+    style,
+    feedback,
+  };
+
+  const filename = `percept-feedback-${profile}-${Date.now()}.json`;
+  downloadFile(JSON.stringify(exportData, null, 2), filename, "application/json");
+});
+
+exportTextBtn.addEventListener("click", () => {
+  const text = feedbackBox.innerText;
+
+  if (!text.trim()) {
+    showToast("No feedback to export yet.", "info");
+    return;
+  }
+
+  const profile = profileSelect.value;
+  const style = styleToggle.value;
+  const timestamp = new Date().toISOString();
+
+  const header = `Percept Feedback Export
+Profile: ${profileSelect.options[profileSelect.selectedIndex].text}
+Style: ${style}
+Generated: ${timestamp}
+
+---
+
+${text}`;
+
+  const filename = `percept-feedback-${profile}-${Date.now()}.txt`;
+  downloadFile(header + "\n", filename, "text/plain");
 });
 
 // ─── Render feedback as structured HTML cards ───────────────────────────────
