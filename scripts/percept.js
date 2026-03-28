@@ -66,9 +66,12 @@ function validateProfileSchema(data) {
         `Check ${idx}: must have a "message" property (non-empty string).`,
       );
     }
-    if (typeof check.technical !== "string" || !check.technical.trim()) {
+    if (
+      check.technical !== undefined &&
+      (typeof check.technical !== "string" || !check.technical.trim())
+    ) {
       errors.push(
-        `Check ${idx}: must have a "technical" property (non-empty string).`,
+        `Check ${idx}: if provided, "technical" must be a non-empty string.`,
       );
     }
     if (!["warn", "info"].includes(check.severity)) {
