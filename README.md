@@ -1,19 +1,20 @@
 Percept – Accessibility Prompt Feedback Tool
 
-Percept helps people with disabilities and neurodivergent users understand how websites and prompts *feel* through user-centered feedback. Select a disability or neurodivergent profile, paste HTML or a prompt, and get advice shaped by the lived experience of that community—not compliance checklists.
+Percept helps people with disabilities and neurodivergent users understand how websites and prompts _feel_ through user-centered feedback. Select a disability or neurodivergent profile, paste HTML or a prompt, and get advice shaped by the lived experience of that community—not compliance checklists.
 
 **This is a lived-experience tool, not a compliance auditor.** For a comprehensive accessibility check, use it alongside WCAG validators like [axe](https://www.deque.com/axe/), [WAVE](https://wave.webaim.org/), or [Lighthouse](https://developers.google.com/web/tools/lighthouse).
-
 
 What Percept Is & Isn't
 
 **Percept is:**
+
 - A feedback tool for understanding how people with ADHD, dyslexia, blindness, low vision, motor disabilities, and screenreader users experience your website or interface
 - Designed to shift perspective from "audit pass/fail" to "how does this feel?"
 - A starting point for empathy-driven design decisions
 - Extensible: you can upload custom profiles for your own user research
 
 **Percept is not:**
+
 - A comprehensive 508 or WCAG 2.1 AA audit tool (use axe, WAVE, or automated scanners for that)
 - A replacement for accessibility testing with real users from disabled communities
 - A compliance checker (though many findings align with WCAG criteria)
@@ -21,11 +22,9 @@ What Percept Is & Isn't
 
 If your primary need is compliance scoring, automated scanning, or support for disabilities not yet profiled in Percept, please use complementary tools listed below.
 
-
 Purpose and Audience
 
 Percept is designed for anyone who wants AI output to be more usable and inclusive. It is aimed at people who face cognitive, sensory, or physical barriers that can be amplified by unclear prompts or inaccessible layouts. The goal is to make the technology work for the user, not the other way around.
-
 
 How It Works
 
@@ -38,7 +37,6 @@ Paste HTML or write a plain text prompt into the input field and click Analyze. 
 A tone preview appears beneath the profile selector to give a sense of the experiential lens being applied before feedback is generated.
 
 Use Copy Feedback to copy all results to your clipboard.
-
 
 Profiles
 
@@ -56,23 +54,22 @@ Person with a motor disability. Feedback addresses touch target size, hover-only
 
 Blind user. Feedback addresses structural semantics, form labeling, table headers, SVG descriptions, iframe titles, and aria-hidden misuse as they affect users who navigate entirely without visual reference.
 
-
 Other Disabilities
 
 Percept currently covers six profiles based on community input and design priority. Other disabilities exist and matter. If you represent or advocate for a community not yet included:
+
 - **Upload a custom profile**: Use the file upload feature to test your own profile JSON in a session.
 - **Contribute a profile**: Open a GitHub issue or PR with your profile data and description. We welcome profiles for hearing disabilities, photosensitivity, cognitive load sensitivity, autism, vestibular disorders, and others.
-
 
 Complementary Tools
 
 Percept works best alongside these tools:
+
 - [axe DevTools](https://www.deque.com/axe/devtools/): Automated accessibility scanning for WCAG violations
 - [WAVE Browser Extension](https://wave.webaim.org/extension/): Visual feedback on accessibility and structure
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse): Accessibility scoring and guidance
 - [NVDA](https://www.nvaccess.org/) / [JAWS](https://www.freedomscientific.com/products/software/jaws/): Screen readers for real testing
 - [Accessibility Insights](https://accessibilityinsights.io/): Testing tools and guidance
-
 
 Terminology
 
@@ -80,15 +77,14 @@ Percept uses person-first language throughout to center human experience rather 
 
 Percept avoids diagnostic framing, euphemism, and audit tone. Feedback is shaped by clarity, care, and intent.
 
-
 Built With
 
 HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion. Structured card rendering with distinct warning and informational states. Debounced live analysis. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
 
-
 Custom Profiles
 
 Upload a JSON file in the same format as the built-in profiles. A profile must include:
+
 ```json
 {
   "name": "Profile Name",
@@ -107,21 +103,19 @@ Upload a JSON file in the same format as the built-in profiles. A profile must i
 
 Upload a profile via the file input on the home page. The profile is stored in-session and appears in the dropdown as "Custom: [Name]". No data is sent to a server.
 
-
 What Is Still Planned
 
 Expanded keyword coverage for existing profiles. Community-contributed profiles for hearing, photosensitivity, vestibular, and other disabilities. Keyboard shortcuts (Ctrl/Cmd+Enter to analyze). Session persistence (local storage across reloads). Grouped feedback by interface domain (forms, navigation, typography).
 
-
 Contributing
 
 Percept welcomes contributions. To suggest a new profile or improve an existing one:
+
 1. Review the profile schema above.
 2. Test your profile with the custom upload feature.
 3. Open a GitHub issue or PR with your profile data, any keyword research, and a brief description of the community it represents.
 
 All contributions are reviewed for accuracy, tone, and alignment with Percept's person-first, lived-experience framing.
-
 
 License
 
