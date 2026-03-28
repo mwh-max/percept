@@ -759,14 +759,16 @@ if (exportCsvBtn) {
       ...Array.from(cards).map((card) => {
         const message = card.querySelector("p")?.textContent || "";
         const meta = card.querySelector(".result-meta")?.textContent || "";
-        const severity = card.classList.contains("result-warn") ? "warn" : "info";
+        const severity = card.classList.contains("result-warn")
+          ? "warn"
+          : "info";
         return [meta, message, severity, "feedback"];
       }),
     ];
 
     const csv = rows
       .map((row) =>
-        row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")
+        row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","),
       )
       .join("\n");
 
@@ -824,9 +826,11 @@ if (settingsBtn && settingsModal) {
     });
   }
 
-  const savedTonePreview = localStorage.getItem("percept-tone-preview") !== "false";
+  const savedTonePreview =
+    localStorage.getItem("percept-tone-preview") !== "false";
   const savedAutosave = localStorage.getItem("percept-autosave") !== "false";
-  const savedLiveAnalysis = localStorage.getItem("percept-live-analysis") === "true";
+  const savedLiveAnalysis =
+    localStorage.getItem("percept-live-analysis") === "true";
 
   if (tonePreviewToggle) tonePreviewToggle.checked = savedTonePreview;
   if (autosaveToggle) autosaveToggle.checked = savedAutosave;
@@ -880,7 +884,11 @@ updateUndoRedoState();
 // ─── Live analysis on input (if enabled) ──────────────────────────────────────
 if (markupInput) {
   const liveAnalysisDebounced = debounce(() => {
-    if (liveAnalysisEnabled && profileSelect.value && markupInput.value.trim()) {
+    if (
+      liveAnalysisEnabled &&
+      profileSelect.value &&
+      markupInput.value.trim()
+    ) {
       debouncedAnalyze();
     }
   }, 600);
