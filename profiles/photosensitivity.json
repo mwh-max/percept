@@ -1,0 +1,55 @@
+{
+  "name": "Photosensitive or Seizure-Prone User",
+  "tone": "cautious, contrast-aware, motion-sensitive",
+  "description": "For people with photosensitive epilepsy or other photosensitive conditions, certain visual patterns can trigger seizures. Flashing lights, rapid color changes, high-contrast patterns, and motion can all pose serious health risks. Safe design means removing triggers entirely—not just warning users. Every animation decision needs care. Every flash is a potential crisis.",
+  "checks": [
+    {
+      "keyword": "animation",
+      "message": "Animations can trigger seizures in photosensitive individuals. Check animation speed: safe animations flash no more than 3 times per second. Remove or slow rapid animations (especially strobing effects, color flashes, or rapid pattern changes).",
+      "technical": "Limit animation to ≤3 flashes/second. Use CSS @media (prefers-reduced-motion) to disable animations for users who request reduced motion. Test with epilepsy safety tools.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "flash",
+      "message": "Flashing content is a direct seizure trigger. Any content that flashes more than 3 times per second poses serious risk. Remove all flashing effects immediately.",
+      "technical": "Use JavaScript to detect and eliminate flashing. No element should flash faster than 3 Hz. Include warning if flashing content is unavoidable, and provide a disable toggle.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "transition",
+      "message": "Rapid transitions between high-contrast colors can trigger seizures. Be especially cautious with white-to-black or black-to-white transitions. Gradual transitions are safer than abrupt ones.",
+      "technical": "Avoid abrupt high-contrast transitions. If transitions are necessary, keep them gradual (>1 second for color changes) and avoid white/black flashing patterns.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "autoplay",
+      "message": "Autoplaying videos or animations can contain flashing or rapid motion. Always require user interaction before any animation or video starts. Never surprise users with motion.",
+      "technical": "Never autoplay video or animated content. Require explicit user action to start. Add visible play button and ensure controls are accessible.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "motion",
+      "message": "Large-scale movement across the screen (parallax scrolling, moving backgrounds) can trigger dizziness and seizures in photosensitive users. Test or disable aggressive motion effects.",
+      "technical": "Avoid parallax scrolling and large motion effects. Use CSS @media (prefers-reduced-motion) to disable motion for users who request it. Test with actual photosensitive individuals if motion is important.",
+      "severity": "info"
+    },
+    {
+      "keyword": "blink",
+      "message": "Blinking text or elements create flashing effects. Remove blinking text. Modern CSS text-decoration-blink is rarely used, but check for custom blink effects (JavaScript-based animations).",
+      "technical": "Never use text-decoration: blink. Search codebase for setInterval/setTimeout-based animations that create blinking effects and remove them.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "strobe",
+      "message": "Strobe effects (rapid on/off patterns) are extremely dangerous for photosensitive individuals. Remove all strobe effects.",
+      "technical": "Eliminate any CSS or JavaScript creating strobe/flashing patterns. If unavoidable, include warning before content loads and provide option to disable it entirely.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "pattern",
+      "message": "High-contrast repeating patterns can trigger visual distortion and seizures. Test patterns with photosensitivity safety tools. Reduce contrast or break up patterns where possible.",
+      "technical": "Use photosensitivity testing tools (e.g., Photosensitive Epilepsy Analysis Tool) to test patterns. Avoid geometric patterns with high contrast. Blur or soften edges of patterned elements.",
+      "severity": "info"
+    }
+  ]
+}
