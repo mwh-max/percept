@@ -16,7 +16,6 @@ const toastContainer = document.getElementById("toast-container");
 const profileCache = new Map();
 const MAX_FILE_SIZE = 100 * 1024; // 100KB
 const DEBOUNCE_DELAY = 300; // ms
-let analyzeTimeout = null;
 const feedbackHistory = [];
 let historyIndex = -1;
 
@@ -83,9 +82,10 @@ function validateProfileSchema(data) {
 
 // Debounce helper
 function debounce(fn, delay) {
+  let timer = null;
   return function (...args) {
-    clearTimeout(analyzeTimeout);
-    analyzeTimeout = setTimeout(() => fn(...args), delay);
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
   };
 }
 
