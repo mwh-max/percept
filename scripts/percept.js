@@ -1026,6 +1026,11 @@ function renderFeedback(checks, markup, style) {
 
     card.className = `result-${severity}`;
 
+    const label = document.createElement("span");
+    label.className = "result-label";
+    label.setAttribute("aria-hidden", "false");
+    label.textContent = severity === "warn" ? "Warning" : "Note";
+
     const main = document.createElement("p");
     main.textContent = isTechnical ? check.technical : check.message;
 
@@ -1038,6 +1043,7 @@ function renderFeedback(checks, markup, style) {
       meta.textContent = check.keyword ? `Matched keyword: ${check.keyword}.` : "Pattern matched.";
     }
 
+    card.appendChild(label);
     card.appendChild(main);
     card.appendChild(meta);
     feedbackBox.appendChild(card);

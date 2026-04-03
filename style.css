@@ -173,16 +173,6 @@ main.grid {
   font-family: var(--sans);
 }
 
-.result-warn::before {
-  content: "⚠ Warning";
-  display: block;
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
 .result-info {
   background: var(--info-bg);
   border-left: 4px solid var(--info-border);
@@ -193,8 +183,7 @@ main.grid {
   font-family: var(--sans);
 }
 
-.result-info::before {
-  content: "ℹ Note";
+.result-label {
   display: block;
   font-weight: 700;
   font-size: 0.75rem;
