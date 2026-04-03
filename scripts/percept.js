@@ -1102,6 +1102,7 @@ document.addEventListener("keydown", (event) => {
 
 // ─── Session persistence ───────────────────────────────────────────────────
 function saveSessionState() {
+  if (localStorage.getItem("percept-autosave") === "false") return;
   localStorage.setItem("percept-markup", markupInput.value);
   localStorage.setItem("percept-profile", profileSelect.value);
   localStorage.setItem("percept-style", styleToggle.value);
