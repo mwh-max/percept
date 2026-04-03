@@ -1114,7 +1114,14 @@ function restoreSessionState() {
   const savedStyle = localStorage.getItem("percept-style");
 
   if (savedMarkup) markupInput.value = savedMarkup;
-  if (savedProfile) profileSelect.value = savedProfile;
+  if (savedProfile) {
+    profileSelect.value = savedProfile;
+    // If the value wasn't found in the options (e.g. a stale custom-* id),
+    // the select resets to empty — clear storage to avoid a confusing state.
+    if (profileSelect.value !== savedProfile) {
+      localStorage.removeItem("percept-profile");
+    }
+  }
   if (savedStyle) styleToggle.value = savedStyle;
 
   setToneHintForSelectedProfile();
