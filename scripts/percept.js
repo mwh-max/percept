@@ -1071,7 +1071,8 @@ analyzeBtn.addEventListener("click", debouncedAnalyze);
 
 // ─── Keyboard shortcuts ────────────────────────────────────────────────────
 document.addEventListener("keydown", (event) => {
-  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+  const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
+  const isMac = /mac|iphone|ipad|ipod/i.test(platform);
   const modKey = isMac ? event.metaKey : event.ctrlKey;
 
   if (modKey && event.key === "Enter") {
