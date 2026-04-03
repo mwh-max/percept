@@ -634,13 +634,6 @@ profileUpload.addEventListener("change", (event) => {
 // Set initial tone for cases where profile is preselected
 setToneHintForSelectedProfile();
 
-// ─── Debounced live analysis as user types ──────────────────────────────────
-let debounceTimer;
-markupInput.addEventListener("input", () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => analyzeBtn.click(), 600);
-});
-
 // ─── Copy feedback to clipboard ────────────────────────────────────────────
 copyBtn.addEventListener("click", () => {
   const text = feedbackBox.innerText;
