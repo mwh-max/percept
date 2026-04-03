@@ -789,20 +789,56 @@ const liveAnalysisToggle = document.getElementById("live-analysis-toggle");
 
 let liveAnalysisEnabled = false;
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function openSettings() {
+  settingsModal.hidden = false;
+  const first = settingsModal.querySelector(FOCUSABLE);
+  if (first) first.focus();
+}
+
+function closeSettings() {
+  settingsModal.hidden = true;
+  settingsBtn.focus();
+}
+
 if (settingsBtn && settingsModal) {
-  settingsBtn.addEventListener("click", () => {
-    settingsModal.hidden = false;
-  });
+  settingsBtn.addEventListener("click", openSettings);
 
   if (closeSettingsBtn) {
-    closeSettingsBtn.addEventListener("click", () => {
-      settingsModal.hidden = true;
-    });
+    closeSettingsBtn.addEventListener("click", closeSettings);
   }
 
   settingsModal.addEventListener("click", (e) => {
     if (e.target === settingsModal) {
-      settingsModal.hidden = true;
+      closeSettings();
+    }
+  });
+
+  settingsModal.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      closeSettings();
+      return;
+    }
+    if (e.key !== "Tab") return;
+
+    const focusable = Array.from(settingsModal.querySelectorAll(FOCUSABLE));
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
 
