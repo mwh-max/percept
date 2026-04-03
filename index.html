@@ -122,47 +122,61 @@
             it feels and how to improve it. <strong>Keyboard shortcuts:</strong>
             Ctrl/Cmd+Enter to analyze, Ctrl/Cmd+Shift+C to copy, Esc to clear.
           </p>
-          <details class="preset-examples">
+          <details class="preset-examples" aria-label="Preset HTML examples for quick testing">
             <summary>Try preset examples</summary>
+            <p id="preset-help" class="help-text">
+              Each button loads a sample HTML snippet into the editor so you
+              can see how the selected profile responds to a common pattern.
+            </p>
             <div class="preset-list">
               <button
                 class="preset-btn"
                 data-example="<marquee>Scrolling text</marquee>"
+                aria-describedby="preset-help"
               >
                 Marquee motion
               </button>
               <button
                 class="preset-btn"
                 data-example="<video autoplay><source src='video.mp4'></video>"
+                aria-describedby="preset-help"
               >
                 Autoplay video
               </button>
               <button
                 class="preset-btn"
                 data-example="<input placeholder='Enter name' />"
+                aria-describedby="preset-help"
               >
                 Placeholder label
               </button>
-              <button class="preset-btn" data-example="<img src='photo.jpg' />">
+              <button
+                class="preset-btn"
+                data-example="<img src='photo.jpg' />"
+                aria-describedby="preset-help"
+              >
                 Missing alt text
               </button>
               <button
                 class="preset-btn"
                 data-example="<div onclick='doSomething()'>Click here</div>"
+                aria-describedby="preset-help"
               >
-                Onclick div
+                Onclick div element
               </button>
               <button
                 class="preset-btn"
                 data-example="<div style='animation: blink 0.5s infinite;'>Flash</div>"
+                aria-describedby="preset-help"
               >
                 Flash animation
               </button>
               <button
                 class="preset-btn"
                 data-example="<button style='width: 10px; height: 10px;' />"
+                aria-describedby="preset-help"
               >
-                Tiny button
+                Tiny button target
               </button>
             </div>
           </details>
