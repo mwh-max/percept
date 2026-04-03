@@ -165,12 +165,22 @@ main.grid {
 
 .result-warn {
   background: var(--warn-bg);
-  border-left: 4px solid var(--warn-border);
+  border-left: 6px solid var(--warn-border);
   color: var(--warn-text);
   padding: 10px 14px;
   margin-bottom: 8px;
   border-radius: 6px;
   font-family: var(--sans);
+}
+
+.result-warn::before {
+  content: "⚠ Warning";
+  display: block;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
 }
 
 .result-info {
@@ -181,6 +191,16 @@ main.grid {
   margin-bottom: 8px;
   border-radius: 6px;
   font-family: var(--sans);
+}
+
+.result-info::before {
+  content: "ℹ Note";
+  display: block;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
 }
 
 .result-meta {
