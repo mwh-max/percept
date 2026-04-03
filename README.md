@@ -8,7 +8,7 @@ What Percept Is & Isn't
 
 **Percept is:**
 
-- A feedback tool for understanding how people with ADHD, dyslexia, blindness, low vision, motor disabilities, and screenreader users experience your website or interface
+- A feedback tool for understanding how people with ADHD, dyslexia, blindness, low vision, motor disabilities, screenreader users, deaf and hard of hearing users, and photosensitive users experience your website or interface
 - Designed to shift perspective from "audit pass/fail" to "how does this feel?"
 - A starting point for empathy-driven design decisions
 - Extensible: you can upload custom profiles for your own user research
@@ -28,19 +28,21 @@ Percept is designed for anyone who wants AI output to be more usable and inclusi
 
 How It Works
 
-Select a user experience profile from the dropdown. Options include ADHD, dyslexia, screenreader user, low vision, motor disability, and blind user.
+Select a user experience profile from the dropdown. Options include ADHD, dyslexia, screenreader user, low vision, motor disability, blind user, deaf or hard of hearing, and photosensitive or seizure-prone.
 
 Choose a feedback style. Emotional Tone offers narrative, human-centered guidance. Technical provides implementation-specific recommendations.
 
-Paste HTML or write a plain text prompt into the input field and click Analyze. Feedback appears as color-coded cards in the panel to the right. Warning cards highlight patterns that are likely to cause barriers. Informational cards surface considerations worth reviewing.
+Paste HTML or write a plain text prompt into the input field and click Analyze. Feedback appears as cards in the panel to the right. Each card is distinguished by both color and a visible label: **⚠ Warning** cards highlight patterns that are likely to cause barriers; **ℹ Note** cards surface considerations worth reviewing.
 
 A tone preview appears beneath the profile selector to give a sense of the experiential lens being applied before feedback is generated.
 
-Use Copy Feedback to copy all results to your clipboard.
+**Keyboard shortcuts:** Ctrl/Cmd+Enter to analyze · Ctrl/Cmd+Shift+C to copy · Ctrl/Cmd+Z / Y to undo/redo · Esc to clear results.
+
+Use Copy Feedback or Copy All to copy results to your clipboard. Export as JSON, text, or CSV for use in reports or handoffs.
 
 Profiles
 
-Each profile reflects a distinct set of interaction patterns and barriers. Feedback is matched to keywords found in the pasted markup or prompt.
+Each profile reflects a distinct set of interaction patterns and barriers. Feedback is matched to keywords and patterns found in the pasted markup or prompt.
 
 Person with ADHD. Feedback addresses attention capture, pacing, visual noise, and executive function demands such as disappearing labels, autoplaying media, and timed interactions.
 
@@ -52,14 +54,18 @@ Person with low vision. Feedback addresses color contrast, font sizing, and zoom
 
 Person with a motor disability. Feedback addresses touch target size, hover-only interactions, and drag-and-drop patterns that require fine motor precision.
 
-Blind user. Feedback addresses structural semantics, form labeling, table headers, SVG descriptions, iframe titles, and aria-hidden misuse as they affect users who navigate entirely without visual reference.
+Blind user. Feedback distinguishes two alt-text failure modes: images with no alt attribute at all (flagged as a warning — the most serious case) and images where an alt attribute is present but the value may need quality review (flagged as informational). It also covers form labeling, table headers, SVG descriptions, iframe titles, and aria-hidden misuse.
+
+Deaf or hard of hearing user. Feedback addresses video captions, audio transcripts, sound-based alerts, and notification patterns that rely on audio alone.
+
+Photosensitive or seizure-prone user. Feedback addresses flashing content, rapid animations, high-contrast transitions, autoplay, and strobe effects that can trigger seizures.
 
 Other Disabilities
 
-Percept currently covers six profiles based on community input and design priority. Other disabilities exist and matter. If you represent or advocate for a community not yet included:
+Percept currently covers eight profiles based on community input and design priority. Other disabilities exist and matter. If you represent or advocate for a community not yet included:
 
 - **Upload a custom profile**: Use the file upload feature to test your own profile JSON in a session.
-- **Contribute a profile**: Open a GitHub issue or PR with your profile data and description. We welcome profiles for hearing disabilities, photosensitivity, cognitive load sensitivity, autism, vestibular disorders, and others.
+- **Contribute a profile**: Open a GitHub issue or PR with your profile data and description. We welcome profiles for vestibular disorders, cognitive load sensitivity, autism, and others.
 
 Complementary Tools
 
@@ -79,7 +85,7 @@ Percept avoids diagnostic framing, euphemism, and audit tone. Feedback is shaped
 
 Built With
 
-HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion. Structured card rendering with distinct warning and informational states. Debounced live analysis. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
+HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion; pattern-based detection using full regular expressions for cases that keywords cannot express (such as detecting an element with a missing attribute). Structured card rendering with non-color severity distinction (⚠ Warning / ℹ Note labels and border weight). Debounced live analysis. Undo/redo history. Session persistence via localStorage. Settings modal with focus trap. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
 
 Custom Profiles
 
@@ -95,17 +101,30 @@ Upload a JSON file in the same format as the built-in profiles. A profile must i
       "keyword": "trigger-word",
       "message": "Human-centered explanation of the barrier.",
       "technical": "Implementation-specific recommendation (optional).",
-      "severity": "warn" or "info"
+      "severity": "warn"
     }
   ]
 }
 ```
 
+Each check requires either a `keyword` or a `pattern` (or both). Use `keyword` for simple string matching; use `pattern` when you need a regular expression — for example, to detect an element that is missing an attribute:
+
+```json
+{
+  "pattern": "<img\\b(?![^>]*\\balt\\s*=)[^>]*>",
+  "message": "This image has no alt attribute.",
+  "technical": "Add alt=\"\" for decorative images, alt=\"[description]\" for informative ones.",
+  "severity": "warn"
+}
+```
+
+`severity` must be `"warn"` or `"info"`. The `technical` field is optional and shown when the Technical feedback style is selected.
+
 Upload a profile via the file input on the home page. The profile is stored in-session and appears in the dropdown as "Custom: [Name]". No data is sent to a server.
 
 What Is Still Planned
 
-Expanded keyword coverage for existing profiles. Community-contributed profiles for hearing, photosensitivity, vestibular, and other disabilities. Keyboard shortcuts (Ctrl/Cmd+Enter to analyze). Session persistence (local storage across reloads). Grouped feedback by interface domain (forms, navigation, typography).
+Expanded keyword and pattern coverage for existing profiles. Community-contributed profiles for vestibular disorders, cognitive load sensitivity, autism, and others. Grouped feedback by interface domain (forms, navigation, typography).
 
 Contributing
 
