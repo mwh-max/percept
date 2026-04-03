@@ -4,10 +4,16 @@
   "description": "The interface speaks before it is seen. Navigation depends on correct semantics, alt text, and consistent structure. Redundant descriptions can be helpful. Surprises—like unlabeled buttons or nested actions—erode confidence. Every element asks one question: 'Will this make sense when heard?'",
   "checks": [
     {
-      "keyword": "alt=",
-      "message": "Alt text is the image for someone who cannot see it. Make sure every alt value describes the content or purpose of the image, not just its appearance.",
-      "technical": "Every <img> must have an alt attribute. Decorative images should use alt=\"\". Informative images need a description of meaning, not appearance.",
+      "pattern": "<img\\b(?![^>]*\\balt\\s*=)[^>]*>",
+      "message": "This image has no alt attribute at all. A blind user receives no information about it—not even that an image exists. Add an alt attribute immediately.",
+      "technical": "Every <img> must have an alt attribute. Use alt=\"\" for decorative images, and alt=\"[meaningful description]\" for images that convey content or purpose.",
       "severity": "warn"
+    },
+    {
+      "keyword": "alt=",
+      "message": "An alt attribute is present. Review its value: it should describe the content or purpose of the image, not its appearance or filename. Decorative images should use alt=\"\".",
+      "technical": "Verify every alt value conveys meaning. Decorative images: alt=\"\". Informative images: alt=\"[description of content or purpose]\". Never use the filename or \"image of\" as the alt value.",
+      "severity": "info"
     },
     {
       "keyword": "<table",

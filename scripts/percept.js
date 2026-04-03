@@ -55,10 +55,19 @@ function validateProfileSchema(data) {
       errors.push(`Check ${idx}: must be an object.`);
       return;
     }
-    if (typeof check.keyword !== "string" || !check.keyword.trim()) {
+    const hasKeyword = typeof check.keyword === "string" && check.keyword.trim();
+    const hasPattern = typeof check.pattern === "string" && check.pattern.trim();
+    if (!hasKeyword && !hasPattern) {
       errors.push(
-        `Check ${idx}: must have a "keyword" property (non-empty string).`,
+        `Check ${idx}: must have a "keyword" or "pattern" property (non-empty string).`,
       );
+    }
+    if (hasPattern) {
+      try {
+        new RegExp(check.pattern);
+      } catch {
+        errors.push(`Check ${idx}: "pattern" is not a valid regular expression.`);
+      }
     }
     if (typeof check.message !== "string" || !check.message.trim()) {
       errors.push(
@@ -288,12 +297,20 @@ const inlineProfiles = {
       "The interface speaks before it is seen. Navigation depends on correct semantics, alt text, and consistent structure. Redundant descriptions can be helpful. Surprises—like unlabeled buttons or nested actions—erode confidence. Every element asks one question: 'Will this make sense when heard?'",
     checks: [
       {
+        pattern: "<img\\b(?![^>]*\\balt\\s*=)[^>]*>",
+        message:
+          "This image has no alt attribute at all. A blind user receives no information about it—not even that an image exists. Add an alt attribute immediately.",
+        technical:
+          'Every <img> must have an alt attribute. Use alt="" for decorative images, and alt="[meaningful description]" for images that convey content or purpose.',
+        severity: "warn",
+      },
+      {
         keyword: "alt=",
         message:
-          "Alt text is the image for someone who cannot see it. Make sure every alt value describes the content or purpose of the image, not just its appearance.",
+          "An alt attribute is present. Review its value: it should describe the content or purpose of the image, not its appearance or filename. Decorative images should use alt=\"\".",
         technical:
-          'Every <img> must have an alt attribute. Decorative images should use alt="". Informative images need a description of meaning, not appearance.',
-        severity: "warn",
+          'Verify every alt value conveys meaning. Decorative images: alt="". Informative images: alt="[description of content or purpose]". Never use the filename or "image of" as the alt value.',
+        severity: "info",
       },
       {
         keyword: "<table",
@@ -973,6 +990,14 @@ function renderFeedback(checks, markup, style) {
 
   const matched = checks
     .map((check) => {
+      if (check.pattern) {
+        let re;
+        try { re = new RegExp(check.pattern); } catch { return null; }
+        if (!re.test(markup)) return null;
+        const m = markup.match(re);
+        const snippet = m ? m[0].slice(0, 60).trim() : "";
+        return { check, details: { type: "pattern", variant: check.keyword || "pattern", snippet } };
+      }
       if (!check.keyword) return null;
       if (!checkKeywordMatch(check.keyword, markup)) return null;
       const details = getMatchDetails(check.keyword, markup);
@@ -1008,9 +1033,9 @@ function renderFeedback(checks, markup, style) {
     meta.className = "result-meta";
 
     if (details) {
-      meta.textContent = `Matched keyword: ${details.variant}. Context: ${details.snippet}`;
+      meta.textContent = `Matched: ${details.variant}. Context: ${details.snippet}`;
     } else {
-      meta.textContent = `Matched keyword: ${check.keyword}.`;
+      meta.textContent = check.keyword ? `Matched keyword: ${check.keyword}.` : "Pattern matched.";
     }
 
     card.appendChild(main);
