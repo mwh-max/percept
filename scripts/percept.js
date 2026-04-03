@@ -530,7 +530,11 @@ function addCustomProfile(profileData) {
 }
 
 function renderMessage(message, severity = "info") {
-  feedbackBox.innerHTML = `<p class="result-${severity}">${message}</p>`;
+  feedbackBox.innerHTML = "";
+  const p = document.createElement("p");
+  p.className = `result-${severity}`;
+  p.textContent = message;
+  feedbackBox.appendChild(p);
 }
 
 const keywordAliases = {
