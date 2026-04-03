@@ -37,7 +37,7 @@ flowchart TD
         MATCH["checkKeywordMatch()\nword boundary · attr · tag regex"]
         PATTERN["pattern field\nFull regex — e.g. img without alt"]
         SNIPPET["getMatchDetails()\nExtract ~60-char context snippet"]
-        RENDER["renderFeedback()\nSort warn→info, build article cards\n⚠ Warning / ℹ Note labels"]
+        RENDER["renderFeedback()\nSort warn→info, build article cards\nWarning / Note label spans"]
         DEBOUNCE["debounce()\nClosure-scoped timer\ngated by liveAnalysisEnabled"]
         HISTORY["feedbackHistory[]\nUndo · Redo stack"]
         SESSION["saveSessionState()\nrestoreSessionState()\nlocalStorage · gated by autosave flag"]
@@ -102,7 +102,7 @@ Falls back to `inlineProfiles{}` if the fetch fails. Custom uploads go through `
 Used when a simple keyword cannot express the condition — for example, detecting `<img>` elements with no `alt` attribute at all via a negative lookahead: `<img\b(?![^>]*\balt\s*=)[^>]*>`.
 
 **Severity display**
-Cards are labelled `⚠ Warning` or `ℹ Note` via CSS `::before`, supplemented by a thicker left border on warnings. Color is preserved but is not the sole distinguishing signal (WCAG 1.4.1).
+Each card receives a `<span class="result-label" aria-hidden="false">` as its first child, with text content `"Warning"` or `"Note"`. This is real DOM text, announced reliably by screen readers — CSS `::before` pseudo-element content was removed because it is not consistently exposed to assistive technology. Cards are further distinguished by left border weight (6 px warn, 4 px info) and color. Color alone is never the sole signal (WCAG 1.4.1).
 
 **Persistence**
 `saveSessionState()` writes markup, profile, and style to `localStorage` on every change, gated by the autosave setting. `restoreSessionState()` reads them back on page load, clearing any stale profile key that no longer matches a valid option.

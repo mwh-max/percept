@@ -32,7 +32,7 @@ Select a user experience profile from the dropdown. Options include ADHD, dyslex
 
 Choose a feedback style. Emotional Tone offers narrative, human-centered guidance. Technical provides implementation-specific recommendations.
 
-Paste HTML or write a plain text prompt into the input field and click Analyze. Feedback appears as cards in the panel to the right. Each card is distinguished by both color and a visible label: **⚠ Warning** cards highlight patterns that are likely to cause barriers; **ℹ Note** cards surface considerations worth reviewing.
+Paste HTML or write a plain text prompt into the input field and click Analyze. Feedback appears as cards in the panel to the right. Each card carries a visible, screen-reader-announced label rendered as real DOM text: **Warning** cards highlight patterns that are likely to cause barriers; **Note** cards surface considerations worth reviewing. Cards are also distinguished by border weight and color.
 
 A tone preview appears beneath the profile selector to give a sense of the experiential lens being applied before feedback is generated.
 
@@ -85,7 +85,7 @@ Percept avoids diagnostic framing, euphemism, and audit tone. Feedback is shaped
 
 Built With
 
-HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion; pattern-based detection using full regular expressions for cases that keywords cannot express (such as detecting an element with a missing attribute). Structured card rendering with non-color severity distinction (⚠ Warning / ℹ Note labels and border weight). Debounced live analysis. Undo/redo history. Session persistence via localStorage. Settings modal with focus trap. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
+HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion; pattern-based detection using full regular expressions for cases that keywords cannot express (such as detecting an element with a missing attribute). Structured card rendering with non-color severity distinction: Warning / Note labels injected as real DOM spans (announced by screen readers) and left border weight difference. Debounced live analysis. Undo/redo history. Session persistence via localStorage. Settings modal with focus trap. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
 
 Custom Profiles
 
