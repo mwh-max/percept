@@ -83,18 +83,64 @@ export const inlineProfiles = {
         keyword: "font-family",
         message:
           "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces.",
+        technical:
+          "Avoid decorative, cursive, or monospace fonts for body text. Lexend, OpenDyslexic, and system fonts with clear letterforms (Arial, Verdana) reduce character confusion.",
         severity: "warn",
       },
       {
         keyword: "line-height",
         message:
           "Adequate line spacing improves readability. Aim for at least 1.5x the font size.",
+        technical:
+          "Set line-height to at least 1.5 for body text. Values below 1.4 cause lines to visually blur together for many readers with dyslexia.",
         severity: "info",
       },
       {
         keyword: "justify",
         message:
-          "Justified text can create uneven spacing. Left-align for consistent rhythm.",
+          "Justified text can create uneven spacing between words. This irregular rhythm is particularly disruptive for readers who process text letter-by-letter. Left-align for consistent flow.",
+        technical:
+          "Use text-align: left for body text. Never use text-align: justify. Uneven word spacing caused by justification fragments the reading rhythm.",
+        severity: "warn",
+      },
+      {
+        keyword: "letter-spacing",
+        message:
+          "Tight letter spacing makes it harder to distinguish individual characters. For dyslexic readers, letters can blur together or be confused for similar shapes.",
+        technical:
+          "Use letter-spacing of at least 0.12em for body text. Avoid negative letter-spacing. The WCAG 1.4.12 text spacing criterion recommends letter spacing of at least 0.12x font size.",
+        severity: "info",
+      },
+      {
+        keyword: "text-transform",
+        message:
+          "All-caps text significantly increases reading effort. Uppercase words lose their shape — every word becomes a rectangle, removing the visual anchors that aid word recognition.",
+        technical:
+          "Avoid text-transform: uppercase for body text or anything longer than a few words. Use it only sparingly for short labels or decorative headings.",
+        severity: "warn",
+      },
+      {
+        keyword: "columns",
+        message:
+          "Multi-column layouts interrupt the natural left-to-right reading path. Reaching the end of a column and finding the start of the next one requires spatial reasoning that adds cognitive load.",
+        technical:
+          "Avoid CSS columns for long-form body text. Single-column layouts remove the need to track column breaks.",
+        severity: "warn",
+      },
+      {
+        keyword: "word-spacing",
+        message:
+          "Word spacing affects how clearly individual words stand apart. Too little spacing causes words to run together; combined with other factors it can make a paragraph feel impenetrable.",
+        technical:
+          "Use word-spacing of at least 0.16em for body text (WCAG 1.4.12). Avoid negative word-spacing.",
+        severity: "info",
+      },
+      {
+        keyword: "background",
+        message:
+          "Busy or patterned backgrounds compete with text for visual attention. For readers who already find text effortful, a background that 'moves' behind words can make reading feel impossible.",
+        technical:
+          "Use a solid, low-contrast background behind text. Avoid background-image with patterns, textures, or gradients in text areas.",
         severity: "warn",
       },
     ],
@@ -109,24 +155,80 @@ export const inlineProfiles = {
         keyword: "img",
         message:
           "Images should include alt text. Screenreader users rely on alt to understand meaning.",
+        technical:
+          'Every <img> must have an alt attribute. Use alt="" for decorative images and a meaningful description for informative ones.',
         severity: "warn",
       },
       {
         keyword: "role=",
         message:
           "Custom roles should be used carefully. Native semantics are preferred when possible.",
+        technical:
+          'Prefer native HTML elements over ARIA roles. Use <button> instead of <div role="button">, <nav> instead of <div role="navigation">.',
         severity: "info",
       },
       {
         keyword: "tabindex",
         message:
           "Tab order changes can confuse screenreader flow. Use tabindex intentionally and test focus behavior.",
+        technical:
+          'Use tabindex="0" to add elements to natural tab order and tabindex="-1" for programmatic focus only. Avoid positive tabindex values.',
         severity: "info",
       },
       {
         keyword: "<h1",
         message:
           "Headings create a map. Be sure to use them in a logical order (h1 to h6) without skipping levels.",
+        technical:
+          "Every page should have exactly one <h1>. Heading levels should not skip — an <h3> must follow an <h2>, not an <h1>.",
+        severity: "warn",
+      },
+      {
+        keyword: "aria-label",
+        message:
+          "An aria-label is present. Verify that its value is meaningful and matches what a screenreader user would expect to hear when focus lands on the element.",
+        technical:
+          "aria-label overrides all other accessible name sources. Ensure the value is concise, accurate, and does not simply repeat visible text.",
+        severity: "info",
+      },
+      {
+        keyword: "aria-expanded",
+        message:
+          "Expandable controls like accordions and dropdowns rely on aria-expanded to announce their state. Without it, a screenreader user cannot tell whether content is hidden or shown.",
+        technical:
+          'Pair aria-expanded="true|false" with aria-controls pointing to the controlled region. Update the value dynamically when state changes.',
+        severity: "warn",
+      },
+      {
+        keyword: "skip",
+        message:
+          "Skip links let screenreader and keyboard users jump past repeated navigation. Without one, every page load starts with the same navigation items before any content.",
+        technical:
+          'Add a visible-on-focus skip link as the first element in <body>: <a class="skip-link" href="#main">Skip to main content</a>. Ensure the target id exists.',
+        severity: "warn",
+      },
+      {
+        pattern: "<button[^>]*>\\s*(?:<[^>]+>\\s*)*</button>",
+        message:
+          "A button appears to have no visible text. Icon-only buttons are announced by their label, not their icon — without a text label, a screenreader user hears nothing meaningful.",
+        technical:
+          "Add an aria-label to icon-only buttons, or include visually-hidden text inside them. Never leave a button with only an icon and no accessible name.",
+        severity: "warn",
+      },
+      {
+        keyword: "<nav",
+        message:
+          "Navigation landmarks help screenreader users jump directly to the navigation region without listening through the whole page.",
+        technical:
+          'Use <nav> for primary and secondary navigation. If multiple <nav> elements exist, distinguish them with aria-label (e.g., aria-label="Primary", aria-label="Footer").',
+        severity: "info",
+      },
+      {
+        keyword: "outline:",
+        message:
+          "CSS outline styles are often removed for visual reasons. For screenreader users who also navigate by keyboard, a missing focus indicator makes the page effectively invisible during tab navigation.",
+        technical:
+          "Never use outline: none or outline: 0 without providing an equivalent custom focus style. Test all interactive elements with keyboard navigation.",
         severity: "warn",
       },
     ],
@@ -141,13 +243,65 @@ export const inlineProfiles = {
         keyword: "color:",
         message:
           "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments.",
+        technical:
+          "Text must meet WCAG AA contrast: 4.5:1 for normal text, 3:1 for large text (18pt+ or 14pt+ bold). Use a contrast checker before finalising colour choices.",
         severity: "warn",
       },
       {
         keyword: "font-size",
         message:
           "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage.",
+        technical:
+          "Use relative units (rem, em) for font sizes rather than px. This allows browser font scaling to work. Minimum 16px equivalent for body text.",
         severity: "warn",
+      },
+      {
+        keyword: "background-image",
+        message:
+          "Background images placed behind text make contrast unpredictable. In low vision conditions, text over a photograph or pattern can become completely unreadable.",
+        technical:
+          "Avoid placing text directly over background-image without a solid colour overlay. If a background image is required, add a semi-opaque solid overlay between it and the text, and test contrast.",
+        severity: "warn",
+      },
+      {
+        pattern: "user-scalable\\s*=\\s*(no|0)",
+        message:
+          "Disabling zoom locks low vision users out of one of their primary tools. Many people with low vision rely on pinch-to-zoom or browser zoom to make text readable. Blocking it is a significant barrier.",
+        technical:
+          "Remove user-scalable=no from the viewport meta tag. Never prevent zoom. WCAG 1.4.4 (Resize Text) requires content to remain usable at 200% zoom.",
+        severity: "warn",
+      },
+      {
+        keyword: "line-height",
+        message:
+          "Tight line spacing causes lines of text to visually merge at any level of magnification. For low vision users zoomed in to 200%, cramped lines become illegible.",
+        technical:
+          "Use line-height of at least 1.5 for body text. At high zoom levels, insufficient leading causes line overlap.",
+        severity: "info",
+      },
+      {
+        keyword: "opacity",
+        message:
+          "Very low opacity can render text invisible under reduced screen brightness or for users with reduced contrast sensitivity.",
+        technical:
+          "Avoid opacity below 0.7 on text or interactive elements. Prefer using a colour with appropriate contrast rather than a transparent version of a colour.",
+        severity: "warn",
+      },
+      {
+        keyword: "max-width",
+        message:
+          "Fixed-width containers that do not reflow at high zoom force horizontal scrolling. For a user zoomed in to 200%, having to scroll both vertically and horizontally makes navigation exhausting.",
+        technical:
+          "Use max-width with responsive units and ensure content reflows at 400% zoom (WCAG 1.4.10 Reflow). Avoid fixed-pixel widths on containers that hold text.",
+        severity: "info",
+      },
+      {
+        keyword: "cursor:",
+        message:
+          "Changing or hiding the cursor removes a visual anchor that low vision users use to locate their position on screen. A missing or non-standard cursor can make pointer-based navigation very difficult.",
+        technical:
+          "Never set cursor: none on interactive elements. Avoid cursor: default on clickable elements — it removes the pointer feedback that signals interactivity.",
+        severity: "info",
       },
     ],
   },
@@ -176,10 +330,50 @@ export const inlineProfiles = {
       {
         keyword: "drag",
         message:
-          "Drag-and-drop interfaces require fine motor control. Offer alternative actions like "Move Up" or "Add Below" buttons.",
+          "Drag-and-drop interfaces require fine motor control. Offer alternative actions like \u201cMove Up\u201d or \u201cAdd Below\u201d buttons.",
         technical:
           "Avoid requiring drag-and-drop. Provide buttons or keyboard-accessible alternatives for reordering or inserting elements.",
         severity: "warn",
+      },
+      {
+        keyword: "touch-action",
+        message:
+          "Restricting touch actions can disable pinch-to-zoom or other gestures that users rely on to navigate or control a page. For someone with limited hand mobility, removing these options can make a page completely unusable.",
+        technical:
+          "Avoid touch-action: none. If touch gestures must be restricted, ensure all actions remain reachable by alternative input methods.",
+        severity: "warn",
+      },
+      {
+        keyword: "pointer-events",
+        message:
+          "Setting pointer-events: none on an element makes it unclickable and untappable. If used incorrectly it can silently block access to interactive content.",
+        technical:
+          "Use pointer-events: none only on purely decorative overlays. Never apply it to interactive elements. Verify keyboard operability for all affected regions.",
+        severity: "warn",
+      },
+      {
+        keyword: "dblclick",
+        message:
+          "Double-click actions require precise timing and repeated fine motor movement. For users with tremor or limited dexterity, reliably triggering a double-click can be very difficult.",
+        technical:
+          "Never require double-click as the only way to trigger an action. Provide a single-click or keyboard-accessible alternative for every double-click interaction.",
+        severity: "warn",
+      },
+      {
+        keyword: "outline:",
+        message:
+          "Removing focus outlines leaves keyboard-only users without a visible indicator of where they are on the page. For motor-disabled users who navigate entirely by keyboard, this is like removing the cursor.",
+        technical:
+          "Never set outline: none or outline: 0 without providing an equivalent custom focus style. Test all interactive elements with Tab key navigation.",
+        severity: "warn",
+      },
+      {
+        keyword: "scroll",
+        message:
+          "Scroll-only containers can trap keyboard and switch access users. If content is only reachable by scrolling with a mouse, users relying on keyboard or assistive devices may not be able to access it.",
+        technical:
+          'Ensure scrollable containers are focusable (tabindex="0") and announce themselves as scrollable to assistive technology. All content within should be reachable by keyboard.',
+        severity: "info",
       },
     ],
   },

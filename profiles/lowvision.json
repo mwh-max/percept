@@ -1,17 +1,55 @@
 {
   "name": "Low Vision",
   "tone": "blurred, tentative, contrast-seeking",
-  "description": "The page arrives not as a whole\u2014but as fragments in tension. Text floats in a fog of brightness or blends into muted backgrounds. Navigation depends on scale, rhythm, and clear anchors. Every pause is a scan for something readable. Grace lives in contrast, not color.",
+  "description": "The page arrives not as a whole—but as fragments in tension. Text floats in a fog of brightness or blends into muted backgrounds. Navigation depends on scale, rhythm, and clear anchors. Every pause is a scan for something readable. Grace lives in contrast, not color.",
   "checks": [
     {
       "keyword": "color:",
       "message": "Color is often relied on, but contrast matters more. Ensure text is legible in all lighting environments.",
+      "technical": "Text must meet WCAG AA contrast: 4.5:1 for normal text, 3:1 for large text (18pt+ or 14pt+ bold). Use a contrast checker before finalising colour choices.",
       "severity": "warn"
     },
     {
       "keyword": "font-size",
       "message": "Small text can vanish in low vision contexts. Consider default sizing and allow zoom without breakage.",
+      "technical": "Use relative units (rem, em) for font sizes rather than px. This allows browser font scaling to work. Minimum 16px equivalent for body text.",
       "severity": "warn"
+    },
+    {
+      "keyword": "background-image",
+      "message": "Background images placed behind text make contrast unpredictable. In low vision conditions, text over a photograph or pattern can become completely unreadable.",
+      "technical": "Avoid placing text directly over background-image without a solid colour overlay. If a background image is required, add a semi-opaque solid overlay between it and the text, and test contrast.",
+      "severity": "warn"
+    },
+    {
+      "pattern": "user-scalable\\s*=\\s*(no|0)",
+      "message": "Disabling zoom locks low vision users out of one of their primary tools. Many people with low vision rely on pinch-to-zoom or browser zoom to make text readable. Blocking it is a significant barrier.",
+      "technical": "Remove user-scalable=no from the viewport meta tag. Never prevent zoom. WCAG 1.4.4 (Resize Text) requires content to remain usable at 200% zoom.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "line-height",
+      "message": "Tight line spacing causes lines of text to visually merge at any level of magnification. For low vision users zoomed in to 200%, cramped lines become illegible.",
+      "technical": "Use line-height of at least 1.5 for body text. At high zoom levels, insufficient leading causes line overlap.",
+      "severity": "info"
+    },
+    {
+      "keyword": "opacity",
+      "message": "Very low opacity can render text invisible under reduced screen brightness or for users with reduced contrast sensitivity.",
+      "technical": "Avoid opacity below 0.7 on text or interactive elements. Prefer using a colour with appropriate contrast rather than a transparent version of a colour.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "max-width",
+      "message": "Fixed-width containers that do not reflow at high zoom force horizontal scrolling. For a user zoomed in to 200%, having to scroll both vertically and horizontally makes navigation exhausting.",
+      "technical": "Use max-width with responsive units and ensure content reflows at 400% zoom (WCAG 1.4.10 Reflow). Avoid fixed-pixel widths on containers that hold text.",
+      "severity": "info"
+    },
+    {
+      "keyword": "cursor:",
+      "message": "Changing or hiding the cursor removes a visual anchor that low vision users use to locate their position on screen. A missing or non-standard cursor can make pointer-based navigation very difficult.",
+      "technical": "Never set cursor: none on interactive elements. Avoid cursor: default on clickable elements — it removes the pointer feedback that signals interactivity.",
+      "severity": "info"
     }
   ]
 }

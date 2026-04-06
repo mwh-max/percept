@@ -79,6 +79,7 @@ export function renderFeedback(checks, markup, style) {
     label.textContent = severity === "warn" ? "Warning" : "Note";
 
     const main = document.createElement("p");
+    main.className = "result-message";
     main.textContent = isTechnical ? check.technical : check.message;
 
     const meta = document.createElement("p");
@@ -195,12 +196,12 @@ if (exportCsvBtn) {
     const timestamp = new Date().toISOString();
 
     const rows = [
-      ["Keyword", "Message/Technical", "Severity", "Type"],
+      ["Message/Technical", "Match Context", "Severity", "Type"],
       ...Array.from(cards).map((card) => {
-        const message = card.querySelector("p")?.textContent || "";
+        const message = card.querySelector(".result-message")?.textContent || "";
         const meta = card.querySelector(".result-meta")?.textContent || "";
         const severity = card.classList.contains("result-warn") ? "warn" : "info";
-        return [meta, message, severity, "feedback"];
+        return [message, meta, severity, "feedback"];
       }),
     ];
 
