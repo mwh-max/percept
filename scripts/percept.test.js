@@ -7,7 +7,7 @@ import {
   checkKeywordMatch,
   getMatchDetails,
   debounce,
-} from "./percept.js";
+} from "./logic.js";
 
 // ─── validateProfileSchema ────────────────────────────────────────────────────
 
