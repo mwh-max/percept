@@ -32,7 +32,7 @@ function showToast(message, type = "info", duration = 3000) {
 }
 
 // Profile schema validation
-function validateProfileSchema(data) {
+export function validateProfileSchema(data) {
   const errors = [];
   if (!data || typeof data !== "object") {
     return ["Profile must be a valid JSON object."];
@@ -90,7 +90,7 @@ function validateProfileSchema(data) {
 }
 
 // Debounce helper
-function debounce(fn, delay) {
+export function debounce(fn, delay) {
   let timer = null;
   return function (...args) {
     clearTimeout(timer);
@@ -512,7 +512,7 @@ const inlineProfiles = {
   },
 };
 
-function normalizeMarkup(text) {
+export function normalizeMarkup(text) {
   return text.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
@@ -564,11 +564,11 @@ const keywordAliases = {
   countdown: ["timer", "timeout"],
 };
 
-function escapeRegex(value) {
+export function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function getKeywordVariants(keyword) {
+export function getKeywordVariants(keyword) {
   const normalized = keyword.toLowerCase().trim();
   const baseVariants = [normalized];
   if (keywordAliases[normalized]) {
@@ -577,7 +577,7 @@ function getKeywordVariants(keyword) {
   return [...new Set(baseVariants)];
 }
 
-function checkKeywordMatch(keyword, markup) {
+export function checkKeywordMatch(keyword, markup) {
   const variants = getKeywordVariants(keyword);
 
   return variants.some((variant) => {
@@ -952,7 +952,7 @@ if (markupInput) {
 //   1. If style toggle is "technical" and a technical field exists → result-warn
 //   2. Otherwise → the check's own severity field ("warn" → result-warn,
 //      "info" or absent → result-info)
-function getMatchDetails(keyword, markup) {
+export function getMatchDetails(keyword, markup) {
   const variants = getKeywordVariants(keyword);
 
   for (const variant of variants) {
