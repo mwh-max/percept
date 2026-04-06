@@ -85,7 +85,34 @@ Percept avoids diagnostic framing, euphemism, and audit tone. Feedback is shaped
 
 Built With
 
-HTML, CSS, and vanilla JavaScript. Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion; pattern-based detection using full regular expressions for cases that keywords cannot express (such as detecting an element with a missing attribute). Structured card rendering with non-color severity distinction: Warning / Note labels injected as real DOM spans (announced by screen readers) and left border weight difference. Debounced live analysis. Undo/redo history. Session persistence via localStorage. Settings modal with focus trap. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
+HTML, CSS, and vanilla JavaScript (ES modules, no build step). Profile data stored in local JSON files. Keyword detection against normalized input using regex word boundaries and alias expansion; pattern-based detection using full regular expressions for cases that keywords cannot express (such as detecting an element with a missing attribute). Structured card rendering with non-color severity distinction: Warning / Note labels injected as real DOM spans (announced by screen readers) and left border weight difference. Debounced live analysis. Undo/redo history. Session persistence via localStorage. Settings modal with focus trap. Grid-based responsive layout. Inline profile fallback for offline/file:// access.
+
+Project Structure
+
+```
+percept/
+├── index.html              # UI shell and layout
+├── style.css               # Visual styling
+├── profiles/               # Built-in profile JSON files (one per disability/condition)
+│   ├── adhd.json
+│   ├── blinduser.json
+│   ├── dyslexia.json
+│   ├── hearing.json
+│   ├── lowvision.json
+│   ├── motor.json
+│   ├── photosensitivity.json
+│   └── screenreader.json
+├── scripts/
+│   ├── percept.js          # Entry point — wires all modules together
+│   ├── logic.js            # Pure functions: keyword matching, schema validation, debounce
+│   ├── profiles.js         # Inline profile data, cache, and fetch/fallback loading
+│   ├── feedback.js         # Rendering (toast, cards), and copy/export handlers
+│   └── session.js          # Undo/redo history, settings modal, session persistence
+└── docs/
+    └── architecture.md     # Mermaid module and data-flow diagram
+```
+
+`logic.js` is fully DOM-free and tested in isolation (54 unit tests via Vitest). The other modules import from it. See `docs/architecture.md` for a full dependency and data-flow map.
 
 Custom Profiles
 
