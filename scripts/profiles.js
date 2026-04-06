@@ -597,6 +597,294 @@ export const inlineProfiles = {
       },
     ],
   },
+  vestibular: {
+    name: "Vestibular Disorder",
+    tone: "still, grounded, motion-wary",
+    description:
+      "The world is already moving. Parallax backgrounds drift, carousels slide, sticky headers glide past content at a different speed. For someone with a vestibular disorder, these small mismatches between visual motion and the body's sense of position are not decorative — they are disorienting. Dizziness, nausea, and disorientation can arrive within seconds. The page does not need to move to be engaging. Stillness is not boring. It is safe.",
+    checks: [
+      {
+        keyword: "parallax",
+        message:
+          "Parallax scrolling creates a mismatch between the speed of foreground and background elements. For vestibular disorder users, this split-motion is one of the most reliable triggers for dizziness and nausea.",
+        technical:
+          "Remove parallax effects or disable them inside a @media (prefers-reduced-motion: reduce) block. Never use parallax on large areas of the screen.",
+        severity: "warn",
+      },
+      {
+        keyword: "carousel",
+        message:
+          "Auto-advancing carousels combine motion with unpredictable position changes. The content shifts without the user's input, and there is no safe place to rest the eye. Even slow carousels can trigger symptoms.",
+        technical:
+          "Disable auto-advancement by default. If a carousel must auto-play, pause it on hover and focus, and stop it entirely when prefers-reduced-motion is active. Always provide prev/next controls.",
+        severity: "warn",
+      },
+      {
+        keyword: "sticky",
+        message:
+          "Sticky elements scroll at a different rate than the surrounding content. For vestibular users, the visual conflict between a stationary header and moving page content can cause disorientation even during gentle scrolling.",
+        technical:
+          "Consider removing sticky positioning or making sticky elements smaller. If sticky headers are required, ensure they are narrow enough that the motion conflict is minimal.",
+        severity: "info",
+      },
+      {
+        keyword: "scroll-behavior",
+        message:
+          "Smooth scrolling animates the viewport position when navigating to an anchor. For vestibular users, the viewport moving without direct input is a known trigger.",
+        technical:
+          "Wrap scroll-behavior: smooth inside @media (prefers-reduced-motion: no-preference) so it only applies when the user has not requested reduced motion.",
+        severity: "warn",
+      },
+      {
+        keyword: "transform",
+        message:
+          "CSS transforms used in scroll-linked animations — elements that rotate, scale, or translate as the user scrolls — create a direct vestibular trigger by tying visual motion to body movement.",
+        technical:
+          "Avoid scroll-driven transform animations. Disable all transform animations inside @media (prefers-reduced-motion: reduce).",
+        severity: "warn",
+      },
+      {
+        keyword: "animation",
+        message:
+          "Looping or large-scale animations — especially those that cover a wide area of the screen — can cause prolonged vestibular symptoms. The larger the motion, the more disorienting it is.",
+        technical:
+          "Limit animation to small, purposeful transitions. Wrap all animation declarations in @media (prefers-reduced-motion: no-preference). Use animation-duration: 0.01ms as a fallback for reduced motion.",
+        severity: "warn",
+      },
+      {
+        keyword: "fixed",
+        message:
+          "Fixed-position elements remain stationary as the page scrolls beneath them. This visual layer split can produce a sensation similar to motion sickness in vestibular disorder users.",
+        technical:
+          "Use fixed positioning sparingly. Prefer sticky with a small height for navigation. Test by scrolling quickly and checking for visual jarring.",
+        severity: "info",
+      },
+      {
+        keyword: "background-attachment",
+        message:
+          "background-attachment: fixed creates a parallax-like effect where the background image stays still as the page content scrolls over it. This is a well-documented vestibular trigger.",
+        technical:
+          "Replace background-attachment: fixed with background-attachment: scroll. Use @supports to detect and override if needed for older code.",
+        severity: "warn",
+      },
+    ],
+  },
+  cognitiveload: {
+    name: "Cognitive Load / Overwhelm",
+    tone: "overloaded, counting steps, seeking simplicity",
+    description:
+      "The interface asks more than it gives. Forms stretch across the page with no sense of progress. Errors appear all at once, in red, without instruction. Modals interrupt before the task is finished. Accordions hide the answer behind a click. For users with cognitive disabilities, brain injury, chronic fatigue, or high situational load, complexity does not just slow things down — it ends the session. Simplicity is not a design choice here. It is the whole point.",
+    checks: [
+      {
+        keyword: "modal",
+        message:
+          "Modals interrupt the current task by adding a new layer of interaction. For users managing cognitive load, an unexpected interruption mid-task can cause confusion about where they were and what they were doing.",
+        technical:
+          "Minimize modal use. Prefer inline confirmation or toast notifications for non-critical information. When a modal is necessary, always provide a clear, prominently placed close button.",
+        severity: "warn",
+      },
+      {
+        keyword: "accordion",
+        message:
+          "Accordions hide content behind a click. If the user does not know the content exists, they may not think to look for it — and may submit incomplete information or give up entirely.",
+        technical:
+          "Consider showing critical information by default. Use accordions only for supplementary content that is not needed by all users. Test whether users can locate the hidden content without guidance.",
+        severity: "info",
+      },
+      {
+        keyword: "error",
+        message:
+          "Error messages that describe what went wrong without explaining how to fix it leave users stranded. 'Invalid input' says nothing. 'Please enter a date in the format DD/MM/YYYY' solves the problem.",
+        technical:
+          "Write error messages in plain language. Describe the problem and the solution. Place the message adjacent to the field that caused it. Do not clear field values on error.",
+        severity: "warn",
+      },
+      {
+        keyword: "required",
+        message:
+          "Required fields surfaced only at submission create a high-effort failure moment. The user completes the form believing it is correct, then must find and fix errors they could have avoided.",
+        technical:
+          "Mark required fields visibly before submission — not only after. Use both an asterisk and a text label (e.g. '* required'). Place a legend at the top of the form explaining the marker.",
+        severity: "warn",
+      },
+      {
+        keyword: "infinite",
+        message:
+          "Infinite scroll removes any sense of where the user is in the content. Without visible progress or an end point, it is impossible to orient or plan. For cognitively loaded users, this can feel like being lost.",
+        technical:
+          "Replace infinite scroll with paginated navigation or a visible 'Load more' button. Show the user how many items are loaded and how many remain.",
+        severity: "warn",
+      },
+      {
+        keyword: "autocomplete",
+        message:
+          "Autocomplete behaviour that fires unexpectedly — filling fields without warning, changing selections, or submitting forms — can disorient users who are working slowly or re-reading before submitting.",
+        technical:
+          "Use autocomplete attributes to assist, not override. Test autocomplete behaviour with keyboard navigation. Never submit a form automatically as a result of autocomplete selection.",
+        severity: "info",
+      },
+      {
+        keyword: "<table",
+        message:
+          "Wide tables with many columns demand simultaneous tracking of rows, columns, and headers. For cognitively loaded users, losing your place in a table mid-read can require starting the entire row again.",
+        technical:
+          "Limit columns to what is essential. Consider providing a simplified list view or summary alongside complex tables. Use row hover styles to help users track their position.",
+        severity: "info",
+      },
+      {
+        keyword: "countdown",
+        message:
+          "Countdown timers and session expiry warnings create urgency that is incompatible with the time some users need to complete tasks at their own pace. The pressure of a ticking clock can cause errors, panic, or abandonment.",
+        technical:
+          "Avoid session timeouts where possible. If a timeout is required by security policy, warn at least 2 minutes before expiry, provide an extend option, and do not lose entered data on timeout.",
+        severity: "warn",
+      },
+    ],
+  },
+  colourblindness: {
+    name: "Colour Blind User",
+    tone: "colour-agnostic, pattern-reliant, label-dependent",
+    description:
+      "Colour carries meaning that does not always arrive. Red errors and green successes look identical. Charts with coloured lines but no labels are unreadable. Required fields marked only with a red asterisk are invisible. The design is not broken — it just speaks a language that not everyone hears. Roughly 1 in 12 men and 1 in 200 women have some form of colour vision deficiency. Using colour alone to convey meaning excludes them entirely. The fix is always the same: add another signal. A label, an icon, a pattern, a border. Colour can still be there — it just cannot be the only thing.",
+    checks: [
+      {
+        keyword: "color: red",
+        message:
+          "Red is used as a colour signal. For users who cannot distinguish red from green or brown, this signal is invisible. Pair red with an icon, a text label, or a border to convey the same meaning without colour alone.",
+        technical:
+          "Never use colour as the sole means of conveying information (WCAG 1.4.1). Supplement colour changes with icons (e.g. \u26a0 for error), text labels, or pattern/shape changes.",
+        severity: "warn",
+      },
+      {
+        keyword: "color: green",
+        message:
+          "Green is used as a colour signal. Red-green colour blindness (deuteranopia and protanopia) is the most common form and affects roughly 8% of men. Green success states are frequently invisible to these users.",
+        technical:
+          "Pair green success states with a checkmark icon or the word 'Success'. Do not rely on colour alone to distinguish success from error.",
+        severity: "warn",
+      },
+      {
+        keyword: "border-color",
+        message:
+          "A border colour change is present. If this indicates state (focus, error, valid, invalid), ensure the state is also communicated through a non-colour signal such as an icon, a label, or a change in border weight.",
+        technical:
+          "Colour-only border changes for form state (e.g. red border for error) must be supplemented. Use an error icon adjacent to the field and an error message below it.",
+        severity: "info",
+      },
+      {
+        keyword: "background-color",
+        message:
+          "Background colour changes are used. If background colour alone distinguishes states (active, selected, highlighted, error), users with colour vision deficiency may not be able to perceive the difference.",
+        technical:
+          "Supplement background-colour state changes with a visible text label, icon, or pattern change. Test your UI in a greyscale simulation to verify all states remain distinguishable.",
+        severity: "info",
+      },
+      {
+        keyword: "legend",
+        message:
+          "A legend is present. If this is a chart or diagram legend that uses colour swatches to identify data series, colour blind users may be unable to match the swatches to the data.",
+        technical:
+          "Add text labels directly to chart lines, bars, or segments where possible. If a legend is used, supplement colour swatches with distinct shapes, patterns, or labels inside the swatch.",
+        severity: "warn",
+      },
+      {
+        keyword: "chart",
+        message:
+          "A chart or graph is present. Charts that distinguish data series by colour alone are among the most common accessibility failures for colour blind users.",
+        technical:
+          "Use distinct line styles (solid, dashed, dotted), shapes at data points, or hatching patterns in addition to colour. Label data series directly on the chart. Do not rely on a colour-only legend.",
+        severity: "warn",
+      },
+      {
+        keyword: "required",
+        message:
+          "Required fields are present. If they are marked with a red asterisk as the sole indicator, colour blind users may not see which fields are required.",
+        technical:
+          "Mark required fields with a visible asterisk (*) and a text label. Place a legend at the top of the form that explains the marker. Never use colour alone to indicate required status.",
+        severity: "warn",
+      },
+      {
+        keyword: "status",
+        message:
+          "Status indicators are present. If status is communicated by colour alone (e.g. a green dot for online, a red dot for offline), colour blind users receive no information.",
+        technical:
+          "Pair colour-based status indicators with a text label or icon. For example: \u2022 Online instead of a green dot alone.",
+        severity: "warn",
+      },
+    ],
+  },
+  autism: {
+    name: "Autistic User",
+    tone: "pattern-seeking, literal, sensory-alert",
+    description:
+      "Predictability is not a preference — it is how the interface becomes navigable. When a tooltip appears and vanishes without warning, when a modal interrupts mid-task, when a button says one thing and does another, trust erodes. Sensory sensitivity makes unexpected sound, motion, and visual noise costly. Literal interpretation means that ambiguous labels, idioms, and vague error messages genuinely do not communicate. This profile reflects patterns that many autistic users have described as barriers. It is written with care, and should be read and refined with input from the community it represents.",
+    checks: [
+      {
+        keyword: "animation",
+        message:
+          "Unexpected animation — especially motion that begins without user action — can be startling and sensory-overwhelming. The barrier here is unpredictability, not seizure risk.",
+        technical:
+          "Wrap all animations in @media (prefers-reduced-motion: no-preference). Avoid animations that fire on page load or scroll without user interaction.",
+        severity: "warn",
+      },
+      {
+        keyword: "autoplay",
+        message:
+          "Autoplaying video or audio introduces unexpected sensory input. Sound that begins without warning is a significant sensory intrusion. Motion that starts before the user is ready is startling.",
+        technical:
+          "Never autoplay video or audio. Require explicit user interaction. Ensure a visible, accessible mute/pause control is always present for any media.",
+        severity: "warn",
+      },
+      {
+        keyword: "notification",
+        message:
+          "Unexpected notifications that appear without user action interrupt focus and introduce unpredictable change. Frequent or intrusive notifications can disrupt the flow of a task entirely.",
+        technical:
+          "Use aria-live regions with polite (not assertive) for non-critical notifications. Limit notification frequency. Allow users to control or disable notifications in settings.",
+        severity: "warn",
+      },
+      {
+        keyword: "tooltip",
+        message:
+          "Tooltips that appear and disappear on hover are unpredictable. Content that was visible is suddenly gone. For users who rely on reading content at their own pace, vanishing information is a barrier.",
+        technical:
+          "Supplement hover tooltips with persistent inline help text or an accessible toggle. Ensure tooltip content is available through a static mechanism, not hover alone.",
+        severity: "info",
+      },
+      {
+        keyword: "modal",
+        message:
+          "Modals that appear without direct user action break the flow of a task with an unexpected context shift. The page the user was on is still there, but suddenly inaccessible. This kind of interruption can be deeply disorienting.",
+        technical:
+          "Only open modals in direct response to a user action. Never open a modal on page load or on a timer. Always provide a clearly labelled close button. Return focus to the trigger element on close.",
+        severity: "warn",
+      },
+      {
+        keyword: "placeholder",
+        message:
+          "Placeholder text that disappears when the user starts typing removes the instruction at exactly the moment it is needed. For users who process information sequentially, losing the label mid-task can require stopping to re-read the page.",
+        technical:
+          "Use persistent <label> elements above or beside inputs. Never rely on placeholder as the only source of field instructions. Placeholder text should supplement, not replace, a label.",
+        severity: "warn",
+      },
+      {
+        keyword: "error",
+        message:
+          "Vague, blaming, or unexpected error messages cause confusion and distress. 'Something went wrong' says nothing. 'Invalid input' says nothing. Ambiguous error messages require inference that may not be straightforward.",
+        technical:
+          "Write error messages in plain, literal language. State exactly what went wrong and exactly what to do to fix it. Avoid metaphor, sarcasm, or implied meaning. Place the message next to the relevant field.",
+        severity: "warn",
+      },
+      {
+        keyword: "countdown",
+        message:
+          "Time pressure is a significant source of distress for many autistic users. A countdown timer changes the nature of the task from 'do this correctly' to 'do this fast' — and may make completion impossible.",
+        technical:
+          "Avoid session timeouts and time-limited interactions where possible. If a timer is required, provide an option to extend. Never lose user input on timeout.",
+        severity: "warn",
+      },
+    ],
+  },
 };
 
 export const profileCache = new Map();

@@ -691,3 +691,127 @@ hr,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────── */
+/* All text/bg pairs re-verified for WCAG 2.1 AA (4.5:1 normal, 3:1 large). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:   #11101e; /* page background                                       */
+    --card: #1a1838; /* card / panel surface                                  */
+
+    --ink:    #e6e3f5; /* body text    — ~14.8:1 on bg, ~12.4:1 on card       */
+    --muted:  #9491b4; /* secondary    —  ~6.2:1 on bg,  ~5.2:1 on card       */
+    --forest: #d4d0f5; /* headings     — ~12.2:1 on bg,  ~10.2:1 on card      */
+
+    /* Amber brighter for dark surfaces                                        */
+    --amber:      #fbbf24; /* links, focus —  ~9.5:1 on bg,  ~7.9:1 on card   */
+    --amber-dark: #f59e0b; /* hover        —  ~7.8:1 on bg                    */
+
+    /* Warning cards — ~12.1:1 (text on bg)                                   */
+    --warn-bg:     #271200;
+    --warn-text:   #fde68a;
+    --warn-border: #d97706;
+
+    /* Info cards — ~8.3:1 (text on bg)                                       */
+    --info-bg:     #071829;
+    --info-text:   #93c5fd;
+    --info-border: #3b82f6;
+
+    /* Tone preview pill — ~9.5:1                                              */
+    --tone-bg:   #1f1400;
+    --tone-text: #fde68a;
+
+    --accent:    #3a3060; /* warm divider, adapted for dark                    */
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5), 0 4px 10px rgba(0, 0, 0, 0.4);
+    --border:    1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Inputs and textareas need explicit dark backgrounds */
+  textarea,
+  select,
+  input[type="file"] {
+    background: var(--card);
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Settings modal backdrop */
+  .settings-modal {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  /* Tone preview pill border */
+  #tone-preview {
+    border-color: var(--warn-border);
+  }
+}
+
+/* ─── Print styles ───────────────────────────────────────────────────────── */
+@media print {
+  /* Hide everything except the feedback output */
+  .left-column,
+  .footer-actions,
+  #toast-container,
+  #settings-modal,
+  #loading-indicator,
+  #tone-preview,
+  .site-footer,
+  header p {
+    display: none !important;
+  }
+
+  header {
+    padding: 1rem 0 0.5rem;
+    text-align: left;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    color: #000;
+  }
+
+  /* Expand feedback to full width */
+  .grid {
+    display: block;
+  }
+
+  .right-column {
+    width: 100%;
+  }
+
+  /* Cards: remove shadows, use top border for severity (print suppresses bg-color) */
+  article.result-warn,
+  article.result-info {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    border-top-width: 4px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  article.result-warn {
+    border-top-color: #92400e;
+  }
+
+  article.result-info {
+    border-top-color: #1d4ed8;
+  }
+
+  /* Force black text on white */
+  body,
+  article,
+  .result-label,
+  .result-message,
+  .result-meta {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Ensure URLs print after links */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #444;
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Cognitive Load / Overwhelm",
+  "tone": "overloaded, counting steps, seeking simplicity",
+  "description": "The interface asks more than it gives. Forms stretch across the page with no sense of progress. Errors appear all at once, in red, without instruction. Modals interrupt before the task is finished. Accordions hide the answer behind a click. For users with cognitive disabilities, brain injury, chronic fatigue, or high situational load, complexity does not just slow things down — it ends the session. Simplicity is not a design choice here. It is the whole point.",
+  "checks": [
+    {
+      "keyword": "modal",
+      "message": "Modals interrupt the current task by adding a new layer of interaction. For users managing cognitive load, an unexpected interruption mid-task can cause confusion about where they were and what they were doing.",
+      "technical": "Minimize modal use. Prefer inline confirmation or toast notifications for non-critical information. When a modal is necessary, always provide a clear, prominently placed close button.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "accordion",
+      "message": "Accordions hide content behind a click. If the user does not know the content exists, they may not think to look for it — and may submit incomplete information or give up entirely.",
+      "technical": "Consider showing critical information by default. Use accordions only for supplementary content that is not needed by all users. Test whether users can locate the hidden content without guidance.",
+      "severity": "info"
+    },
+    {
+      "keyword": "error",
+      "message": "Error messages that describe what went wrong without explaining how to fix it leave users stranded. 'Invalid input' says nothing. 'Please enter a date in the format DD/MM/YYYY' solves the problem.",
+      "technical": "Write error messages in plain language. Describe the problem and the solution. Place the message adjacent to the field that caused it. Do not clear field values on error.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "required",
+      "message": "Required fields surfaced only at submission create a high-effort failure moment. The user completes the form believing it is correct, then must find and fix errors they could have avoided.",
+      "technical": "Mark required fields visibly before submission — not only after. Use both an asterisk and a text label (e.g. '* required'). Place a legend at the top of the form explaining the marker.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "infinite",
+      "message": "Infinite scroll removes any sense of where the user is in the content. Without visible progress or an end point, it is impossible to orient or plan. For cognitively loaded users, this can feel like being lost.",
+      "technical": "Replace infinite scroll with paginated navigation or a visible 'Load more' button. Show the user how many items are loaded and how many remain.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "autocomplete",
+      "message": "Autocomplete behaviour that fires unexpectedly — filling fields without warning, changing selections, or submitting forms — can disorient users who are working slowly or re-reading before submitting.",
+      "technical": "Use autocomplete attributes to assist, not override. Test autocomplete behaviour with keyboard navigation. Never submit a form automatically as a result of autocomplete selection.",
+      "severity": "info"
+    },
+    {
+      "keyword": "<table",
+      "message": "Wide tables with many columns demand simultaneous tracking of rows, columns, and headers. For cognitively loaded users, losing your place in a table mid-read can require starting the entire row again.",
+      "technical": "Limit columns to what is essential. Consider providing a simplified list view or summary alongside complex tables. Use row hover styles to help users track their position.",
+      "severity": "info"
+    },
+    {
+      "keyword": "countdown",
+      "message": "Countdown timers and session expiry warnings create urgency that is incompatible with the time some users need to complete tasks at their own pace. The pressure of a ticking clock can cause errors, panic, or abandonment.",
+      "technical": "Avoid session timeouts where possible. If a timeout is required by security policy, warn at least 2 minutes before expiry, provide an extend option, and do not lose entered data on timeout.",
+      "severity": "warn"
+    }
+  ]
+}

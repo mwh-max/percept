@@ -17,7 +17,7 @@
     },
     {
       "keyword": "drag",
-      "message": "Drag-and-drop interfaces require fine motor control. Offer alternative actions like "Move Up" or "Add Below" buttons.",
+      "message": "Drag-and-drop interfaces require fine motor control. Offer alternative actions like \u201cMove Up\u201d or \u201cAdd Below\u201d buttons.",
       "technical": "Avoid requiring drag-and-drop. Provide buttons or keyboard-accessible alternatives for reordering or inserting elements.",
       "severity": "warn"
     },
