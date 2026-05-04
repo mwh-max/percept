@@ -1,21 +1,54 @@
 {
   "name": "Dyslexia",
   "tone": "effortful, pattern-sensitive, clarity-seeking",
-  "description": "Text arrives slowly, sometimes out of order. Dense paragraphs and decorative fonts blur meaning. Structure, spacing and semantic clarity offer relief. Simplicity isn\u2019t minimalism\u2014it\u2019s access.",
+  "description": "Text arrives slowly, sometimes out of order. Dense paragraphs and decorative fonts blur meaning. Structure, spacing and semantic clarity offer relief. Simplicity isn't minimalism—it's access.",
   "checks": [
     {
       "keyword": "font-family",
       "message": "Consider using dyslexia-friendly fonts like Lexend or OpenDyslexic. Avoid cursive or overly stylized typefaces.",
+      "technical": "Avoid decorative, cursive, or monospace fonts for body text. Lexend, OpenDyslexic, and system fonts with clear letterforms (Arial, Verdana) reduce character confusion.",
       "severity": "warn"
     },
     {
       "keyword": "line-height",
       "message": "Adequate line spacing improves readability. Aim for at least 1.5x the font size.",
+      "technical": "Set line-height to at least 1.5 for body text. Values below 1.4 cause lines to visually blur together for many readers with dyslexia.",
       "severity": "info"
     },
     {
       "keyword": "justify",
-      "message": "Justified text can create uneven spacing. Left-align for consistent rhythm.",
+      "message": "Justified text can create uneven spacing between words. This irregular rhythm is particularly disruptive for readers who process text letter-by-letter. Left-align for consistent flow.",
+      "technical": "Use text-align: left for body text. Never use text-align: justify. Uneven word spacing caused by justification fragments the reading rhythm.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "letter-spacing",
+      "message": "Tight letter spacing makes it harder to distinguish individual characters. For dyslexic readers, letters can blur together or be confused for similar shapes.",
+      "technical": "Use letter-spacing of at least 0.12em for body text. Avoid negative letter-spacing. The WCAG 1.4.12 text spacing criterion recommends letter spacing of at least 0.12x font size.",
+      "severity": "info"
+    },
+    {
+      "keyword": "text-transform",
+      "message": "All-caps text significantly increases reading effort. Uppercase words lose their shape — every word becomes a rectangle, removing the visual anchors that aid word recognition.",
+      "technical": "Avoid text-transform: uppercase for body text or anything longer than a few words. Use it only sparingly for short labels or decorative headings.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "columns",
+      "message": "Multi-column layouts interrupt the natural left-to-right reading path. Reaching the end of a column and finding the start of the next one requires spatial reasoning that adds cognitive load.",
+      "technical": "Avoid CSS columns for long-form body text. Single-column layouts remove the need to track column breaks.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "word-spacing",
+      "message": "Word spacing affects how clearly individual words stand apart. Too little spacing causes words to run together; combined with other factors it can make a paragraph feel impenetrable.",
+      "technical": "Use word-spacing of at least 0.16em for body text (WCAG 1.4.12). Avoid negative word-spacing.",
+      "severity": "info"
+    },
+    {
+      "keyword": "background",
+      "message": "Busy or patterned backgrounds compete with text for visual attention. For readers who already find text effortful, a background that 'moves' behind words can make reading feel impossible.",
+      "technical": "Use a solid, low-contrast background behind text. Avoid background-image with patterns, textures, or gradients in text areas.",
       "severity": "warn"
     }
   ]

@@ -6,21 +6,61 @@
     {
       "keyword": "img",
       "message": "Images should include alt text. Screenreader users rely on alt to understand meaning.",
+      "technical": "Every <img> must have an alt attribute. Use alt=\"\" for decorative images and a meaningful description for informative ones.",
       "severity": "warn"
     },
     {
       "keyword": "role=",
       "message": "Custom roles should be used carefully. Native semantics are preferred when possible.",
+      "technical": "Prefer native HTML elements over ARIA roles. Use <button> instead of <div role=\"button\">, <nav> instead of <div role=\"navigation\">.",
       "severity": "info"
     },
     {
       "keyword": "tabindex",
       "message": "Tab order changes can confuse screenreader flow. Use tabindex intentionally and test focus behavior.",
+      "technical": "Use tabindex=\"0\" to add elements to natural tab order and tabindex=\"-1\" for programmatic focus only. Avoid positive tabindex values.",
       "severity": "info"
     },
     {
       "keyword": "<h1",
       "message": "Headings create a map. Be sure to use them in a logical order (h1 to h6) without skipping levels.",
+      "technical": "Every page should have exactly one <h1>. Heading levels should not skip — an <h3> must follow an <h2>, not an <h1>.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "aria-label",
+      "message": "An aria-label is present. Verify that its value is meaningful and matches what a screenreader user would expect to hear when focus lands on the element.",
+      "technical": "aria-label overrides all other accessible name sources. Ensure the value is concise, accurate, and does not simply repeat visible text.",
+      "severity": "info"
+    },
+    {
+      "keyword": "aria-expanded",
+      "message": "Expandable controls like accordions and dropdowns rely on aria-expanded to announce their state. Without it, a screenreader user cannot tell whether content is hidden or shown.",
+      "technical": "Pair aria-expanded=\"true|false\" with aria-controls pointing to the controlled region. Update the value dynamically when state changes.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "skip",
+      "message": "Skip links let screenreader and keyboard users jump past repeated navigation. Without one, every page load starts with the same navigation items before any content.",
+      "technical": "Add a visible-on-focus skip link as the first element in <body>: <a class=\"skip-link\" href=\"#main\">Skip to main content</a>. Ensure the target id exists.",
+      "severity": "warn"
+    },
+    {
+      "pattern": "<button[^>]*>\\s*(?:<[^>]+>\\s*)*</button>",
+      "message": "A button appears to have no visible text. Icon-only buttons are announced by their label, not their icon — without a text label, a screenreader user hears nothing meaningful.",
+      "technical": "Add an aria-label to icon-only buttons, or include visually-hidden text inside them. Never leave a button with only an icon and no accessible name.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "<nav",
+      "message": "Navigation landmarks help screenreader users jump directly to the navigation region without listening through the whole page.",
+      "technical": "Use <nav> for primary and secondary navigation. If multiple <nav> elements exist, distinguish them with aria-label (e.g., aria-label=\"Primary\", aria-label=\"Footer\").",
+      "severity": "info"
+    },
+    {
+      "keyword": "outline:",
+      "message": "CSS outline styles are often removed for visual reasons. For screenreader users who also navigate by keyboard, a missing focus indicator makes the page effectively invisible during tab navigation.",
+      "technical": "Never use outline: none or outline: 0 without providing an equivalent custom focus style. Test all interactive elements with keyboard navigation.",
       "severity": "warn"
     }
   ]

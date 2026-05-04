@@ -17,9 +17,39 @@
     },
     {
       "keyword": "drag",
-      "message": "Drag-and-drop interfaces require fine motor control. Offer alternative actions like “Move Up” or “Add Below” buttons.",
+      "message": "Drag-and-drop interfaces require fine motor control. Offer alternative actions like \u201cMove Up\u201d or \u201cAdd Below\u201d buttons.",
       "technical": "Avoid requiring drag-and-drop. Provide buttons or keyboard-accessible alternatives for reordering or inserting elements.",
       "severity": "warn"
+    },
+    {
+      "keyword": "touch-action",
+      "message": "Restricting touch actions can disable pinch-to-zoom or other gestures that users rely on to navigate or control a page. For someone with limited hand mobility, removing these options can make a page completely unusable.",
+      "technical": "Avoid touch-action: none. If touch gestures must be restricted, ensure all actions remain reachable by alternative input methods.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "pointer-events",
+      "message": "Setting pointer-events: none on an element makes it unclickable and untappable. If used incorrectly it can silently block access to interactive content.",
+      "technical": "Use pointer-events: none only on purely decorative overlays. Never apply it to interactive elements. Verify keyboard operability for all affected regions.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "dblclick",
+      "message": "Double-click actions require precise timing and repeated fine motor movement. For users with tremor or limited dexterity, reliably triggering a double-click can be very difficult.",
+      "technical": "Never require double-click as the only way to trigger an action. Provide a single-click or keyboard-accessible alternative for every double-click interaction.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "outline:",
+      "message": "Removing focus outlines leaves keyboard-only users without a visible indicator of where they are on the page. For motor-disabled users who navigate entirely by keyboard, this is like removing the cursor.",
+      "technical": "Never set outline: none or outline: 0 without providing an equivalent custom focus style. Test all interactive elements with Tab key navigation.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "scroll",
+      "message": "Scroll-only containers can trap keyboard and switch access users. If content is only reachable by scrolling with a mouse, users relying on keyboard or assistive devices may not be able to access it.",
+      "technical": "Ensure scrollable containers are focusable (tabindex=\"0\") and announce themselves as scrollable to assistive technology. All content within should be reachable by keyboard.",
+      "severity": "info"
     }
   ]
 }

@@ -1,0 +1,55 @@
+{
+  "name": "Colour Blind User",
+  "tone": "colour-agnostic, pattern-reliant, label-dependent",
+  "description": "Colour carries meaning that does not always arrive. Red errors and green successes look identical. Charts with coloured lines but no labels are unreadable. Required fields marked only with a red asterisk are invisible. The design is not broken — it just speaks a language that not everyone hears. Roughly 1 in 12 men and 1 in 200 women have some form of colour vision deficiency. Using colour alone to convey meaning excludes them entirely. The fix is always the same: add another signal. A label, an icon, a pattern, a border. Colour can still be there — it just cannot be the only thing.",
+  "checks": [
+    {
+      "keyword": "color: red",
+      "message": "Red is used as a colour signal. For users who cannot distinguish red from green or brown, this signal is invisible. Pair red with an icon, a text label, or a border to convey the same meaning without colour alone.",
+      "technical": "Never use colour as the sole means of conveying information (WCAG 1.4.1). Supplement colour changes with icons (e.g. \u26a0 for error), text labels, or pattern/shape changes.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "color: green",
+      "message": "Green is used as a colour signal. Red-green colour blindness (deuteranopia and protanopia) is the most common form and affects roughly 8% of men. Green success states are frequently invisible to these users.",
+      "technical": "Pair green success states with a checkmark icon or the word 'Success'. Do not rely on colour alone to distinguish success from error.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "border-color",
+      "message": "A border colour change is present. If this indicates state (focus, error, valid, invalid), ensure the state is also communicated through a non-colour signal such as an icon, a label, or a change in border weight.",
+      "technical": "Colour-only border changes for form state (e.g. red border for error) must be supplemented. Use an error icon adjacent to the field and an error message below it.",
+      "severity": "info"
+    },
+    {
+      "keyword": "background-color",
+      "message": "Background colour changes are used. If background colour alone distinguishes states (active, selected, highlighted, error), users with colour vision deficiency may not be able to perceive the difference.",
+      "technical": "Supplement background-colour state changes with a visible text label, icon, or pattern change. Test your UI in a greyscale simulation to verify all states remain distinguishable.",
+      "severity": "info"
+    },
+    {
+      "keyword": "legend",
+      "message": "A legend is present. If this is a chart or diagram legend that uses colour swatches to identify data series, colour blind users may be unable to match the swatches to the data.",
+      "technical": "Add text labels directly to chart lines, bars, or segments where possible. If a legend is used, supplement colour swatches with distinct shapes, patterns, or labels inside the swatch.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "chart",
+      "message": "A chart or graph is present. Charts that distinguish data series by colour alone are among the most common accessibility failures for colour blind users.",
+      "technical": "Use distinct line styles (solid, dashed, dotted), shapes at data points, or hatching patterns in addition to colour. Label data series directly on the chart. Do not rely on a colour-only legend.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "required",
+      "message": "Required fields are present. If they are marked with a red asterisk as the sole indicator, colour blind users may not see which fields are required.",
+      "technical": "Mark required fields with a visible asterisk (*) and a text label. Place a legend at the top of the form that explains the marker. Never use colour alone to indicate required status.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "status",
+      "message": "Status indicators are present. If status is communicated by colour alone (e.g. a green dot for online, a red dot for offline), colour blind users receive no information.",
+      "technical": "Pair colour-based status indicators with a text label or icon. For example: \u2022 Online instead of a green dot alone.",
+      "severity": "warn"
+    }
+  ]
+}

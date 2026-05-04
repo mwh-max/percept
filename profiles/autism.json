@@ -1,0 +1,55 @@
+{
+  "name": "Autistic User",
+  "tone": "pattern-seeking, literal, sensory-alert",
+  "description": "Predictability is not a preference — it is how the interface becomes navigable. When a tooltip appears and vanishes without warning, when a modal interrupts mid-task, when a button says one thing and does another, trust erodes. Sensory sensitivity makes unexpected sound, motion, and visual noise costly. Literal interpretation means that ambiguous labels, idioms, and vague error messages genuinely do not communicate. This profile reflects patterns that many autistic users have described as barriers. It is written with care, and should be read and refined with input from the community it represents.",
+  "checks": [
+    {
+      "keyword": "animation",
+      "message": "Unexpected animation — especially motion that begins without user action — can be startling and sensory-overwhelming. The barrier here is unpredictability, not seizure risk.",
+      "technical": "Wrap all animations in @media (prefers-reduced-motion: no-preference). Avoid animations that fire on page load or scroll without user interaction.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "autoplay",
+      "message": "Autoplaying video or audio introduces unexpected sensory input. Sound that begins without warning is a significant sensory intrusion. Motion that starts before the user is ready is startling.",
+      "technical": "Never autoplay video or audio. Require explicit user interaction. Ensure a visible, accessible mute/pause control is always present for any media.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "notification",
+      "message": "Unexpected notifications that appear without user action interrupt focus and introduce unpredictable change. Frequent or intrusive notifications can disrupt the flow of a task entirely.",
+      "technical": "Use aria-live regions with polite (not assertive) for non-critical notifications. Limit notification frequency. Allow users to control or disable notifications in settings.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "tooltip",
+      "message": "Tooltips that appear and disappear on hover are unpredictable. Content that was visible is suddenly gone. For users who rely on reading content at their own pace, vanishing information is a barrier.",
+      "technical": "Supplement hover tooltips with persistent inline help text or an accessible toggle. Ensure tooltip content is available through a static mechanism, not hover alone.",
+      "severity": "info"
+    },
+    {
+      "keyword": "modal",
+      "message": "Modals that appear without direct user action break the flow of a task with an unexpected context shift. The page the user was on is still there, but suddenly inaccessible. This kind of interruption can be deeply disorienting.",
+      "technical": "Only open modals in direct response to a user action. Never open a modal on page load or on a timer. Always provide a clearly labelled close button. Return focus to the trigger element on close.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "placeholder",
+      "message": "Placeholder text that disappears when the user starts typing removes the instruction at exactly the moment it is needed. For users who process information sequentially, losing the label mid-task can require stopping to re-read the page.",
+      "technical": "Use persistent <label> elements above or beside inputs. Never rely on placeholder as the only source of field instructions. Placeholder text should supplement, not replace, a label.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "error",
+      "message": "Vague, blaming, or unexpected error messages cause confusion and distress. 'Something went wrong' says nothing. 'Invalid input' says nothing. Ambiguous error messages require inference that may not be straightforward.",
+      "technical": "Write error messages in plain, literal language. State exactly what went wrong and exactly what to do to fix it. Avoid metaphor, sarcasm, or implied meaning. Place the message next to the relevant field.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "countdown",
+      "message": "Time pressure is a significant source of distress for many autistic users. A countdown timer changes the nature of the task from 'do this correctly' to 'do this fast' — and may make completion impossible.",
+      "technical": "Avoid session timeouts and time-limited interactions where possible. If a timer is required, provide an option to extend. Never lose user input on timeout.",
+      "severity": "warn"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Vestibular Disorder",
+  "tone": "still, grounded, motion-wary",
+  "description": "The world is already moving. Parallax backgrounds drift, carousels slide, sticky headers glide past content at a different speed. For someone with a vestibular disorder, these small mismatches between visual motion and the body's sense of position are not decorative — they are disorienting. Dizziness, nausea, and disorientation can arrive within seconds. The page does not need to move to be engaging. Stillness is not boring. It is safe.",
+  "checks": [
+    {
+      "keyword": "parallax",
+      "message": "Parallax scrolling creates a mismatch between the speed of foreground and background elements. For vestibular disorder users, this split-motion is one of the most reliable triggers for dizziness and nausea.",
+      "technical": "Remove parallax effects or disable them inside a @media (prefers-reduced-motion: reduce) block. Never use parallax on large areas of the screen.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "carousel",
+      "message": "Auto-advancing carousels combine motion with unpredictable position changes. The content shifts without the user's input, and there is no safe place to rest the eye. Even slow carousels can trigger symptoms.",
+      "technical": "Disable auto-advancement by default. If a carousel must auto-play, pause it on hover and focus, and stop it entirely when prefers-reduced-motion is active. Always provide prev/next controls.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "sticky",
+      "message": "Sticky elements scroll at a different rate than the surrounding content. For vestibular users, the visual conflict between a stationary header and moving page content can cause disorientation even during gentle scrolling.",
+      "technical": "Consider removing sticky positioning or making sticky elements smaller. If sticky headers are required, ensure they are narrow enough that the motion conflict is minimal.",
+      "severity": "info"
+    },
+    {
+      "keyword": "scroll-behavior",
+      "message": "Smooth scrolling animates the viewport position when navigating to an anchor. For vestibular users, the viewport moving without direct input is a known trigger.",
+      "technical": "Wrap scroll-behavior: smooth inside @media (prefers-reduced-motion: no-preference) so it only applies when the user has not requested reduced motion.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "transform",
+      "message": "CSS transforms used in scroll-linked animations — elements that rotate, scale, or translate as the user scrolls — create a direct vestibular trigger by tying visual motion to body movement.",
+      "technical": "Avoid scroll-driven transform animations. Disable all transform animations inside @media (prefers-reduced-motion: reduce).",
+      "severity": "warn"
+    },
+    {
+      "keyword": "animation",
+      "message": "Looping or large-scale animations — especially those that cover a wide area of the screen — can cause prolonged vestibular symptoms. The larger the motion, the more disorienting it is.",
+      "technical": "Limit animation to small, purposeful transitions. Wrap all animation declarations in @media (prefers-reduced-motion: no-preference). Use animation-duration: 0.01ms as a fallback for reduced motion.",
+      "severity": "warn"
+    },
+    {
+      "keyword": "fixed",
+      "message": "Fixed-position elements remain stationary as the page scrolls beneath them. This visual layer split can produce a sensation similar to motion sickness in vestibular disorder users.",
+      "technical": "Use fixed positioning sparingly. Prefer sticky with a small height for navigation. Test by scrolling quickly and checking for visual jarring.",
+      "severity": "info"
+    },
+    {
+      "keyword": "background-attachment",
+      "message": "background-attachment: fixed creates a parallax-like effect where the background image stays still as the page content scrolls over it. This is a well-documented vestibular trigger.",
+      "technical": "Replace background-attachment: fixed with background-attachment: scroll. Use @supports to detect and override if needed for older code.",
+      "severity": "warn"
+    }
+  ]
+}
